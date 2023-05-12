@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\components\pinnacle\Pinnacle;
 use common\models\LoginForm;
 use Yii;
 use yii\filters\VerbFilter;
@@ -62,6 +63,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $ap = new Pinnacle();
+        $ap->run();
+        die();
         return $this->render('index');
     }
 

@@ -18,11 +18,6 @@ class Pinnacle extends Component
      */
     private $settings;
 
-    /**
-     * @var Client
-     */
-    private $client;
-
 
     public function run()
     {
@@ -32,30 +27,13 @@ class Pinnacle extends Component
             'sportid' => 33,
             'tour' => 'ATP',
         ];
-        $this->client = new Client($this->settings['username'],$this->settings['pass']);
-
-        $leagues = $this->getLeagues();
-
-        print_r($leagues);
-
-        /*
-        $settings2 = [
-            'sportid' => 33,
-            'tour' => 'ATP',
-        ];
-
-        $this->settings = Setting::getSettings();
-        $this->settings['fixture'] = $settings2;
-
-
         $leagues = $this->getLeagues();
 
         foreach ($leagues as $league) {
-            $this->settings['fixture'] = $settings;
+            $this->settings['fixture'] = $league;
             $fixtures = $this->getFixtures();
-            //var_dump($fixtures);
+            echo '<pre>' . print_r($fixtures, 1) . '</pre>';
         }
-        */
     }
 
     /**
@@ -64,7 +42,9 @@ class Pinnacle extends Component
      */
     public function getLeagues(): array
     {
-        $league = new League($this->client, $this->settings);
+        $client = new Client($this->settings['username'],$this->settings['pass']);
+
+        $league = new League($client, $this->settings);
         return $league->getLeagues();
     }
 
@@ -73,8 +53,10 @@ class Pinnacle extends Component
      */
     public function getFixtures(): array
     {
+        $client = new Client($this->settings['username'],$this->settings['pass']);
+
         /** get events */
-        $fixture = new Fixture($this->client, $this->settings);
+        $fixture = new Fixture($client, $this->settings);
         return $fixture->getFixtures();
     }
 }
