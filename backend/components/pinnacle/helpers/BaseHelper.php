@@ -68,6 +68,7 @@ class BaseHelper
     public static function tennisLine($line): string
     {
         $rows = "";
+        if(!is_array($line)) return $rows;
         foreach ($line as $val) {
             if(is_array($val)) {
                 if(count($val) == 3) $rows .= implode($val, " ") . "<br>";

@@ -31,15 +31,14 @@ class Fixture
 
     /**
      * Fixture constructor.
-     * @param $client
      * @param array $settings
      * @param int $odds
      */
-    public function __construct($client, array $settings, int $odds = 1)
+    public function __construct(array $settings, int $odds = 1)
     {
-        $this->client = $client;
         $this->settings = $settings;
         $this->odds = $odds;
+        $this->client = new Client($this->settings['username'],$this->settings['pass']);
     }
 
     /**

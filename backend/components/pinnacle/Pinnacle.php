@@ -6,7 +6,6 @@ namespace backend\components\pinnacle;
 use Yii;
 use yii\base\Component;
 use backend\components\pinnacle\models\Setting;
-use backend\components\pinnacle\services\Client;
 use backend\components\pinnacle\models\League;
 use backend\components\pinnacle\models\Fixture;
 use backend\components\pinnacle\helpers\BaseHelper;
@@ -50,9 +49,8 @@ class Pinnacle extends Component
      */
     public function getLeagues(): array
     {
-        $client = new Client($this->settings['username'],$this->settings['pass']);
-
-        $league = new League($client, $this->settings);
+        /** get leagues */
+        $league = new League($this->settings);
         return $league->getLeagues();
     }
 
@@ -61,10 +59,8 @@ class Pinnacle extends Component
      */
     public function getFixtures(): array
     {
-        $client = new Client($this->settings['username'],$this->settings['pass']);
-
         /** get events */
-        $fixture = new Fixture($client, $this->settings);
+        $fixture = new Fixture($this->settings);
         return $fixture->getFixtures();
     }
 }

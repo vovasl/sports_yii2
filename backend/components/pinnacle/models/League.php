@@ -21,14 +21,12 @@ class League
 
     /**
      * League constructor.
-     * @param $client
      * @param array $settings
-     * @param int $odds
      */
-    public function __construct($client, array $settings, int $odds = 1)
+    public function __construct(array $settings)
     {
-        $this->client = $client;
         $this->settings = $settings;
+        $this->client = new Client($this->settings['username'],$this->settings['pass']);
     }
 
     /**
