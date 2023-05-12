@@ -26,7 +26,7 @@ class Client
    * @param string $userid
    * @param null $pass
    */
-  public function __construct($userid, $pass = null) {
+  public function __construct(string $userid, $pass = null) {
     // Credentials: <Base64 value of UTF-8 encoded “username:password”>
     $this->credentials = base64_encode($userid . ":" . $pass);
   }
@@ -34,8 +34,10 @@ class Client
   /**
    * Determine JSON format
    * @param string $string
+   * @return bool
    */
-  private function isJson($string) {
+  private function isJson(string $string): bool
+  {
     json_decode($string);
     return (json_last_error() == JSON_ERROR_NONE);
   }
@@ -43,8 +45,9 @@ class Client
   /**
    * Convert XML format to JSON format
    * @param string $arg
+   * @return false|string
    */
-  private function returnJsonFormat($arg) {
+  private function returnJsonFormat(string $arg) {
     // If the argument is not JSON, converts it to JSON
     if ($this->isJson($arg)) {
       // JSON
@@ -60,7 +63,8 @@ class Client
   /**
    * Generate HTTP header
    */
-  private function getHTTPHeader() {
+  private function getHTTPHeader(): array
+  {
     // Build the header
     $header[] = "Content-type: application/json";
     $header[] = "Authorization: Basic " . $this->credentials;
@@ -71,9 +75,10 @@ class Client
    * Create API query and execute a GET/POST request
    * @param string $httpMethod GET/POST
    * @param string $endpoint
-   * @param string $options
+   * @param array $options
+   * @return bool|string
    */
-  private function apiCall($httpMethod, $endpoint, $options) {
+  private function apiCall(string $httpMethod, string $endpoint, array $options) {
     // Create URL
     $api_url = self::BASE_URL . $this->version . "/" . $endpoint;
     // POST method or GET method
@@ -110,18 +115,20 @@ class Client
   /**
    * Call GET request
    * @param string $endpoint
-   * @param string $options
+   * @param null $options
+   * @return bool|string
    */
-  private function get($endpoint, $options = null) {
+  private function get(string $endpoint, $options = null) {
     return $this->apiCall("get", $endpoint, $options);
   }
 
   /**
    * Call POST request
    * @param string $endpoint
-   * @param string $options
+   * @param string|null $options
+   * @return bool|string
    */
-  private function post($endpoint, $options = null) {
+  private function post(string $endpoint, string $options = null) {
     return $this->apiCall("post", $endpoint, $options);
   }
 
@@ -147,8 +154,9 @@ class Client
   /**
    * Get Feed
    * @param string $options
+   * @return bool|string
    */
-  public function getFeed($options)
+  public function getFeed(string $options)
   {
     return $this->get("feed", $options);
   }
@@ -194,8 +202,9 @@ class Client
   /**
    * Get Parlay Odds
    * @param string $options
+   * @return bool|string
    */
-  public function getParlayOdds($options)
+  public function getParlayOdds(string $options)
   {
     return $this->get("odds/parlay", $options);
   }
@@ -220,8 +229,9 @@ class Client
   /**
    * Place Bet
    * @param string $options
+   * @return bool|string
    */
-  public function placeBet($options)
+  public function placeBet(string $options)
   {
     return $this->post("bets/place", $options);
   }
@@ -229,8 +239,9 @@ class Client
   /**
    * Place Parlay Bet
    * @param string $options
+   * @return bool|string
    */
-  public function placeParlayBet($options)
+  public function placeParlayBet(string $options)
   {
     return $this->post("bets/parlay", $options);
   }
@@ -238,8 +249,9 @@ class Client
   /**
    * Get Line
    * @param string $options
+   * @return bool|string
    */
-  public function getLine($options)
+  public function getLine(string $options)
   {
     return $this->get("line", $options);
   }
@@ -247,8 +259,9 @@ class Client
   /**
    * Get Parlay Line
    * @param string $options
+   * @return bool|string
    */
-  public function getParlayLine($options)
+  public function getParlayLine(string $options)
   {
     return $this->post("line/parlay", $options);
   }
@@ -256,8 +269,9 @@ class Client
   /**
    * Get Bets
    * @param string $options
+   * @return bool|string
    */
-  public function getBets($options)
+  public function getBets(string $options)
   {
     return $this->get("bets", $options);
   }
@@ -273,8 +287,9 @@ class Client
   /**
    * Get Translations
    * @param string $options
+   * @return bool|string
    */
-  public function getTranslations($options)
+  public function getTranslations(string $options)
   {
     return $this->get("translations", $options);
   }

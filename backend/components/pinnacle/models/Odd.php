@@ -22,13 +22,12 @@ class Odd
 
     /**
      * Odd constructor.
-     * @param null $client
      * @param array $settings
      */
-    public function __construct($client = null, array $settings = [])
+    public function __construct(array $settings = [])
     {
-        $this->client = $client;
         $this->settings = $settings;
+        $this->client = new Client($this->settings['username'],$this->settings['pass']);
     }
 
     /**
@@ -39,6 +38,7 @@ class Odd
     {
         $options = $this->settings['fixture'];
         $options['oddsFormat'] = $this->settings['odds_format'];
+
         $data = json_decode($this->client->getOdds($options), 1);
 
         /** prepare odd fields */

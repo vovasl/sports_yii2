@@ -55,7 +55,7 @@ class Fixture
 
         /** relate fixture with odds */
         if($this->odds) {
-            $odd = new Odd($this->client, $this->settings);
+            $odd = new Odd($this->settings);
             $fixtureOdd = new FixtureOdd($this->settings);
             $this->fixtures = $fixtureOdd->relate($this->fixtures, $odd->getOdds());
         }

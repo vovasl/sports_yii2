@@ -26,7 +26,7 @@ class League
     public function __construct(array $settings)
     {
         $this->settings = $settings;
-        $this->client = new Client($this->settings['username'],$this->settings['pass']);
+        $this->client = new Client($settings['username'], $settings['pass']);
     }
 
     /**
@@ -34,6 +34,7 @@ class League
      */
     public function getLeagues(): array
     {
+
         $data = json_decode($this->client->getLeagues($this->settings['fixture']),1);
 
         switch ($this->settings['fixture']['sportid']) {

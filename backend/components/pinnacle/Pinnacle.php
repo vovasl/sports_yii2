@@ -40,6 +40,8 @@ class Pinnacle extends Component
             $this->settings['fixture'] = $league;
             $fixtures = $this->getFixtures();
             echo BaseHelper::events($fixtures, 'tennis');
+            //BaseHelper::outputArray($fixtures);
+
         }
     }
 

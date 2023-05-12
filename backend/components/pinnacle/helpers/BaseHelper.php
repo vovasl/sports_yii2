@@ -34,7 +34,8 @@ class BaseHelper
     {
         $output = "";
         foreach ($events as $event) {
-            $output .= "{$event['o_starts']} {$event['home']} - {$event['away']}<br>";
+            $output .= "{$event['tournament']} {$event['round']} <br>";
+            $output .= "{$event['o_starts']} {$event['home']} - {$event['away']} <br>";
             $output .= self::{$method}($event['odds']);
             $output .= "<hr>";
         }
