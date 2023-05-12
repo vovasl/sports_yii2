@@ -31,6 +31,9 @@ return [
                 ],
             ],
         ],
+        'Pinnacle' => [
+            'class' => 'backend\components\pinnacle\Pinnacle'
+        ]
     ],
     'params' => $params,
 ];
