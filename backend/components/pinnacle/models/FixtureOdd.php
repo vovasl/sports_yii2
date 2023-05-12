@@ -1,9 +1,9 @@
 <?php
 
-
 namespace backend\components\pinnacle\models;
 
-//require_once 'backend\components\pinnacle\config.php';
+
+use backend\components\pinnacle\Pinnacle;
 
 class FixtureOdd
 {
@@ -62,7 +62,7 @@ class FixtureOdd
     private function prepareOdds($fixtures)
     {
         switch ($this->settings['fixture']['sportid']) {
-            case 33:
+            case Pinnacle::TENNIS:
                 return $this->prepareTennisOdds($fixtures);
             default:
                 return $fixtures;
@@ -95,11 +95,7 @@ class FixtureOdd
      */
     private function getTennisPeriod($type, $periods)
     {
-        $config = [
-            'sets' => ['moneyline', 'spreads', 'totals'],
-            'games' => ['spreads', 'totals', 'teamTotal'],
-        ];
-        if(empty($settings = $config[$type])) return false;
+        if(empty($settings = Pinnacle::TENNIS_CONFIG[$type])) return false;
 
         foreach ($periods as $period) {
             $flag = true;
@@ -132,11 +128,7 @@ class FixtureOdd
     private function removeTennisLineFields($type, $odd): array
     {
         $fields = ['altLineId', 'max'];
-        $config = [
-            'sets' => ['moneyline', 'spreads', 'totals'],
-            'games' => ['spreads', 'totals', 'teamTotal'],
-        ];
-        foreach ($config[$type] as $line) {
+        foreach (Pinnacle::TENNIS_CONFIG[$type] as $line) {
             foreach($odd[$line] as $k => $lineOdd) {
                 foreach ($fields as $remove) {
                     unset($lineOdd[$remove]);

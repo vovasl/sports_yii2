@@ -3,26 +3,10 @@
 namespace backend\components\pinnacle\helpers;
 
 
+use backend\components\pinnacle\Pinnacle;
+
 class BaseHelper
 {
-    /**
-     * Convert json format to array
-     * @param $string
-     * @param int $associative
-     * @return array
-     */
-    public static function fromJson($string, $associative = 0) {
-        return json_decode($string, $associative);
-    }
-
-    /**
-     * @param $string
-     * @return false|int
-     */
-    public static function toTime($string)
-    {
-        return strtotime($string);
-    }
 
     /**
      * Output array
@@ -43,10 +27,57 @@ class BaseHelper
     }
 
     /**
-     * @return array|false
+     * @param $events
+     * @return string
      */
-    public static function getEnv()
+    public static function events($events, $method): string
     {
-        return parse_ini_file('.env');
+        $output = "";
+        foreach ($events as $event) {
+            $output .= "{$event['o_starts']} {$event['home']} - {$event['away']}<br>";
+            $output .= self::{$method}($event['odds']);
+            $output .= "<hr>";
+        }
+
+        return $output;
     }
+
+    /**
+     * @param $odds
+     * @return string
+     */
+    public static function tennis($odds): string
+    {
+        $output = "<br>";
+        foreach($odds as $type => $period) {
+            $output .= ucfirst($type) . "<br>";
+            foreach(Pinnacle::TENNIS_CONFIG[$type] as $line) {
+                $output .= "{$line} ({$period["o_{$line}UpdatedAt"]}) <br>";
+                $output .= self::tennisLine($period[$line]);
+                $output .= "<br>";
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * @param $line
+     * @return string
+     */
+    public static function tennisLine($line): string
+    {
+        $rows = "";
+        foreach ($line as $val) {
+            if(is_array($val)) {
+                if(count($val) == 3) $rows .= implode($val, " ") . "<br>";
+                else { // ::log  remove fields
+                }
+            }
+            else $rows .= "$val ";
+        }
+        if(!empty($val) && !is_array($val)) $rows .= "<br>";
+        return $rows;
+    }
+
 }

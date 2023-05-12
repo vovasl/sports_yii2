@@ -49,7 +49,7 @@ class Fixture
      */
     public function getFixtures(string $sort = 'starts'): array
     {
-        $data = BaseHelper::fromJson($this->client->getFixtures($this->settings['fixture']), 1);
+        $data = json_decode($this->client->getFixtures($this->settings['fixture']), 1);
 
         /** prepare fixture fields */
         $this->prepareFields($data);
@@ -79,7 +79,7 @@ class Fixture
     {
         if(isset($data['league'][0]['events'])) {
             foreach ($data['league'][0]['events'] as $fixture) {
-                $fixture['starts'] = BaseHelper::toTime($fixture['starts']);
+                $fixture['starts'] = strtotime($fixture['starts']);
                 $fixture['o_starts'] = BaseHelper::outputDate($fixture['starts']);
                 $fixture = array_merge($fixture, $this->settings['fixture']);
                 $this->fixtures[$fixture['id']] = $fixture;

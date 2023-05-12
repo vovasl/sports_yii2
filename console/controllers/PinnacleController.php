@@ -10,6 +10,5 @@ class PinnacleController extends Controller
     public function actionIndex()
     {
         Yii::$app->Pinnacle->run();
-        //Pinnacle::TestStatic();
     }
 }

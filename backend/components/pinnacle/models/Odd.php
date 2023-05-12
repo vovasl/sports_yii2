@@ -39,7 +39,7 @@ class Odd
     {
         $options = $this->settings['fixture'];
         $options['oddsFormat'] = $this->settings['odds_format'];
-        $data = BaseHelper::fromJson($this->client->getOdds($options), 1);
+        $data = json_decode($this->client->getOdds($options), 1);
 
         /** prepare odd fields */
         $data = $this->prepareFields($data);
@@ -79,7 +79,7 @@ class Odd
             $name = (is_array($field)) ? key($field) : $field;
             $fieldName = "{$name}" . self::UPDATE_FIELD_SUFFIX;
             if (isset($period[$fieldName])) {
-                $val = BaseHelper::toTime($period[$fieldName]);
+                $val = strtotime($period[$fieldName]);
 
                 /** rename field */
                 $fieldName = (is_array($field)) ? $field[$name] . self::UPDATE_FIELD_SUFFIX : $fieldName;

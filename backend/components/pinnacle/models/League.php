@@ -3,7 +3,7 @@
 namespace backend\components\pinnacle\models;
 
 
-use backend\components\pinnacle\helpers\BaseHelper;
+use backend\components\pinnacle\Pinnacle;
 use backend\components\pinnacle\services\Client;
 
 class League
@@ -36,13 +36,13 @@ class League
      */
     public function getLeagues(): array
     {
-        $leagues = BaseHelper::fromJson($this->client->getLeagues($this->settings['fixture']), 1);
+        $data = json_decode($this->client->getLeagues($this->settings['fixture']),1);
 
         switch ($this->settings['fixture']['sportid']) {
-            case 33:
-                return $this->getTennis($leagues);
+            case Pinnacle::TENNIS:
+                return $this->getTennis($data);
             default:
-                return $leagues;
+                return $data;
         }
     }
 

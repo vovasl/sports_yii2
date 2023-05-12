@@ -9,6 +9,7 @@ use backend\components\pinnacle\models\Setting;
 use backend\components\pinnacle\services\Client;
 use backend\components\pinnacle\models\League;
 use backend\components\pinnacle\models\Fixture;
+use backend\components\pinnacle\helpers\BaseHelper;
 
 class Pinnacle extends Component
 {
@@ -18,21 +19,28 @@ class Pinnacle extends Component
      */
     private $settings;
 
+    const TENNIS = 33;
+    const TENNIS_CONFIG = [
+        'sets' => ['moneyline', 'spreads', 'totals'],
+        'games' => ['spreads', 'totals', 'teamTotal'],
+    ];
+    const ATP = 'ATP';
+    const WTA = 'WTA';
 
     public function run()
     {
 
         $this->settings = Setting::getSettings();
         $this->settings['fixture'] = [
-            'sportid' => 33,
-            'tour' => 'ATP',
+            'sportid' => self::TENNIS,
+            'tour' => self::ATP,
         ];
         $leagues = $this->getLeagues();
 
         foreach ($leagues as $league) {
             $this->settings['fixture'] = $league;
             $fixtures = $this->getFixtures();
-            echo '<pre>' . print_r($fixtures, 1) . '</pre>';
+            echo BaseHelper::events($fixtures, 'tennis');
         }
     }
 
