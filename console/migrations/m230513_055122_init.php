@@ -17,6 +17,11 @@ class m230513_055122_init extends Migration
             'name' => $this->string()->notNull()
         ]);
 
+        $this->createTable('{{%sp_odd_type}}', [
+            'id' => $this->primaryKey(),
+            'name' => $this->string()->notNull()
+        ]);
+
         $this->createTable('{{%tn_tour}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull()
@@ -33,11 +38,6 @@ class m230513_055122_init extends Migration
         ]);
 
         $this->createTable('{{%tn_player_type}}', [
-            'id' => $this->primaryKey(),
-            'name' => $this->string()->notNull()
-        ]);
-
-        $this->createTable('{{%sp_odd_type}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull()
         ]);
@@ -92,18 +92,6 @@ class m230513_055122_init extends Migration
         $this->addForeignKey('fk-event-tournament', '{{%tn_event}}', 'tournament', '{{%tn_tournament}}', 'id', 'SET NULL', 'RESTRICT');
         $this->addForeignKey('fk-event-round', '{{%tn_event}}', 'round', '{{%tn_round}}', 'id', 'SET NULL', 'RESTRICT');
 
-        $this->createTable('{{%sp_odd}}', [
-            'id' => $this->primaryKey(),
-            'event' => $this->integer()->notNull(),
-            'type' => $this->integer(),
-            'value' => $this->string()->notNull(),
-            'odd' => $this->string()->notNull(),
-            'created_at' => $this->timestamp()->defaultValue(NULL)
-        ]);
-
-        $this->addForeignKey('fk-odd-event', '{{%sp_odd}}', 'event', '{{%tn_event}}', 'id', 'CASCADE', 'RESTRICT');
-        $this->addForeignKey('fk-odd-type', '{{%sp_odd}}', 'type', '{{%sp_odd_type}}', 'id', 'SET NULL', 'RESTRICT');
-
         $this->createTable('{{%tn_result_set}}', [
             'id' => $this->primaryKey(),
             'event' => $this->integer()->notNull(),
@@ -116,6 +104,18 @@ class m230513_055122_init extends Migration
 
         $this->addForeignKey('fk-result_set-event', '{{%tn_result_set}}', 'event', '{{%tn_event}}', 'id', 'CASCADE', 'RESTRICT');
 
+        $this->createTable('{{%sp_odd}}', [
+            'id' => $this->primaryKey(),
+            'event' => $this->integer()->notNull(),
+            'type' => $this->integer(),
+            'value' => $this->string()->notNull(),
+            'odd' => $this->string()->notNull(),
+            'created_at' => $this->timestamp()->defaultValue(NULL)
+        ]);
+
+        $this->addForeignKey('fk-odd-event', '{{%sp_odd}}', 'event', '{{%tn_event}}', 'id', 'CASCADE', 'RESTRICT');
+        $this->addForeignKey('fk-odd-type', '{{%sp_odd}}', 'type', '{{%sp_odd_type}}', 'id', 'SET NULL', 'RESTRICT');
+
     }
 
     /**
@@ -123,18 +123,18 @@ class m230513_055122_init extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%tn_result_set}}');
         $this->dropTable('{{%sp_odd}}');
+        $this->dropTable('{{%tn_result_set}}');
         $this->dropTable('{{%tn_event}}');
         $this->dropTable('{{%tn_tournament}}');
         $this->dropTable('{{%tn_player}}');
 
         $this->dropTable('{{%sp_sport}}');
+        $this->dropTable('{{%sp_odd_type}}');
         $this->dropTable('{{%tn_tour}}');
         $this->dropTable('{{%tn_surface}}');
         $this->dropTable('{{%tn_round}}');
         $this->dropTable('{{%tn_player_type}}');
-        $this->dropTable('{{%sp_odd_type}}');
     }
 
 }
