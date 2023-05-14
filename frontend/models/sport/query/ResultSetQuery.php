@@ -1,14 +1,14 @@
 <?php
 
-namespace app\models\sport\query;
+namespace frontend\models\sport\query;
 
-use app\models\sport\ResultSet;
+use frontend\models\sport\ResultSet;
 use yii\db\ActiveRecord;
 
 /**
- * This is the ActiveQuery class for [[\app\models\sport\ResultSet]].
+ * This is the ActiveQuery class for [[\frontend\models\sport\ResultSet]].
  *
- * @see \app\models\sport\ResultSet
+ * @see \frontend\models\sport\ResultSet
  */
 class ResultSetQuery extends \yii\db\ActiveQuery
 {

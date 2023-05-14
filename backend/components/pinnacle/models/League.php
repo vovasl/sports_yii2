@@ -52,20 +52,18 @@ class League
     private function getTennis($leagues): array
     {
         $data = [];
-        //$pattern = "#{$this->settings['fixture']['tour']} [^chalenger|125k].*#i";
-        $pattern = "#{$this->settings['fixture']['tour']} [^125k].*#i";
         foreach ($leagues['leagues'] as $league) {
             if($league['eventCount'] == 0) continue;
-            if(!preg_match($pattern, $league['name'])) continue;
+            if(!preg_match("#{$this->settings['fixture']['tour']}.*#i", $league['name'])) continue;
             if(!$tournament = $this->parseTennisTournamentName($league['name'])) continue;
             if($tournament[1] == 'Doubles') continue;
 
             $data[] = [
                 'sportid' => $this->settings['fixture']['sportid'],
                 'leagueids' => $league['id'],
-                'tour' => $this->settings['fixture']['tour'],
                 'tournament' => $tournament[0],
-                'round' => $tournament[1]
+                'round' => $tournament[1],
+                'tour' => $tournament[2],
             ];
         }
 
@@ -73,14 +71,25 @@ class League
     }
 
     /**
+     * Parse tournament name
      * @param $name
      * @return array|false
      */
     private function parseTennisTournamentName($name)
     {
-        $name = trim(str_replace($this->settings['fixture']['tour'], '', $name));
+        /** get tour */
+        foreach (explode('|', $this->settings['fixture']['tour']) as $tour) {
+            if(preg_match("#{$tour}.*#i", $name)) {
+                $name = trim(str_replace($tour, '', $name));
+                break;
+            }
+        }
+
+        /** get tournament name and round */
         $data = array_map('trim', explode('-', $name));
-        if(count($data) != 2) {
+
+        if(!empty($tour)) $data[] = $tour;
+        if(count($data) != 3) {
             //::log can't parse tournament name
             return false;
         }

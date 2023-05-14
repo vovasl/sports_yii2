@@ -1,14 +1,14 @@
 <?php
 
-namespace app\models\sport\query;
+namespace frontend\models\sport\query;
 
-use app\models\sport\Tournament;
+use frontend\models\sport\Tournament;
 use yii\db\ActiveRecord;
 
 /**
- * This is the ActiveQuery class for [[\app\models\sport\Tournament]].
+ * This is the ActiveQuery class for [[\frontend\models\sport\Tournament]].
  *
- * @see \app\models\sport\Tournament
+ * @see \frontend\models\sport\Tournament
  */
 class TournamentQuery extends \yii\db\ActiveQuery
 {

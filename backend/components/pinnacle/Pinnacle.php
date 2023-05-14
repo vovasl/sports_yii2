@@ -3,6 +3,7 @@
 namespace backend\components\pinnacle;
 
 
+use frontend\services\EventService;
 use Yii;
 use yii\base\Component;
 use backend\components\pinnacle\models\Setting;
@@ -23,26 +24,27 @@ class Pinnacle extends Component
         'sets' => ['moneyline', 'spreads', 'totals'],
         'games' => ['spreads', 'totals', 'teamTotal'],
     ];
-    const ATP = 'ATP';
-    const WTA = 'WTA';
+    const ATP = ['ATP Challenger', 'ATP'];
 
     public function run()
     {
-
         $this->settings = Setting::getSettings();
         $this->settings['fixture'] = [
             'sportid' => self::TENNIS,
-            'tour' => self::ATP,
+            'tour' => implode('|', self::ATP),
         ];
         $leagues = $this->getLeagues();
 
         foreach ($leagues as $league) {
             $this->settings['fixture'] = $league;
             $fixtures = $this->getFixtures();
-            echo BaseHelper::events($fixtures, 'tennis');
-            //BaseHelper::outputArray($fixtures);
+            EventService::EventsSave($fixtures);
+
+            BaseHelper::outputArray($fixtures);
+            //break;
 
         }
+
     }
 
     /**

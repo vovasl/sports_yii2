@@ -1,8 +1,8 @@
 <?php
 
-namespace app\models\sport;
+namespace frontend\models\sport;
 
-use app\models\sport\query\TournamentQuery;
+use frontend\models\sport\query\TournamentQuery;
 use Yii;
 use yii\db\ActiveQuery;
 

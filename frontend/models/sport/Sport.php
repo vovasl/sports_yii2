@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\sport;
+namespace frontend\models\sport;
 
 use Yii;
 
@@ -12,6 +12,9 @@ use Yii;
  */
 class Sport extends \yii\db\ActiveRecord
 {
+
+    CONST TENNIS = 33;
+
     /**
      * {@inheritdoc}
      */

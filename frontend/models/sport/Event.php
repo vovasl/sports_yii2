@@ -1,8 +1,8 @@
 <?php
 
-namespace app\models\sport;
+namespace frontend\models\sport;
 
-use app\models\sport\query\EventQuery;
+use frontend\models\sport\query\EventQuery;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -22,6 +22,7 @@ use yii\db\ActiveQuery;
  * @property int $status
  * @property int|null $total_games
  * @property int $five_sets
+ * @property int $pin_id
  *
  * @property Player $playerAway
  * @property Player $playerHome
@@ -48,7 +49,7 @@ class Event extends \yii\db\ActiveRecord
     {
         return [
             [['start_at'], 'safe'],
-            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets'], 'integer'],
+            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id'], 'integer'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
@@ -76,6 +77,7 @@ class Event extends \yii\db\ActiveRecord
             'status' => 'Status',
             'total_games' => 'Total Games',
             'five_sets' => 'Five Sets',
+            'pin_id' => 'Pinnacle ID'
         ];
     }
 

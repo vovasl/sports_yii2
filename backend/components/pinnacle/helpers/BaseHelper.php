@@ -23,7 +23,7 @@ class BaseHelper
      */
     public static function outputDate($str)
     {
-        return date('d.m.y H:i', $str);
+        return date('Y.m.d H:i', $str);
     }
 
     /**

@@ -93,7 +93,7 @@ class Fixture
     private function filter(): void
     {
         $this->fixtures = array_filter($this->fixtures, function ($fixture){
-            return $fixture['starts'] > time();
+            return $fixture['starts'] > time() && $fixture['status'] != 'H';
         });
     }
 

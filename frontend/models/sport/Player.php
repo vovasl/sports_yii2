@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\sport;
+namespace frontend\models\sport;
 
 use Yii;
 use yii\db\ActiveQuery;
@@ -48,7 +48,7 @@ class Player extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',

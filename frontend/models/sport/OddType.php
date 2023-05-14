@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\sport;
+namespace frontend\models\sport;
 
 use Yii;
 use yii\db\ActiveQuery;

@@ -1,14 +1,14 @@
 <?php
 
-namespace app\models\sport\query;
+namespace frontend\models\sport\query;
 
-use app\models\sport\Event;
+use frontend\models\sport\Event;
 use yii\db\ActiveRecord;
 
 /**
- * This is the ActiveQuery class for [[\app\models\sport\Event]].
+ * This is the ActiveQuery class for [[\frontend\models\sport\Event]].
  *
- * @see \app\models\sport\Event
+ * @see \frontend\models\sport\Event
  */
 class EventQuery extends \yii\db\ActiveQuery
 {
