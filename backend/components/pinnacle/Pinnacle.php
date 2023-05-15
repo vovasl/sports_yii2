@@ -14,7 +14,7 @@ class Pinnacle extends Component
 {
 
     const TENNIS = 33;
-    const TENNIS_CONFIG = [
+    const TENNIS_ODDS_CONFIG = [
         'sets' => ['moneyline', 'spreads', 'totals'],
         'games' => ['spreads', 'totals', 'teamTotal'],
     ];

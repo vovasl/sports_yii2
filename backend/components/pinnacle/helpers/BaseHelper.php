@@ -52,7 +52,7 @@ class BaseHelper
         $output = "<br>";
         foreach($odds as $type => $period) {
             $output .= ucfirst($type) . "<br>";
-            foreach(Pinnacle::TENNIS_CONFIG[$type] as $line) {
+            foreach(Pinnacle::TENNIS_ODDS_CONFIG[$type] as $line) {
                 $output .= "{$line} ({$period["o_{$line}UpdatedAt"]}) <br>";
                 $output .= self::tennisLine($period[$line]);
                 $output .= "<br>";

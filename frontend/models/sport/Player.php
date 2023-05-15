@@ -19,6 +19,7 @@ use yii\db\ActiveQuery;
  * @property Event[] $homeEvents
  * @property Event[] $winnerEvents
  * @property PlayerType $playerType
+ * @property Odd[] $odds;
  */
 class Player extends \yii\db\ActiveRecord
 {
@@ -98,5 +99,15 @@ class Player extends \yii\db\ActiveRecord
     public function getPlayerType(): ActiveQuery
     {
         return $this->hasOne(PlayerType::class, ['id' => 'type']);
+    }
+
+    /**
+     * Gets query for [[odds]].
+     *
+     * @return ActiveQuery
+     */
+    public function getOdds(): ActiveQuery
+    {
+        return $this->hasMany(Odd::class, ['id' => 'player_id']);
     }
 }

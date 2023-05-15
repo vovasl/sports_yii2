@@ -5,17 +5,24 @@ namespace frontend\components;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
+use frontend\models\sport\OddType;
 use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use frontend\models\sport\Sport;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 
 class EventSave extends Component
 {
 
     CONST TENNIS = 33;
+    const TENNIS_ODDS_CONFIG = [
+        'sets' => ['moneyline', 'spreads', 'totals'],
+        'games' => ['spreads', 'totals', 'teamTotal'],
+    ];
     CONST TENNIS_FIELDS_REQUIRED = ['tour', 'tournament', 'round', 'home', 'away'];
 
     /**
@@ -126,6 +133,42 @@ class EventSave extends Component
         $fixture->away = $event['away'];
         $fixture->pin_id = $event['id'];
         $fixture->save();
+        $event['id'] = $fixture->id;
+
+        /** odds */
+        foreach($event['odds'] as $k => $period) {
+            foreach(self::TENNIS_ODDS_CONFIG[$k] as $line) {
+
+                /** odd type */
+                $type = ($k == 'sets' && $line != 'moneyline') ? $k . ucfirst($line) : $line;
+                $oddType = ($oddType = OddType::findOne(['name' => $type])) ? $oddType : new OddType();
+                if($oddType->isNewRecord) {
+                    $oddType->name = $type;
+                    $oddType->save();
+                }
+
+                /** odd save method */
+                $method = "{$type}Odds";
+                if(method_exists($this, $method)) {
+                    $this->{$method}($event, $period[$line], $oddType->id);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private function moneylineOdds($event, $odds, $type)
+    {
+        foreach ($odds as $k => $val) {
+            $odd = new Odd();
+            $odd->event = $event['id'];
+            $odd->type = $type;
+            $odd->player_id = $event[$k];
+            $odd->odd = \round($val, 2) * 100;
+            $odd->save();
+        }
+        //BaseHelper::outputArray($odds);
 
         return true;
     }

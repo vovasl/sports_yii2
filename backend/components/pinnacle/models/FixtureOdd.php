@@ -95,7 +95,7 @@ class FixtureOdd
      */
     private function getTennisPeriod($type, $periods)
     {
-        if(empty($settings = Pinnacle::TENNIS_CONFIG[$type])) return false;
+        if(empty($settings = Pinnacle::TENNIS_ODDS_CONFIG[$type])) return false;
 
         foreach ($periods as $period) {
             $flag = true;
@@ -128,7 +128,7 @@ class FixtureOdd
     private function removeTennisLineFields($type, $odd): array
     {
         $fields = ['altLineId', 'max'];
-        foreach (Pinnacle::TENNIS_CONFIG[$type] as $line) {
+        foreach (Pinnacle::TENNIS_ODDS_CONFIG[$type] as $line) {
             foreach($odd[$line] as $k => $lineOdd) {
                 foreach ($fields as $remove) {
                     unset($lineOdd[$remove]);
