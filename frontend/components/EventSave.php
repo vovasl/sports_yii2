@@ -158,18 +158,83 @@ class EventSave extends Component
         return true;
     }
 
-    private function moneylineOdds($event, $odds, $type)
+    /**
+     * @param $event
+     * @param $odd
+     * @param $type
+     * @return bool
+     */
+    private function moneylineOdds($event, $odd, $type): bool
     {
-        foreach ($odds as $k => $val) {
-            $odd = new Odd();
-            $odd->event = $event['id'];
-            $odd->type = $type;
-            $odd->player_id = $event[$k];
-            $odd->odd = \round($val, 2) * 100;
-            $odd->save();
+        if(!is_array($odd)) {
+            // ::log add event manually $event['id']
+            return false;
         }
-        //BaseHelper::outputArray($odds);
+
+        foreach ($odd as $k => $val) {
+            if(!$this->saveOdd($event['id'], $type, $val, $event[$k])) return false;
+        }
 
         return true;
     }
+
+    /**
+     * @param $event
+     * @param $odds
+     * @param $type
+     * @return false
+     */
+    private function spreadsOdds($event, $odds, $type): bool
+    {
+        if(!is_array($odds)) {
+            // ::log add event manually $event['id']
+            return false;
+        }
+        foreach ($odds as $odd) {
+            $values = [
+                'home' => [
+                    'value' => $odd['hdp'],
+                    'odd' => $odd['home']
+                ],
+                'away' => [
+                    'value' => ($odd['hdp'] == 0) ? 0 : -$odd['hdp'],
+                    'odd' => $odd['away']
+                ]
+            ];
+            foreach ($values as $k => $val) {
+                if(!$this->saveOdd($event['id'], $type, $val['odd'], $event[$k], $val['value'])) return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $eventId
+     * @param $type
+     * @param $oddVal
+     * @param null $playerId
+     * @param null $value
+     * @return bool
+     */
+    private function saveOdd($eventId, $type, $oddVal, $playerId = null, $value = null): bool
+    {
+        $odd = new Odd();
+        $odd->event = $eventId;
+        $odd->type = $type;
+        $odd->player_id = $playerId;
+        $odd->value = $value === null ? null : (string)$value;
+        $odd->odd = $this->prepareOdd($oddVal);
+        return $odd->save();
+    }
+
+    /**
+     * @param $val
+     * @return int
+     */
+    private function prepareOdd($val)
+    {
+        return \round($val, 2) * 100;
+    }
+
 }
