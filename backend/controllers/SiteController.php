@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\pinnacle\Pinnacle;
 use common\models\LoginForm;
 use Yii;
@@ -64,10 +65,18 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $ap = new Pinnacle();
-        $ap->run();
-        die();
-        return $this->render('index');
+        $settings = [
+            'sportid' => Pinnacle::TENNIS,
+            'tour' => Pinnacle::ATP
+        ];
+        $events = Yii::$app->pinnacle->run($settings);
+
+        //echo count($events);
+        //BaseHelper::outputArray($events);
+
+        return Yii::$app->event_save->events($events);
+
+        //return $this->render('index');
     }
 
     /**

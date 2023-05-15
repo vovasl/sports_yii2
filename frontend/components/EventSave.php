@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\services;
+namespace frontend\components;
 
 
 use backend\components\pinnacle\helpers\BaseHelper;
@@ -10,17 +10,32 @@ use frontend\models\sport\Round;
 use frontend\models\sport\Sport;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
+use yii\base\Component;
 
-class EventService
+class EventSave extends Component
 {
 
+    CONST TENNIS = 33;
     CONST TENNIS_FIELDS_REQUIRED = ['tour', 'tournament', 'round', 'home', 'away'];
+
+    /**
+     * @param $events
+     * @return bool
+     */
+    public function events($events): bool
+    {
+        foreach ($events as $event) {
+            if(!$this->event($event)) return false;
+        }
+
+        return true;
+    }
 
     /**
      * @param array $event
      * @return bool
      */
-    public static function EventSave(array $event): bool
+    public function event(array $event): bool
     {
 
         if(empty($event['id'] || empty($event['sportid']))) {
@@ -38,8 +53,8 @@ class EventService
         if(Event::findOne(['pin_id' => $event['id']])) return true;
 
         switch ($event['sportid']) {
-            case Sport::TENNIS:
-                if(!self::TennisSave($event)) return false;
+            case self::TENNIS:
+                if(!$this->eventTennis($event)) return false;
                 break;
         }
 
@@ -47,18 +62,11 @@ class EventService
 
     }
 
-    public static function EventsSave($events)
-    {
-        foreach ($events as $event) {
-            self::EventSave($event);
-        }
-    }
-
     /**
      * @param $event
      * @return bool
      */
-    public static function TennisSave($event): bool
+    private function eventTennis($event): bool
     {
         /** check required fields */
         foreach (self::TENNIS_FIELDS_REQUIRED as $field) {
@@ -108,8 +116,6 @@ class EventService
             $away->save();
         }
         $event['away'] = $away->id;
-
-        BaseHelper::outputArray($event);
 
         /** event */
         $fixture = new Event();

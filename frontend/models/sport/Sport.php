@@ -13,8 +13,6 @@ use Yii;
 class Sport extends \yii\db\ActiveRecord
 {
 
-    CONST TENNIS = 33;
-
     /**
      * {@inheritdoc}
      */

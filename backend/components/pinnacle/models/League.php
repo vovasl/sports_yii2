@@ -35,9 +35,9 @@ class League
     public function getLeagues(): array
     {
 
-        $data = json_decode($this->client->getLeagues($this->settings['fixture']),1);
+        $data = json_decode($this->client->getLeagues($this->settings['base']),1);
 
-        switch ($this->settings['fixture']['sportid']) {
+        switch ($this->settings['base']['sportid']) {
             case Pinnacle::TENNIS:
                 return $this->getTennis($data);
             default:
@@ -54,12 +54,12 @@ class League
         $data = [];
         foreach ($leagues['leagues'] as $league) {
             if($league['eventCount'] == 0) continue;
-            if(!preg_match("#{$this->settings['fixture']['tour']}.*#i", $league['name'])) continue;
+            if(!preg_match("#{$this->settings['base']['tour']}.*#i", $league['name'])) continue;
             if(!$tournament = $this->parseTennisTournamentName($league['name'])) continue;
             if($tournament[1] == 'Doubles') continue;
 
             $data[] = [
-                'sportid' => $this->settings['fixture']['sportid'],
+                'sportid' => $this->settings['base']['sportid'],
                 'leagueids' => $league['id'],
                 'tournament' => $tournament[0],
                 'round' => $tournament[1],
@@ -78,7 +78,7 @@ class League
     private function parseTennisTournamentName($name)
     {
         /** get tour */
-        foreach (explode('|', $this->settings['fixture']['tour']) as $tour) {
+        foreach (explode('|', $this->settings['base']['tour']) as $tour) {
             if(preg_match("#{$tour}.*#i", $name)) {
                 $name = trim(str_replace($tour, '', $name));
                 break;

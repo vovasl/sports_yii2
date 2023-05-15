@@ -3,7 +3,6 @@
 namespace backend\components\pinnacle;
 
 
-use frontend\services\EventService;
 use Yii;
 use yii\base\Component;
 use backend\components\pinnacle\models\Setting;
@@ -14,11 +13,6 @@ use backend\components\pinnacle\helpers\BaseHelper;
 class Pinnacle extends Component
 {
 
-    /**
-     * @var array
-     */
-    private $settings;
-
     const TENNIS = 33;
     const TENNIS_CONFIG = [
         'sets' => ['moneyline', 'spreads', 'totals'],
@@ -26,45 +20,54 @@ class Pinnacle extends Component
     ];
     const ATP = ['ATP Challenger', 'ATP'];
 
-    public function run()
+    /**
+     * @param array $settings
+     * @return array
+     */
+    public function run(array $settings): array
     {
-        $this->settings = Setting::getSettings();
-        $this->settings['fixture'] = [
-            'sportid' => self::TENNIS,
-            'tour' => implode('|', self::ATP),
-        ];
-        $leagues = $this->getLeagues();
+        /** get leagues */
+        $leagues = $this->getLeagues($settings);
 
+        /** get fixtures with odds */
+        $fixtures = [];
         foreach ($leagues as $league) {
-            $this->settings['fixture'] = $league;
-            $fixtures = $this->getFixtures();
-            EventService::EventsSave($fixtures);
-
-            BaseHelper::outputArray($fixtures);
-            //break;
-
+            $fixtures = array_merge($fixtures, $this->getFixtures($league));
         }
 
+        return $fixtures;
     }
 
     /**
      * Get leagues
+     * @param array $settings
      * @return array
      */
-    public function getLeagues(): array
+    public function getLeagues(array $settings): array
     {
+        /** get league config */
+        $config = Setting::getSettings();
+        if(isset($settings['tour']) && is_array($settings['tour'])) $settings['tour'] = implode('|', Pinnacle::ATP);
+        $config['base'] = $settings;
+
         /** get leagues */
-        $league = new League($this->settings);
+        $league = new League($config);
         return $league->getLeagues();
     }
 
     /**
-     * Get events with odds
+     * Get fixtures with odds
+     * @param array $settings
+     * @return array
      */
-    public function getFixtures(): array
+    public function getFixtures(array $settings): array
     {
+        /** get fixture config */
+        $config = Setting::getSettings();
+        $config['fixture'] = $settings;
+
         /** get events */
-        $fixture = new Fixture($this->settings);
+        $fixture = new Fixture($config);
         return $fixture->getFixtures();
     }
 }

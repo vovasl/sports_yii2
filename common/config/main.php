@@ -1,4 +1,8 @@
 <?php
+
+use backend\components\pinnacle\Pinnacle;
+use frontend\components\EventSave;
+
 return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -9,5 +13,7 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'event_save' => EventSave::class,
+        'pinnacle' => Pinnacle::class,
     ],
 ];
