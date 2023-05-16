@@ -4,6 +4,7 @@ use backend\components\pinnacle\Pinnacle;
 use frontend\components\EventSave;
 
 return [
+    'name' => 'Sport',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
