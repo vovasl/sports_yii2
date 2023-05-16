@@ -84,6 +84,9 @@ class EventSave extends Component
             $event[$field] = trim($event[$field]);
         }
 
+        $output = "{$event['tournament']} {$event['round']} <br>";
+        $output .= "{$event['o_starts']} {$event['home']} - {$event['away']} <br>";
+
         /** tour */
         $tour = ($tour = Tour::findOne(['name' => $event['tour']])) ? $tour : new Tour();
         if ($tour->isNewRecord) {
@@ -139,6 +142,13 @@ class EventSave extends Component
         foreach($event['odds'] as $k => $period) {
             foreach(self::TENNIS_ODDS_CONFIG[$k] as $line) {
 
+                if(empty($period[$line]) || !is_array($period[$line])) {
+                    // ::log $event['id'] $event['odds']
+                    //echo $event['id'] . '<br>';
+                    //BaseHelper::outputArray($event['odds']);
+                    break;
+                }
+
                 /** odd type */
                 $type = ($k == 'sets' && $line != 'moneyline') ? $k . ucfirst($line) : $line;
                 $oddType = ($oddType = OddType::findOne(['name' => $type])) ? $oddType : new OddType();
@@ -147,14 +157,19 @@ class EventSave extends Component
                     $oddType->save();
                 }
 
-                /** odd save method */
+                /** save odds */
                 $method = "{$type}Odds";
-                if(method_exists($this, $method)) {
-                    $this->{$method}($event, $period[$line], $oddType->id);
+                if(!method_exists($this, $method)) {
+                    echo $method . '<br>';
+                    // ::log add method {$method}
+                    continue;
+
                 }
+                $this->{$method}($event, $period[$line], $oddType->id);
             }
         }
 
+        echo $output;
         return true;
     }
 
@@ -166,13 +181,8 @@ class EventSave extends Component
      */
     private function moneylineOdds($event, $odd, $type): bool
     {
-        if(!is_array($odd)) {
-            // ::log add event manually $event['id']
-            return false;
-        }
-
-        foreach ($odd as $k => $val) {
-            if(!$this->saveOdd($event['id'], $type, $val, $event[$k])) return false;
+        foreach ($odd as $player => $val) {
+            if(!Odd::create($event['id'], $type, $val, $event[$player])) return false;
         }
 
         return true;
@@ -186,23 +196,11 @@ class EventSave extends Component
      */
     private function spreadsOdds($event, $odds, $type): bool
     {
-        if(!is_array($odds)) {
-            // ::log add event manually $event['id']
-            return false;
-        }
+        //BaseHelper::outputArray($odds);
         foreach ($odds as $odd) {
-            $values = [
-                'home' => [
-                    'value' => $odd['hdp'],
-                    'odd' => $odd['home']
-                ],
-                'away' => [
-                    'value' => ($odd['hdp'] == 0) ? 0 : -$odd['hdp'],
-                    'odd' => $odd['away']
-                ]
-            ];
-            foreach ($values as $k => $val) {
-                if(!$this->saveOdd($event['id'], $type, $val['odd'], $event[$k], $val['value'])) return false;
+            $values = $this->prepareSpreadOdd($odd);
+            foreach ($values as $player => $val) {
+                if(!Odd::create($event['id'], $type, $val['odd'], $event[$player], $val['value'])) return false;
             }
         }
 
@@ -210,31 +208,97 @@ class EventSave extends Component
     }
 
     /**
-     * @param $eventId
+     * @param $event
+     * @param $odds
      * @param $type
-     * @param $oddVal
-     * @param null $playerId
-     * @param null $value
      * @return bool
      */
-    private function saveOdd($eventId, $type, $oddVal, $playerId = null, $value = null): bool
+    private function setsSpreadsOdds($event, $odds, $type): bool
     {
-        $odd = new Odd();
-        $odd->event = $eventId;
-        $odd->type = $type;
-        $odd->player_id = $playerId;
-        $odd->value = $value === null ? null : (string)$value;
-        $odd->odd = $this->prepareOdd($oddVal);
-        return $odd->save();
+        return $this->spreadsOdds($event, $odds, $type);
     }
 
     /**
-     * @param $val
-     * @return int
+     * @param $event
+     * @param $odds
+     * @param $type
+     * @return false
      */
-    private function prepareOdd($val)
+    private function totalsOdds($event, $odds, $type): bool
     {
-        return \round($val, 2) * 100;
+        //BaseHelper::outputArray($odds);
+        foreach ($odds as $odd) {
+            $values = $this->prepareTotalOdd($odd);
+            foreach ($values as $addType => $val) {
+                if(!Odd::create($event['id'], $type, $val['odd'], null, $val['value'], $addType)) return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $event
+     * @param $odds
+     * @param $type
+     * @return bool
+     */
+    private function setsTotalsOdds($event, $odds, $type): bool
+    {
+        return $this->totalsOdds($event, $odds, $type);
+    }
+
+    /**
+     * @param $event
+     * @param $odds
+     * @param $type
+     * @return bool
+     */
+    private function teamTotalOdds($event, $odds, $type): bool
+    {
+        foreach ($odds as $player => $odd) {
+            $values = $this->prepareTotalOdd($odd);
+            foreach ($values as $addType => $val) {
+                if(!Odd::create($event['id'], $type, $val['odd'], $event[$player], $val['value'], $addType)) return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param $odd
+     * @return array[]
+     */
+    private function prepareSpreadOdd($odd): array
+    {
+        return [
+            'home' => [
+                'value' => $odd['hdp'],
+                'odd' => $odd['home']
+            ],
+            'away' => [
+                'value' => ($odd['hdp'] == 0) ? 0 : -$odd['hdp'],
+                'odd' => $odd['away']
+            ]
+        ];
+    }
+
+    /**
+     * @param $odd
+     * @return array[]
+     */
+    private function prepareTotalOdd($odd): array
+    {
+        return [
+            'over' => [
+                'value' => $odd['points'],
+                'odd' => $odd['over']
+            ],
+            'under' => [
+                'value' => $odd['points'],
+                'odd' => $odd['under']
+            ]
+        ];
     }
 
 }

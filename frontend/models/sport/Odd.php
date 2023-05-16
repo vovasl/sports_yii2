@@ -14,6 +14,7 @@ use yii\db\Expression;
  * @property int $id
  * @property int $event
  * @property int|null $type
+ * @property string|null $add_type
  * @property int $player_id
  * @property string $value
  * @property string $odd
@@ -59,7 +60,7 @@ class Odd extends ActiveRecord
             [['event', 'odd'], 'required'],
             [['event', 'type', 'player_id', 'odd', 'profit'], 'integer'],
             [['created_at'], 'safe'],
-            [['value'], 'string', 'max' => 255],
+            [['add_type', 'value'], 'string', 'max' => 255],
             [['event'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event' => 'id']],
             [['type'], 'exist', 'skipOnError' => true, 'targetClass' => OddType::class, 'targetAttribute' => ['type' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -75,6 +76,7 @@ class Odd extends ActiveRecord
             'id' => 'ID',
             'event' => 'Event',
             'type' => 'Type',
+            'add_type' => 'Additional type',
             'player_id' => 'Player ID',
             'value' => 'Value',
             'odd' => 'Odd',
@@ -111,5 +113,35 @@ class Odd extends ActiveRecord
     public function getPlayer(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'player_id']);
+    }
+
+    /**
+     * @param $eventId
+     * @param $type
+     * @param $oddVal
+     * @param null $playerId
+     * @param null $value
+     * @param null $addType
+     * @return bool
+     */
+    public static function create($eventId, $type, $oddVal, $playerId = null, $value = null, $addType = null): bool
+    {
+        $odd = new static();;
+        $odd->event = $eventId;
+        $odd->type = $type;
+        $odd->add_type = $addType;
+        $odd->player_id = $playerId;
+        $odd->value = $value === null ? null : (string)$value;
+        $odd->odd = self::setOdd($oddVal);
+        return $odd->save();
+    }
+
+    /**
+     * @param $val
+     * @return int
+     */
+    public static function setOdd($val)
+    {
+        return \round($val * 100);
     }
 }

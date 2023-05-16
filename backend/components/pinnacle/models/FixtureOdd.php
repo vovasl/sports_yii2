@@ -3,6 +3,7 @@
 namespace backend\components\pinnacle\models;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\pinnacle\Pinnacle;
 
 class FixtureOdd

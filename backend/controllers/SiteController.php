@@ -70,11 +70,9 @@ class SiteController extends Controller
             'tour' => Pinnacle::ATP
         ];
         $events = Yii::$app->pinnacle->run($settings);
+        if(!Yii::$app->event_save->events($events)) echo 'err';
 
-        //echo count($events);
-        //BaseHelper::outputArray($events);
-
-        return Yii::$app->event_save->events($events);
+        return;
 
         //return $this->render('index');
     }
