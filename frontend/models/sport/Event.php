@@ -24,8 +24,8 @@ use yii\db\ActiveQuery;
  * @property int $five_sets
  * @property int $pin_id
  *
- * @property Player $playerAway
  * @property Player $playerHome
+ * @property Player $playerAway
  * @property Player $playerWinner
  * @property Round $tournamentRound
  * @property Odd[] $odds
@@ -82,16 +82,6 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[playerAway]].
-     *
-     * @return ActiveQuery
-     */
-    public function getPlayerAway(): ActiveQuery
-    {
-        return $this->hasOne(Player::class, ['id' => 'away']);
-    }
-
-    /**
      * Gets query for [[playerHome]].
      *
      * @return ActiveQuery
@@ -99,6 +89,16 @@ class Event extends \yii\db\ActiveRecord
     public function getPlayerHome(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'home']);
+    }
+
+    /**
+     * Gets query for [[playerAway]].
+     *
+     * @return ActiveQuery
+     */
+    public function getPlayerAway(): ActiveQuery
+    {
+        return $this->hasOne(Player::class, ['id' => 'away']);
     }
 
     /**
@@ -129,6 +129,30 @@ class Event extends \yii\db\ActiveRecord
     public function getOdds(): ActiveQuery
     {
         return $this->hasMany(Odd::class, ['event' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getHomeMoneyline(): ActiveQuery
+    {
+        return $this->hasOne(Odd::class, ['player_id' => 'id'])
+            ->via('playerHome')
+            ->leftJoin('sp_odd_type', 'sp_odd_type.id = sp_odd.type')
+            ->where(['sp_odd_type.name' => OddType::MONEYLINE])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getAwayMoneyline(): ActiveQuery
+    {
+        return $this->hasOne(Odd::class, ['player_id' => 'id'])
+            ->via('playerAway')
+            ->leftJoin('sp_odd_type', 'sp_odd_type.id = sp_odd.type')
+            ->where(['sp_odd_type.name' => OddType::MONEYLINE])
+            ;
     }
 
     /**

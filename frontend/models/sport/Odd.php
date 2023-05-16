@@ -140,8 +140,13 @@ class Odd extends ActiveRecord
      * @param $val
      * @return int
      */
-    public static function setOdd($val)
+    public static function setOdd($val): int
     {
         return \round($val * 100);
+    }
+
+    public function getOddVal()
+    {
+        return $this->odd/100;
     }
 }

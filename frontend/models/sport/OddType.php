@@ -15,6 +15,9 @@ use yii\db\ActiveQuery;
  */
 class OddType extends \yii\db\ActiveRecord
 {
+
+    CONST MONEYLINE = 'moneyline';
+
     /**
      * {@inheritdoc}
      */
