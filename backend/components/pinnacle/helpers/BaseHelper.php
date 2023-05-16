@@ -28,6 +28,7 @@ class BaseHelper
 
     /**
      * @param $events
+     * @param $method
      * @return string
      */
     public static function events($events, $method): string

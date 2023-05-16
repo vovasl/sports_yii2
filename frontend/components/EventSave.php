@@ -27,15 +27,28 @@ class EventSave extends Component
 
     /**
      * @param $events
-     * @return bool
+     * @return string
      */
-    public function events($events): bool
+    public function events($events): string
     {
+        $output = "";
         foreach ($events as $event) {
-            if(!$this->event($event)) return false;
+
+            if(empty($event['id'])) {
+                // ::log empty id field
+                continue;
+            }
+
+            /** event exist */
+            if(Event::findOne(['pin_id' => $event['id']])) continue;
+
+            $output .= "{$event['tournament']} {$event['round']} <br>";
+            $output .= "{$event['o_starts']} {$event['home']} - {$event['away']} - ";
+            $output .= $this->event($event) ? 'OK' : 'Error';
+            $output .= "<br>";
         }
 
-        return true;
+        return $output;
     }
 
     /**
@@ -83,9 +96,6 @@ class EventSave extends Component
             }
             $event[$field] = trim($event[$field]);
         }
-
-        $output = "{$event['tournament']} {$event['round']} <br>";
-        $output .= "{$event['o_starts']} {$event['home']} - {$event['away']} <br>";
 
         /** tour */
         $tour = ($tour = Tour::findOne(['name' => $event['tour']])) ? $tour : new Tour();
@@ -169,7 +179,6 @@ class EventSave extends Component
             }
         }
 
-        echo $output;
         return true;
     }
 

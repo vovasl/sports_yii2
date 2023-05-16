@@ -3,8 +3,6 @@
 namespace backend\controllers;
 
 
-use backend\components\pinnacle\helpers\BaseHelper;
-use backend\components\pinnacle\Pinnacle;
 use common\models\LoginForm;
 use Yii;
 use yii\filters\VerbFilter;
@@ -63,18 +61,9 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
-        $settings = [
-            'sportid' => Pinnacle::TENNIS,
-            'tour' => Pinnacle::ATP
-        ];
-        $events = Yii::$app->pinnacle->run($settings);
-        if(!Yii::$app->event_save->events($events)) echo 'err';
-
-        return;
-
-        //return $this->render('index');
+        return $this->render('index');
     }
 
     /**
