@@ -28,6 +28,11 @@ use yii\db\Expression;
 class Odd extends ActiveRecord
 {
 
+    CONST ADD_TYPE = [
+        'over' => 'over',
+        'under' => 'under'
+    ];
+
     /**
      * @return array[]
      */

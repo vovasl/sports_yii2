@@ -3,6 +3,8 @@
 namespace frontend\models\sport\query;
 
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
+use frontend\models\sport\OddType;
 use yii\db\ActiveRecord;
 
 /**
@@ -16,6 +18,26 @@ class EventQuery extends \yii\db\ActiveQuery
     {
         return $this->andWhere('[[status]]=1');
     }*/
+
+    /**
+     * @return EventQuery
+     */
+    public function withData(): EventQuery
+    {
+        return $this
+            ->with(['playerHome', 'playerAway', 'eventTournament.tournamentTour'])
+            ->joinWith(['eventTournament', 'tournamentRound'])
+        ;
+    }
+
+    public function order()
+    {
+        return $this->orderBy([
+            'tn_tournament.name' => SORT_ASC,
+            'tn_round.name' => SORT_ASC,
+            'event.start_at' => SORT_ASC,
+        ]);
+    }
 
     /**
      * {@inheritdoc}

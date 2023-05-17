@@ -17,6 +17,11 @@ class OddType extends \yii\db\ActiveRecord
 {
 
     CONST MONEYLINE = 'moneyline';
+    CONST TOTALS = 'totals';
+    const SETS_TOTALS = 'setsTotals';
+    const TEAM_TOTAL = 'teamTotal';
+    const SPREADS = 'spreads';
+    const SETS_SPREADS = 'setsSpreads';
 
     /**
      * {@inheritdoc}

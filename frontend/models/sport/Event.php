@@ -28,12 +28,21 @@ use yii\db\ActiveQuery;
  * @property Player $playerAway
  * @property Player $playerWinner
  * @property Round $tournamentRound
- * @property Odd[] $odds
  * @property ResultSet[] $resultSets
  * @property Tournament $eventTournament
+ * @property Odd[] $odds
+ * @property Odd $homeMoneyline
+ * @property Odd $awayMoneyline
+ * @property Odd[] $totalsUnder
+ * @property Odd[] $totalsOver
+ * @property Odd[] $setsTotalsUnder
+ * @property Odd[] $setsTotalsOver
+ * @property Odd[] $teamTotalsUnder
+ * @property Odd[] $teamTotalsOver
  */
 class Event extends \yii\db\ActiveRecord
 {
+
     /**
      * {@inheritdoc}
      */
@@ -122,40 +131,6 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[odds]].
-     *
-     * @return ActiveQuery
-     */
-    public function getOdds(): ActiveQuery
-    {
-        return $this->hasMany(Odd::class, ['event' => 'id']);
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getHomeMoneyline(): ActiveQuery
-    {
-        return $this->hasOne(Odd::class, ['player_id' => 'id'])
-            ->via('playerHome')
-            ->leftJoin('sp_odd_type', 'sp_odd_type.id = sp_odd.type')
-            ->where(['sp_odd_type.name' => OddType::MONEYLINE])
-        ;
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getAwayMoneyline(): ActiveQuery
-    {
-        return $this->hasOne(Odd::class, ['player_id' => 'id'])
-            ->via('playerAway')
-            ->leftJoin('sp_odd_type', 'sp_odd_type.id = sp_odd.type')
-            ->where(['sp_odd_type.name' => OddType::MONEYLINE])
-            ;
-    }
-
-    /**
      * Gets query for [[resultSets]].
      *
      * @return ActiveQuery
@@ -173,6 +148,136 @@ class Event extends \yii\db\ActiveRecord
     public function getEventTournament(): ActiveQuery
     {
         return $this->hasOne(Tournament::class, ['id' => 'tournament']);
+    }
+
+    /**
+     * Gets query for [[odds]].
+     *
+     * @return ActiveQuery
+     */
+    public function getOdds(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Odd::class, ['event' => 'id'])
+            ->joinWith('oddType', false)
+            ->orderBy([
+                'sp_odd.value' => SORT_ASC
+            ])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getHomeMoneyline(): ActiveQuery
+    {
+        return $this
+            ->hasOne(Odd::class, ['player_id' => 'id'])
+            ->via('playerHome')
+            ->joinWith('oddType', false)
+            ->where([
+                'sp_odd_type.name' => OddType::MONEYLINE
+            ])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getAwayMoneyline(): ActiveQuery
+    {
+        return $this
+            ->hasOne(Odd::class, ['player_id' => 'id'])
+            ->via('playerAway')
+            ->joinWith('oddType', false)
+            ->where([
+                'sp_odd_type.name' => OddType::MONEYLINE
+            ])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTotalsUnder(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::TOTALS,
+                'sp_odd.add_type' => Odd::ADD_TYPE['under']
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTotalsOver(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::TOTALS,
+                'sp_odd.add_type' => Odd::ADD_TYPE['over']
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getSetsTotalsUnder(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::SETS_TOTALS,
+                'sp_odd.add_type' => Odd::ADD_TYPE['under']
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getSetsTotalsOver(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::SETS_TOTALS,
+                'sp_odd.add_type' => Odd::ADD_TYPE['over']
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTeamTotalsUnder(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::TEAM_TOTAL,
+                'sp_odd.add_type' => Odd::ADD_TYPE['under']
+            ])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTeamTotalsOver(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::TEAM_TOTAL,
+                'sp_odd.add_type' => Odd::ADD_TYPE['over']
+            ])
+            ;
     }
 
     /**
