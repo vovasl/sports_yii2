@@ -37,16 +37,19 @@ class TennisController extends Controller
      */
     public function actionMoneyline(): string
     {
+        $methods = ['homeMoneyline', 'awayMoneyline'];
+
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with(['homeMoneyline', 'awayMoneyline'])
+            ->with($methods)
             ->groupBy('event.id')
             ->order()
             ->all()
         ;
 
-        return $this->render('moneyline', [
+        return $this->render('events', [
+            'oddMethods' => $methods,
             'events' => $events
         ]);
     }
@@ -56,16 +59,18 @@ class TennisController extends Controller
      */
     public function actionTotalUnder(): string
     {
+        $methods = ['totalsUnder'];
+
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with(['totalsUnder'])
+            ->with($methods)
             ->order()
             ->all()
         ;
 
-        return $this->render('totals', [
-            'oddMethod' => 'totalsUnder',
+        return $this->render('events', [
+            'oddMethods' => $methods,
             'events' => $events
         ]);
     }
@@ -75,16 +80,18 @@ class TennisController extends Controller
      */
     public function actionTotalOver(): string
     {
+        $methods = ['totalsOver'];
+
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with(['totalsOver'])
+            ->with($methods)
             ->order()
             ->all()
         ;
 
-        return $this->render('totals', [
-            'oddMethod' => 'totalsOver',
+        return $this->render('events', [
+            'oddMethods' => $methods,
             'events' => $events
         ]);
     }
@@ -94,16 +101,18 @@ class TennisController extends Controller
      */
     public function actionSetsTotalUnder(): string
     {
+        $methods = ['setsTotalsUnder'];
+
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with(['setsTotalsUnder'])
+            ->with($methods)
             ->order()
             ->all()
         ;
 
-        return $this->render('totals', [
-            'oddMethod' => 'setsTotalsUnder',
+        return $this->render('events', [
+            'oddMethods' => $methods,
             'events' => $events
         ]);
     }
@@ -113,16 +122,18 @@ class TennisController extends Controller
      */
     public function actionSetsTotalOver(): string
     {
+        $methods = ['setsTotalsOver'];
+
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with(['setsTotalsOver'])
+            ->with($methods)
             ->order()
             ->all()
         ;
 
-        return $this->render('totals', [
-            'oddMethod' => 'setsTotalsOver',
+        return $this->render('events', [
+            'oddMethods' => $methods,
             'events' => $events
         ]);
     }
@@ -132,16 +143,18 @@ class TennisController extends Controller
      */
     public function actionTeamTotalUnder(): string
     {
+        $methods = ['homeTotalsUnder', 'awayTotalsUnder'];
+
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with(['teamTotalsUnder'])
+            ->with($methods)
             ->order()
             ->all()
         ;
 
-        return $this->render('totals', [
-            'oddMethod' => 'teamTotalsUnder',
+        return $this->render('events', [
+            'oddMethods' => $methods,
             'events' => $events
         ]);
     }
@@ -151,16 +164,18 @@ class TennisController extends Controller
      */
     public function actionTeamTotalOver(): string
     {
+        $methods = ['homeTotalsOver', 'awayTotalsOver'];
+
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with(['teamTotalsOver'])
+            ->with($methods)
             ->order()
             ->all()
         ;
 
-        return $this->render('totals', [
-            'oddMethod' => 'teamTotalsOver',
+        return $this->render('events', [
+            'oddMethods' => $methods,
             'events' => $events
         ]);
     }
