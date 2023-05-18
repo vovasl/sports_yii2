@@ -36,18 +36,16 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Moneyline', 'url' => ['/tennis/moneyline']],
-        ['label' => 'Total', 'items' => [
-            ['label' => 'Over', 'url' => ['/tennis/total-over']],
-            ['label' => 'Under', 'url' => ['/tennis/total-under']],
-            ['label' => 'Sets Over', 'url' => ['/tennis/sets-total-over']],
-            ['label' => 'Sets Under', 'url' => ['/tennis/sets-total-under']],
+        ['label' => 'Money Line', 'url' => ['/tennis/moneyline']],
+        ['label' => 'Games', 'items' => [
+            ['label' => 'Handicap', 'url' => ['/tennis/handicap']],
+            ['label' => 'Total', 'url' => ['/tennis/total']],
             ['label' => 'Players Over', 'url' => ['/tennis/team-total-over']],
             ['label' => 'Players Under', 'url' => ['/tennis/team-total-under']],
         ]],
-        ['label' => 'Spread', 'items' => [
-            ['label' => 'Games', 'url' => ['/tennis/spread']],
-            ['label' => 'Sets', 'url' => ['/tennis/sets-spread']],
+        ['label' => 'Sets', 'items' => [
+            ['label' => 'Handicap', 'url' => ['/tennis/sets-handicap']],
+            ['label' => 'Total', 'url' => ['/tennis/sets-total']],
         ]],
     ];
     if (Yii::$app->user->isGuest) {
