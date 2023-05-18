@@ -1,18 +1,19 @@
 <?php
 
-namespace backend\controllers;
+namespace frontend\controllers;
 
 
 use frontend\models\sport\Event;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
-class TennisController extends Controller
+class LineController extends Controller
 {
 
     /**
      * @return array[]
      */
+    /*
     public function behaviors(): array
     {
         return [
@@ -27,12 +28,13 @@ class TennisController extends Controller
             ],
         ];
     }
+    */
 
 
     /**
      * @return string
      */
-    public function actionMoneyline(): string
+    public function actionIndex(): string
     {
         $methods = ['homeMoneyline', 'awayMoneyline'];
 
@@ -40,6 +42,7 @@ class TennisController extends Controller
             ->from(['event' => 'tn_event'])
             ->withData()
             ->with($methods)
+            ->notStarted()
             ->groupBy('event.id')
             ->order()
             ->all()
@@ -62,6 +65,7 @@ class TennisController extends Controller
             ->from(['event' => 'tn_event'])
             ->withData()
             ->with($methods)
+            ->notStarted()
             ->order()
             ->all()
         ;
@@ -83,6 +87,7 @@ class TennisController extends Controller
             ->from(['event' => 'tn_event'])
             ->withData()
             ->with($methods)
+            ->notStarted()
             ->order()
             ->all()
         ;
@@ -104,6 +109,7 @@ class TennisController extends Controller
             ->from(['event' => 'tn_event'])
             ->withData()
             ->with($methods)
+            ->notStarted()
             ->order()
             ->all()
         ;
@@ -125,6 +131,7 @@ class TennisController extends Controller
             ->from(['event' => 'tn_event'])
             ->withData()
             ->with($methods)
+            ->notStarted()
             ->order()
             ->all()
         ;
@@ -146,6 +153,7 @@ class TennisController extends Controller
             ->from(['event' => 'tn_event'])
             ->withData()
             ->with($methods)
+            ->notStarted()
             ->order()
             ->all()
         ;
@@ -167,6 +175,7 @@ class TennisController extends Controller
             ->from(['event' => 'tn_event'])
             ->withData()
             ->with($methods)
+            ->notStarted()
             ->order()
             ->all()
         ;

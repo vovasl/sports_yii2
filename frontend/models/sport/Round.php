@@ -10,6 +10,7 @@ use yii\db\ActiveQuery;
  *
  * @property int $id
  * @property string $name
+ * @property string $rank
  *
  * @property Event[] $events
  */
@@ -31,6 +32,7 @@ class Round extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
+            [['rank'], 'integer'],
         ];
     }
 
@@ -42,6 +44,7 @@ class Round extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'rank' => 'Rank'
         ];
     }
 

@@ -36,17 +36,6 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Money Line', 'url' => ['/tennis/moneyline']],
-        ['label' => 'Games', 'items' => [
-            ['label' => 'Handicap', 'url' => ['/tennis/handicap']],
-            ['label' => 'Total', 'url' => ['/tennis/total']],
-            ['label' => 'Players Over', 'url' => ['/tennis/team-total-over']],
-            ['label' => 'Players Under', 'url' => ['/tennis/team-total-under']],
-        ]],
-        ['label' => 'Sets', 'items' => [
-            ['label' => 'Handicap', 'url' => ['/tennis/sets-handicap']],
-            ['label' => 'Total', 'url' => ['/tennis/sets-total']],
-        ]],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];

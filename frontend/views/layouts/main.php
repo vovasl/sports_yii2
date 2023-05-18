@@ -35,8 +35,17 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
+        ['label' => 'Moneyline', 'url' => ['/line/index']],
+        ['label' => 'Games', 'items' => [
+            ['label' => 'Handicap', 'url' => ['/line/handicap']],
+            ['label' => 'Total', 'url' => ['/line/total']],
+            ['label' => 'Players Over', 'url' => ['/line/team-total-over']],
+            ['label' => 'Players Under', 'url' => ['/line/team-total-under']],
+        ]],
+        ['label' => 'Sets', 'items' => [
+            ['label' => 'Handicap', 'url' => ['/line/sets-handicap']],
+            ['label' => 'Total', 'url' => ['/line/sets-total']],
+        ]],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];

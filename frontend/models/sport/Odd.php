@@ -121,14 +121,6 @@ class Odd extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
-     */
-    public function getEventHome(): ActiveQuery
-    {
-        return $this->hasOne(Event::class, ['home' => 'player_id']);
-    }
-
-    /**
      * @param $eventId
      * @param $type
      * @param $oddVal
