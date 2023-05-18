@@ -3,12 +3,11 @@
 namespace backend\controllers;
 
 
-use Yii;
-use backend\components\pinnacle\Pinnacle;
+use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
-class EventController extends Controller
+class TournamentController extends Controller
 {
 
     /**
@@ -29,13 +28,20 @@ class EventController extends Controller
         ];
     }
 
-    public function actionAdd()
+    /**
+     * @return string
+     */
+    public function actionReview(): string
     {
-        $settings = [
-            'sportid' => Pinnacle::TENNIS,
-            'tour' => Pinnacle::ATP
-        ];
-        $events = Yii::$app->pinnacle->run($settings);
-        echo Yii::$app->event_save->events($events);
+        $tournaments = Tournament::find()
+            ->select(['tn_tournament.*', 'count(tn_event.id) count_events'])
+            ->joinWith('events', false)
+            ->groupBy('tn_tournament.id')
+            ->all()
+        ;
+
+        return $this->render('review', [
+            'tournaments' => $tournaments
+        ]);
     }
 }
