@@ -41,6 +41,10 @@ use yii\db\ActiveQuery;
  * @property Odd[] $awayTotalsUnder
  * @property Odd[] $homeTotalsOver
  * @property Odd[] $awayTotalsOver
+ * @property Odd[] $homeSpreads
+ * @property Odd[] $awaySpreads
+ * @property Odd[] $homeSetsSpreads
+ * @property Odd[] $awaySetsSpreads
  */
 class Event extends \yii\db\ActiveRecord
 {
@@ -316,6 +320,38 @@ class Event extends \yii\db\ActiveRecord
                 'sp_odd.add_type' => Odd::ADD_TYPE['over']
             ])
         ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function homeSpreads(): ActiveQuery
+    {
+
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function awaySpreads(): ActiveQuery
+    {
+
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function homeSetsSpreads(): ActiveQuery
+    {
+
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function awaySetsSpreads(): ActiveQuery
+    {
+
     }
 
     /**

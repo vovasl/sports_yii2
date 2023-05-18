@@ -179,4 +179,46 @@ class TennisController extends Controller
             'events' => $events
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionSpread(): string
+    {
+        $methods = ['homeSpreads', 'awaySpreads'];
+
+        $events = Event::find()
+            ->from(['event' => 'tn_event'])
+            ->withData()
+            ->with($methods)
+            ->order()
+            ->all()
+        ;
+
+        return $this->render('events', [
+            'oddMethods' => $methods,
+            'events' => $events
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionSetsSpread(): string
+    {
+        $methods = ['homeSetsSpreads', 'awaySetsSpreads'];
+
+        $events = Event::find()
+            ->from(['event' => 'tn_event'])
+            ->withData()
+            ->with($methods)
+            ->order()
+            ->all()
+        ;
+
+        return $this->render('events', [
+            'oddMethods' => $methods,
+            'events' => $events
+        ]);
+    }
 }

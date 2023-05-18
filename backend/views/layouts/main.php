@@ -45,6 +45,10 @@ AppAsset::register($this);
             ['label' => 'Players Over', 'url' => ['/tennis/team-total-over']],
             ['label' => 'Players Under', 'url' => ['/tennis/team-total-under']],
         ]],
+        ['label' => 'Spread', 'items' => [
+            ['label' => 'Games', 'url' => ['/tennis/spread']],
+            ['label' => 'Sets', 'url' => ['/tennis/sets-spread']],
+        ]],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
