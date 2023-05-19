@@ -1,7 +1,7 @@
 <?php
 
 use backend\components\pinnacle\Pinnacle;
-use frontend\components\EventSave;
+use backend\services\EventSave;
 
 return [
     'name' => 'Sport',

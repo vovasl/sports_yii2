@@ -99,6 +99,15 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     * @return EventQuery the active query used by this AR class.
+     */
+    public static function find(): EventQuery
+    {
+        return new EventQuery(get_called_class());
+    }
+
+    /**
      * Gets query for [[playerHome]].
      *
      * @return ActiveQuery
@@ -394,11 +403,11 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
-     * {@inheritdoc}
-     * @return EventQuery the active query used by this AR class.
+     * @return string
      */
-    public static function find(): EventQuery
+    public function getFormatStartAt(): string
     {
-        return new EventQuery(get_called_class());
+        return date('d.m H:i', strtotime($this->start_at));
     }
+
 }

@@ -3,8 +3,10 @@
 namespace backend\controllers;
 
 
+use frontend\models\sport\Round;
 use Yii;
 use backend\components\pinnacle\Pinnacle;
+use yii\base\BaseObject;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -38,4 +40,5 @@ class EventController extends Controller
         $events = Yii::$app->pinnacle->run($settings);
         echo Yii::$app->event_save->events($events);
     }
+
 }

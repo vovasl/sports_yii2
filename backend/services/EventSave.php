@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\components;
+namespace backend\services;
 
 
 use backend\components\pinnacle\helpers\BaseHelper;
@@ -39,9 +39,6 @@ class EventSave extends Component
                 continue;
             }
 
-            /** event exist */
-            if(Event::findOne(['pin_id' => $event['id']])) continue;
-
             $output .= "{$event['tournament']} {$event['round']} <br>";
             $output .= "{$event['o_starts']} {$event['home']} - {$event['away']} - ";
             $output .= $this->event($event) ? 'OK' : 'Error';
@@ -68,9 +65,6 @@ class EventSave extends Component
             // ::log add sport with id $event['sportid'] to table sp_sport
             return false;
         }
-
-        /** event exist */
-        if(Event::findOne(['pin_id' => $event['id']])) return true;
 
         switch ($event['sportid']) {
             case self::TENNIS:
@@ -138,15 +132,22 @@ class EventSave extends Component
         $event['away'] = $away->id;
 
         /** event */
-        $fixture = new Event();
+        $fixture = ($fixture = Event::findOne(['pin_id' => $event['id']])) ? $fixture : new Event();
         $fixture->start_at = $event['o_starts'];
-        $fixture->tournament = $event['tournament'];
-        $fixture->round = $event['round'];
-        $fixture->home = $event['home'];
-        $fixture->away = $event['away'];
-        $fixture->pin_id = $event['id'];
+        $updateEvent = 1;
+        if($fixture->isNewRecord) {
+            $updateEvent = 0;
+            $fixture->tournament = $event['tournament'];
+            $fixture->round = $event['round'];
+            $fixture->home = $event['home'];
+            $fixture->away = $event['away'];
+            $fixture->pin_id = $event['id'];
+        }
         $fixture->save();
         $event['id'] = $fixture->id;
+
+        /** exit for an existing event */
+        if($updateEvent) return true;
 
         /** odds */
         foreach($event['odds'] as $k => $period) {

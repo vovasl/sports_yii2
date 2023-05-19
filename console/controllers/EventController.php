@@ -4,7 +4,6 @@ namespace console\controllers;
 
 
 use backend\components\pinnacle\Pinnacle;
-use frontend\models\sport\Event;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -28,9 +27,6 @@ class EventController extends Controller
         foreach ($events as $event) {
             $i++;
             Console::updateProgress($i, $count);
-
-            /** event exist */
-            if(Event::findOne(['pin_id' => $event['id']])) continue;
 
             $output .= "\n";
             $output .= "{$event['tournament']} {$event['round']} \n";
