@@ -39,8 +39,8 @@ class EventQuery extends \yii\db\ActiveQuery
     public function withData(): EventQuery
     {
         return $this
-            ->with(['playerHome', 'playerAway', 'eventTournament.tournamentTour'])
-            ->joinWith(['eventTournament', 'tournamentRound'])
+            ->with(['playerHome', 'playerAway'])
+            ->joinWith(['eventTournament', 'tournamentRound', 'eventTournament.tournamentTour'])
             ;
     }
 
@@ -50,6 +50,7 @@ class EventQuery extends \yii\db\ActiveQuery
     public function order(): EventQuery
     {
         return $this->orderBy([
+            'tn_tour.name' => SORT_ASC,
             'tn_tournament.name' => SORT_ASC,
             'tn_round.rank' => SORT_ASC,
             'event.start_at' => SORT_ASC,

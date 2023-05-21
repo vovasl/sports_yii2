@@ -20,7 +20,7 @@ $tournament = '';
             <td style="width: 120px;"><?php if($newTournament) echo $event->eventTournament->tournamentTour->name ?></td>
             <td style="width: 100px;"><?php if($newTournament) echo $event->eventTournament->name; ?></td>
             <td style="width: 100px"><?= $event->formatStartAt ?></td>
-            <td style="width: 50px;"><?= $event->tournamentRound->name ?></td>
+            <td style="width: 120px;"><?= $event->tournamentRound->name ?></td>
             <td style="width: 260px;"><?= $event->playerHome->name ?></td>
             <td style="width: 260px;"><?= $event->playerAway->name ?></td>
             <?php foreach ($oddMethods as $method): ?>

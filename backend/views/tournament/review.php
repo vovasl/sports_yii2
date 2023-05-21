@@ -11,8 +11,25 @@ $this->title = 'Tournaments';
 
 ?>
 
+<div class="container header">
+    <div class="row">
+        <div class="col">Tournament</div>
+        <div class="col">Events</div>
+        <div class="col">Line</div>
+    </div>
+</div>
+
 <?php foreach ($tournaments as $tournament): ?>
-    <?= $tournament->name; ?>
-    <?= $tournament->count_events; ?>
-    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <?= $tournament->name; ?>
+            </div>
+            <div class="col">
+                <?= $tournament->count_events; ?>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
 <?php endforeach; ?>

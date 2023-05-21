@@ -150,13 +150,24 @@ class EventSave extends Component
         if($updateEvent) return true;
 
         /** odds */
+        $this->addOdds($event);
+
+        return true;
+    }
+
+    /**
+     * @param $event
+     * @return bool
+     */
+    public function addOdds($event): bool
+    {
         foreach($event['odds'] as $k => $period) {
             foreach(self::TENNIS_ODDS_CONFIG[$k] as $line) {
 
                 if(empty($period[$line]) || !is_array($period[$line])) {
                     // ::log $event['id'] $event['odds']
                     //echo $event['id'] . '<br>';
-                    //BaseHelper::outputArray($event['odds']);
+                    //BaseHelper::outputArray($event);
                     break;
                 }
 
@@ -171,10 +182,9 @@ class EventSave extends Component
                 /** save odds */
                 $method = "{$type}Odds";
                 if(!method_exists($this, $method)) {
-                    echo $method . '<br>';
+                    //echo $method . '<br>';
                     // ::log add method {$method}
                     continue;
-
                 }
                 $this->{$method}($event, $period[$line], $oddType->id);
             }

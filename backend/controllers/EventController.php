@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Round;
 use Yii;
 use backend\components\pinnacle\Pinnacle;
@@ -31,14 +32,61 @@ class EventController extends Controller
         ];
     }
 
-    public function actionAdd()
+    /**
+     * @return string
+     */
+    public function actionAdd(): string
     {
         $settings = [
             'sportid' => Pinnacle::TENNIS,
             'tour' => Pinnacle::ATP
         ];
         $events = Yii::$app->pinnacle->run($settings);
-        echo Yii::$app->event_save->events($events);
+        return $this->render('add', [
+            'output' => Yii::$app->event_save->events($events)
+        ]);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function actionAddLine(): string
+    {
+        $eventId = 379;
+        $home = 250;
+        $away = 308;
+        $moneyline = [
+            'moneyline' => [
+                'home' => 1.57,
+                'away' => 2.38,
+            ]
+        ];
+
+        $spreads = [
+            'spreads' => [
+                [
+                    'hdp' => -8.5,
+                    'home' => 1.847,
+                    'away' => 1.925,
+                ]
+            ]
+        ];
+
+        $odds = [
+            'sets' => $spreads,
+        ];
+
+        $event = [
+            'id' => $eventId,
+            'home' => $home,
+            'away' => $away,
+            'odds' => $odds,
+        ];
+
+        return $this->render('add-line', [
+            //'output' => Yii::$app->event_save->addOdds($event)
+        ]);
     }
 
 }

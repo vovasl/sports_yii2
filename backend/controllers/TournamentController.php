@@ -35,8 +35,9 @@ class TournamentController extends Controller
     {
         $tournaments = Tournament::find()
             ->select(['tn_tournament.*', 'count(tn_event.id) count_events'])
-            ->joinWith('events', false)
+            ->joinWith(['events'])
             ->groupBy('tn_tournament.id')
+            ->having(['>', 'count_events', 0])
             ->all()
         ;
 

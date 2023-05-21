@@ -36,6 +36,10 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Events', 'items' => [
+            ['label' => 'Add', 'url' => ['/event/add']],
+            ['label' => 'Add Line', 'url' => ['/event/add-line']],
+        ]],
         ['label' => 'Tournaments', 'items' => [
             ['label' => 'Review', 'url' => ['/tournament/review']],
         ]],
