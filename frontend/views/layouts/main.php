@@ -46,6 +46,7 @@ AppAsset::register($this);
             ['label' => 'Handicap', 'url' => ['/line/sets-handicap']],
             ['label' => 'Total', 'url' => ['/line/sets-total']],
         ]],
+        ['label' => 'Backend', 'url' => 'http://admin.pin2.loc/'],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];

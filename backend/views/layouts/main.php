@@ -43,6 +43,7 @@ AppAsset::register($this);
         ['label' => 'Tournaments', 'items' => [
             ['label' => 'Review', 'url' => ['/tournament/review']],
         ]],
+        ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
