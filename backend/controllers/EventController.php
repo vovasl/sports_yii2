@@ -3,13 +3,11 @@
 namespace backend\controllers;
 
 
-use backend\components\pinnacle\helpers\BaseHelper;
-use frontend\models\sport\Round;
 use Yii;
-use backend\components\pinnacle\Pinnacle;
-use yii\base\BaseObject;
-use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\filters\AccessControl;
+use backend\components\pinnacle\Pinnacle;
+use backend\components\pinnacle\helpers\BaseHelper;
 
 class EventController extends Controller
 {
@@ -30,6 +28,15 @@ class EventController extends Controller
                 ],
             ],
         ];
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     */
+    public function actionIndex(int $id): string
+    {
+        return $this->render('index');
     }
 
     /**

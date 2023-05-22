@@ -52,7 +52,7 @@ class TournamentController extends Controller
             ->all()
         ;
 
-        return $this->render('tournament', [
+        return $this->render('index', [
             'tournament' => $tournament,
             'events' => $events
         ]);

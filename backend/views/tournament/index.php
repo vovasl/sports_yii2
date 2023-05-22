@@ -8,6 +8,7 @@
 
 use frontend\models\sport\Event;
 use frontend\models\sport\Tournament;
+use yii\helpers\Url;
 
 $this->title = $tournament->name;
 
@@ -34,7 +35,11 @@ $this->params['breadcrumbs'][] = $tournament->name;
             <div class="col-1 text-center"><?= $event->id ?></div>
             <div class="col-2 text-center"><?= $event->formatStartAt ?></div>
             <div class="col-2 text-center"><?= $event->tournamentRound->name ?></div>
-            <div class="col"><?= $event->homePlayer->name . ' - ' . $event->awayPlayer->name ?></div>
+            <div class="col">
+                <a href="<?= Url::to(['/event/index', 'id' => $event->id]) ?>">
+                    <?= $event->homePlayer->name . ' - ' . $event->awayPlayer->name ?>
+                </a>
+            </div>
             <div class="col-1 text-center"><?= count($event->odds) ?></div>
         </div>
     </div>
