@@ -60,8 +60,8 @@ class EventQuery extends \yii\db\ActiveQuery
     public function orderTournament(): EventQuery
     {
         return $this->orderBy([
-            'event.start_at' => SORT_ASC,
-            'tn_round.rank' => SORT_ASC,
+            'event.start_at' => SORT_DESC,
+            'tn_round.rank' => SORT_DESC,
         ]);
     }
 

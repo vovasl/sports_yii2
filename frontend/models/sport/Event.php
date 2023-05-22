@@ -241,20 +241,6 @@ class Event extends \yii\db\ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getTotalsUnder(): ActiveQuery
-    {
-        return $this
-            ->getOdds()
-            ->where([
-                'sp_odd_type.name' => OddType::TOTALS,
-                'sp_odd.add_type' => Odd::ADD_TYPE['under']
-            ])
-        ;
-    }
-
-    /**
-     * @return ActiveQuery
-     */
     public function getTotalsOver(): ActiveQuery
     {
         return $this
@@ -262,6 +248,20 @@ class Event extends \yii\db\ActiveRecord
             ->where([
                 'sp_odd_type.name' => OddType::TOTALS,
                 'sp_odd.add_type' => Odd::ADD_TYPE['over']
+            ])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTotalsUnder(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::TOTALS,
+                'sp_odd.add_type' => Odd::ADD_TYPE['under']
             ])
         ;
     }
@@ -408,6 +408,41 @@ class Event extends \yii\db\ActiveRecord
     public function getFormatStartAt(): string
     {
         return date('d.m H:i', strtotime($this->start_at));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return "{$this->homePlayer->name} - {$this->awayPlayer->name}";
+    }
+
+    /**
+     * @return string
+     */
+    public function getMoneyline(): string
+    {
+        if(empty($this->homeMoneyline[0]->oddVal) || empty($this->awayMoneyline[0]->oddVal)) return "";
+        return "{$this->homeMoneyline[0]->oddVal} - {$this->awayMoneyline[0]->oddVal}";
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getTotals($methods): array
+    {
+
+        $data = [];
+        foreach ($methods as $k => $method) {
+            if(empty($this->{$method})) return [];
+            foreach ($this->{$method} as $odd) {
+                $data[$odd->value][$k] = $odd->oddVal;
+            }
+        }
+
+        return $data;
     }
 
 }

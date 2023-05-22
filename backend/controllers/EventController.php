@@ -3,11 +3,14 @@
 namespace backend\controllers;
 
 
+use frontend\models\sport\Event;
+use frontend\models\sport\Tournament;
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use backend\components\pinnacle\Pinnacle;
 use backend\components\pinnacle\helpers\BaseHelper;
+use yii\web\NotFoundHttpException;
 
 class EventController extends Controller
 {
@@ -33,10 +36,22 @@ class EventController extends Controller
     /**
      * @param int $id
      * @return string
+     * @throws NotFoundHttpException
      */
     public function actionIndex(int $id): string
     {
-        return $this->render('index');
+        $event = Event::find()
+            ->from(['event' => 'tn_event'])
+            ->withData()
+            ->where(['event.id' => $id])
+            ->one()
+        ;
+        if (!$event) {
+            throw new NotFoundHttpException('This event does not exist');
+        }
+        return $this->render('index', [
+            'event' => $event
+        ]);
     }
 
     /**

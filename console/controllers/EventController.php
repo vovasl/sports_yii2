@@ -22,11 +22,11 @@ class EventController extends Controller
         $output = "";
         $count = count($events);
 
-        Console::output('Events');
-        Console::startProgress($i, $count, 'Status');
+        //Console::output('Events');
+        //Console::startProgress($i, $count, 'Status');
         foreach ($events as $event) {
             $i++;
-            Console::updateProgress($i, $count);
+            //Console::updateProgress($i, $count);
 
             $output .= "\n";
             $output .= "{$event['tournament']} {$event['round']} \n";
@@ -34,6 +34,6 @@ class EventController extends Controller
             $output .= Yii::$app->event_save->event($event) ? 'OK' : 'Error';
 
         }
-        Console::output($output);
+        //Console::output($output);
     }
 }
