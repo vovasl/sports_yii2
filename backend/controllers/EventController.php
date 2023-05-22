@@ -53,28 +53,32 @@ class EventController extends Controller
      */
     public function actionAddLine(): string
     {
-        $eventId = 379;
-        $home = 250;
-        $away = 308;
+        /*
+        $eventId = ;
+        $home = ;
+        $away = ;
+
         $moneyline = [
             'moneyline' => [
-                'home' => 1.57,
-                'away' => 2.38,
+                'home' => ,
+                'away' => ,
             ]
         ];
+
 
         $spreads = [
             'spreads' => [
                 [
-                    'hdp' => -8.5,
-                    'home' => 1.847,
-                    'away' => 1.925,
+                    'hdp' => ,
+                    'home' => ,
+                    'away' => ,
                 ]
             ]
         ];
 
         $odds = [
-            'sets' => $spreads,
+            //'sets' => $moneyline,
+            //'games' => $spreads,
         ];
 
         $event = [
@@ -85,8 +89,10 @@ class EventController extends Controller
         ];
 
         return $this->render('add-line', [
-            //'output' => Yii::$app->event_save->addOdds($event)
+            'output' => Yii::$app->event_save->addOdds($event),
+            'event' => $event
         ]);
+        */
     }
 
 }

@@ -146,6 +146,8 @@ class EventSave extends Component
         $fixture->save();
         $event['id'] = $fixture->id;
 
+        BaseHelper::outputArray($event);
+
         /** exit for an existing event */
         if($updateEvent) return true;
 

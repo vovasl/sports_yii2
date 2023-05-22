@@ -5,6 +5,8 @@
  * @var string $output
  */
 
+use backend\components\pinnacle\helpers\BaseHelper;
+
 ?>
 
-<?= $output ?>
+<?php BaseHelper::outputArray($event); ?>
