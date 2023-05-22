@@ -64,10 +64,12 @@ class TournamentController extends Controller
     public function actionTournaments(): string
     {
         $tournaments = Tournament::find()
-            ->select(['tn_tournament.*', 'count(tn_event.id) count_events'])
-            ->joinWith(['events'])
-            ->groupBy('tn_tournament.id')
-            ->having(['>', 'count_events', 0])
+            ->with(['tournamentSurface', 'events'])
+            ->joinWith('tournamentTour')
+            ->orderBy([
+                'tn_tour.name' => SORT_ASC,
+                'name' => SORT_ASC
+            ])
             ->all()
         ;
 
