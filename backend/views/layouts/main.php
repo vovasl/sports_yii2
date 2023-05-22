@@ -40,9 +40,7 @@ AppAsset::register($this);
             ['label' => 'Add', 'url' => ['/event/add']],
             ['label' => 'Add Line', 'url' => ['/event/add-line']],
         ]],
-        ['label' => 'Tournaments', 'items' => [
-            ['label' => 'Review', 'url' => ['/tournament/review']],
-        ]],
+        ['label' => 'Tournaments', 'url' => ['/tournament/tournaments']],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];
     if (Yii::$app->user->isGuest) {

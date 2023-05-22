@@ -3,9 +3,12 @@
 namespace backend\controllers;
 
 
+use frontend\models\sport\Event;
 use frontend\models\sport\Tournament;
+use yii\db\Exception;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class TournamentController extends Controller
 {
@@ -29,9 +32,36 @@ class TournamentController extends Controller
     }
 
     /**
+     * @param int $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionIndex(int $id): string
+    {
+
+        if (!$tournament = Tournament::findOne($id)) {
+            throw new NotFoundHttpException('This tournament does not exist');
+        }
+
+        $events = Event::find()
+            ->from(['event' => 'tn_event'])
+            ->withData()
+            ->with('odds')
+            ->where(['tournament' => $id])
+            ->orderTournament()
+            ->all()
+        ;
+
+        return $this->render('tournament', [
+            'tournament' => $tournament,
+            'events' => $events
+        ]);
+    }
+
+    /**
      * @return string
      */
-    public function actionReview(): string
+    public function actionTournaments(): string
     {
         $tournaments = Tournament::find()
             ->select(['tn_tournament.*', 'count(tn_event.id) count_events'])
@@ -41,8 +71,9 @@ class TournamentController extends Controller
             ->all()
         ;
 
-        return $this->render('review', [
+        return $this->render('tournaments', [
             'tournaments' => $tournaments
         ]);
     }
+
 }

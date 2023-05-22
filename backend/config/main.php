@@ -41,6 +41,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/tournaments' => '/tournament/tournaments',
+                '/tournament/<id:\d+>' => '/tournament/index',
             ],
         ],
     ],

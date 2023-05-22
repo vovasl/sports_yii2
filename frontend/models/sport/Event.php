@@ -24,8 +24,8 @@ use yii\db\ActiveQuery;
  * @property int $five_sets
  * @property int $pin_id
  *
- * @property Player $playerHome
- * @property Player $playerAway
+ * @property Player $homePlayer
+ * @property Player $awayPlayer
  * @property Player $playerWinner
  * @property Round $tournamentRound
  * @property ResultSet[] $resultSets
@@ -108,21 +108,21 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[playerHome]].
+     * Gets query for [[homePlayer]].
      *
      * @return ActiveQuery
      */
-    public function getPlayerHome(): ActiveQuery
+    public function gethomePlayer(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'home']);
     }
 
     /**
-     * Gets query for [[playerAway]].
+     * Gets query for [[awayPlayer]].
      *
      * @return ActiveQuery
      */
-    public function getPlayerAway(): ActiveQuery
+    public function getawayPlayer(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'away']);
     }

@@ -21,8 +21,8 @@ $tournament = '';
             <td style="width: 100px;"><?php if($newTournament) echo $event->eventTournament->name; ?></td>
             <td style="width: 100px"><?= $event->formatStartAt ?></td>
             <td style="width: 120px;"><?= $event->tournamentRound->name ?></td>
-            <td style="width: 260px;"><?= $event->playerHome->name ?></td>
-            <td style="width: 260px;"><?= $event->playerAway->name ?></td>
+            <td style="width: 260px;"><?= $event->homePlayer->name ?></td>
+            <td style="width: 260px;"><?= $event->awayPlayer->name ?></td>
             <?php foreach ($oddMethods as $method): ?>
                 <td style="width: 100px;">
                     <?= $this->render('_odd', [
