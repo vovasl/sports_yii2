@@ -22,6 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="header-col col-3">Tournament</div>
         <div class="header-col col-2">Surface</div>
         <div class="header-col col-1">Events</div>
+        <div class="header-col col-1">Qual</div>
     </div>
 </div>
 
@@ -34,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="col-2 text-center"><?= $tournament->tournamentSurface->name ?></div>
             <div class="col-1 text-center"><?= count($tournament->events); ?></div>
+            <div class="col-1 text-center"><?= $tournament->qualification; ?></div>
         </div>
     </div>
 <?php endforeach; ?>

@@ -146,10 +146,11 @@ class EventSave extends Component
         $fixture->save();
         $event['id'] = $fixture->id;
 
-        BaseHelper::outputArray($event);
+        //BaseHelper::outputArray($event);
+        //echo count($fixture->odds) . '<br>';
 
-        /** exit for an existing event */
-        if($updateEvent) return true;
+        /** exit for an existing event with odds */
+        if($updateEvent && count($fixture->odds) > 0) return true;
 
         /** odds */
         $this->addOdds($event);

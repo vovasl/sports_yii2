@@ -14,7 +14,7 @@ use yii\db\ActiveQuery;
  * @property string $name
  * @property int|null $surface
  * @property string|null $comment
- * @property int $count_events
+ * @property int $qualification
  *
  * @property Surface $tournamentSurface
  * @property Event[] $events
@@ -23,7 +23,7 @@ use yii\db\ActiveQuery;
 class Tournament extends \yii\db\ActiveRecord
 {
 
-    public $count_events;
+    public $qualification;
 
     /**
      * {@inheritdoc}

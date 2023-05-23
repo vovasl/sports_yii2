@@ -16,6 +16,9 @@ use yii\db\ActiveQuery;
  */
 class Round extends \yii\db\ActiveRecord
 {
+
+    CONST QUALIFICATION = 5;
+
     /**
      * {@inheritdoc}
      */
