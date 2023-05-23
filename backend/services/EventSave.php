@@ -3,6 +3,7 @@
 namespace backend\services;
 
 
+use frontend\models\sport\EventLog;
 use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
@@ -14,6 +15,7 @@ use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 
 class EventSave extends Component
 {
@@ -146,11 +148,14 @@ class EventSave extends Component
         $fixture->save();
         $event['id'] = $fixture->id;
 
-        //BaseHelper::outputArray($event);
-        //echo count($fixture->odds) . '<br>';
-
         /** exit for an existing event with odds */
         if($updateEvent && count($fixture->odds) > 0) return true;
+
+        /** save logs */
+        $log = new EventLog();
+        $log->event_id = $event['id'];
+        $log->message = Json::encode($event);
+        $log->save();
 
         /** odds */
         $this->addOdds($event);

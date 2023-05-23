@@ -4,8 +4,10 @@ namespace backend\controllers;
 
 
 use frontend\models\sport\Event;
+use frontend\models\sport\EventLog;
 use frontend\models\sport\Tournament;
 use Yii;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use backend\components\pinnacle\Pinnacle;
@@ -115,6 +117,16 @@ class EventController extends Controller
             'event' => $event
         ]);
         */
+    }
+
+    public function actionLog()
+    {
+        $id = 568;
+        $log = EventLog::findOne(['event_id' => $id]);
+
+        return $this->render('log', [
+            'output' => Json::decode($log->message)
+        ]);
     }
 
 }
