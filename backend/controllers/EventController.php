@@ -119,7 +119,10 @@ class EventController extends Controller
         */
     }
 
-    public function actionLog()
+    /**
+     * @return string
+     */
+    public function actionLog(): string
     {
         $id = 568;
         $log = EventLog::findOne(['event_id' => $id]);

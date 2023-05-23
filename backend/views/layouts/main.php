@@ -39,6 +39,7 @@ AppAsset::register($this);
         ['label' => 'Events', 'items' => [
             ['label' => 'Add', 'url' => ['/event/add']],
             ['label' => 'Add Line', 'url' => ['/event/add-line']],
+            ['label' => 'Log', 'url' => ['/event/log']],
         ]],
         ['label' => 'Tournaments', 'url' => ['/tournament/tournaments']],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
