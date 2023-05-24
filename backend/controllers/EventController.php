@@ -77,27 +77,17 @@ class EventController extends Controller
      */
     public function actionAddLine(): string
     {
-        /*
-        $eventId = ;
-        $home = ;
-        $away = ;
+
+        $id = 569;
+        $log = EventLog::findOne(['event_id' => $id]);
+        $eventLog = Json::decode($log->message);
 
         $moneyline = [
-            'moneyline' => [
-                'home' => ,
-                'away' => ,
-            ]
+            'moneyline' => $eventLog['odds']['sets'][1]['moneyline']
         ];
 
-
         $spreads = [
-            'spreads' => [
-                [
-                    'hdp' => ,
-                    'home' => ,
-                    'away' => ,
-                ]
-            ]
+            'spreads' => $eventLog['odds']['sets'][0]['spreads']
         ];
 
         $odds = [
@@ -106,30 +96,27 @@ class EventController extends Controller
         ];
 
         $event = [
-            'id' => $eventId,
-            'home' => $home,
-            'away' => $away,
+            'id' => $eventLog['id'],
+            'home' => $eventLog['home'],
+            'away' => $eventLog['away'],
             'odds' => $odds,
         ];
 
+        //Yii::$app->event_save->addOdds($event)
+
         return $this->render('add-line', [
-            'output' => Yii::$app->event_save->addOdds($event),
-            'event' => $event
+            'log' => $eventLog,
+            'event' => $event,
         ]);
-        */
     }
 
     /**
      * @return string
      */
-    public function actionLog(): string
+    public function actionWithoutOdds(): string
     {
-        $id = 568;
-        $log = EventLog::findOne(['event_id' => $id]);
 
-        return $this->render('log', [
-            'output' => Json::decode($log->message)
-        ]);
+        return $this->render('without-odds');
     }
 
 }
