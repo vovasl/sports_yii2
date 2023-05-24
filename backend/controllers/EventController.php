@@ -102,7 +102,7 @@ class EventController extends Controller
             'odds' => $odds,
         ];
 
-        //Yii::$app->event_save->addOdds($event)
+        //Yii::$app->event_save->addOdds($event);
 
         return $this->render('add-line', [
             'log' => $eventLog,
@@ -115,8 +115,20 @@ class EventController extends Controller
      */
     public function actionWithoutOdds(): string
     {
+        $events = Event::find()
+            ->select(['event.*','odds_count' => 'count(sp_odd.id)'])
+            ->from(['event' => 'tn_event'])
+            ->withData()
+            ->joinWith('odds')
+            ->groupBy('event.id')
+            ->orderTournament()
+            ->having(['<=', 'odds_count', 2])
+            ->all()
+        ;
 
-        return $this->render('without-odds');
+        return $this->render('without-odds', [
+            'events' => $events
+        ]);
     }
 
 }
