@@ -78,21 +78,29 @@ class EventController extends Controller
     public function actionAddLine(): string
     {
 
-        $id = 569;
+        $id = 594;
         $log = EventLog::findOne(['event_id' => $id]);
         $eventLog = Json::decode($log->message);
 
         $moneyline = [
-            'moneyline' => $eventLog['odds']['sets'][1]['moneyline']
+            'moneyline' => $eventLog['odds']['sets'][0]['moneyline']
         ];
 
-        $spreads = [
+        $setsSpreads = [
             'spreads' => $eventLog['odds']['sets'][0]['spreads']
         ];
 
+        $spreads = [
+            'spreads' => $eventLog['odds']['games'][2]['spreads']
+        ];
+
+        $totals = [
+            'totals' => $eventLog['odds']['games'][2]['totals']
+        ];
+
         $odds = [
-            //'sets' => $moneyline,
-            //'games' => $spreads,
+            'sets' => array_merge($moneyline, $setsSpreads),
+            'games' => array_merge($totals, $spreads),
         ];
 
         $event = [
@@ -102,7 +110,7 @@ class EventController extends Controller
             'odds' => $odds,
         ];
 
-        //Yii::$app->event_save->addOdds($event);
+        Yii::$app->event_save->addOdds($event);
 
         return $this->render('add-line', [
             'log' => $eventLog,
