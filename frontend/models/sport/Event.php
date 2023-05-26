@@ -5,6 +5,7 @@ namespace frontend\models\sport;
 use frontend\models\sport\query\EventQuery;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "tn_event".
@@ -429,11 +430,11 @@ class Event extends \yii\db\ActiveRecord
 
 
     /**
+     * @param $methods
      * @return array
      */
     public function getTotals($methods): array
     {
-
         $data = [];
         foreach ($methods as $k => $method) {
             if(empty($this->{$method})) return [];

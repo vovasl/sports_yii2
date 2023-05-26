@@ -71,53 +71,6 @@ class EventController extends Controller
         ]);
     }
 
-
-    /**
-     * @return string
-     */
-    public function actionAddLine(): string
-    {
-
-        $id = 594;
-        $log = EventLog::findOne(['event_id' => $id]);
-        $eventLog = Json::decode($log->message);
-
-        $moneyline = [
-            'moneyline' => $eventLog['odds']['sets'][0]['moneyline']
-        ];
-
-        $setsSpreads = [
-            'spreads' => $eventLog['odds']['sets'][0]['spreads']
-        ];
-
-        $spreads = [
-            'spreads' => $eventLog['odds']['games'][2]['spreads']
-        ];
-
-        $totals = [
-            'totals' => $eventLog['odds']['games'][2]['totals']
-        ];
-
-        $odds = [
-            'sets' => array_merge($moneyline, $setsSpreads),
-            'games' => array_merge($totals, $spreads),
-        ];
-
-        $event = [
-            'id' => $eventLog['id'],
-            'home' => $eventLog['home'],
-            'away' => $eventLog['away'],
-            'odds' => $odds,
-        ];
-
-        Yii::$app->event_save->addOdds($event);
-
-        return $this->render('add-line', [
-            'log' => $eventLog,
-            'event' => $event,
-        ]);
-    }
-
     /**
      * @return string
      */
@@ -136,6 +89,56 @@ class EventController extends Controller
 
         return $this->render('without-odds', [
             'events' => $events
+        ]);
+    }
+
+
+    /**
+     * @param null $id
+     * @return string
+     */
+    public function actionAddLine($id = null): string
+    {
+        $eventId = 605;
+        $save = 0;
+
+        $id = (empty($id)) ? $eventId : $id;
+        $log = EventLog::findOne(['event_id' => $id]);
+        $eventLog = Json::decode($log->message);
+
+        $moneyline = [
+            'moneyline' => $eventLog['odds']['sets'][0]['moneyline']
+        ];
+
+        $setsSpreads = [
+            'spreads' => $eventLog['odds']['sets'][0]['spreads']
+        ];
+
+        $spreads = [
+            'spreads' => $eventLog['odds']['games'][0]['spreads']
+        ];
+
+        $totals = [
+            'totals' => $eventLog['odds']['games'][0]['totals']
+        ];
+
+        $odds = [
+            'sets' => array_merge($moneyline),
+            'games' => array_merge($spreads, $totals),
+        ];
+
+        $event = [
+            'id' => $eventLog['id'],
+            'home' => $eventLog['home'],
+            'away' => $eventLog['away'],
+            'odds' => $odds,
+        ];
+
+        if($save) Yii::$app->event_save->addOdds($event);
+
+        return $this->render('add-line', [
+            'log' => $eventLog,
+            'event' => $event,
         ]);
     }
 
