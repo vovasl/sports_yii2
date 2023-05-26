@@ -37,9 +37,10 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'Events', 'items' => [
+            ['label' => 'Without Odds', 'url' => ['/event/without-odds']],
             ['label' => 'Add', 'url' => ['/event/add']],
             ['label' => 'Add Line', 'url' => ['/event/add-line']],
-            ['label' => 'Without Odds', 'url' => ['/event/without-odds']],
+            ['label' => 'Add Result', 'url' => ['/event/add-result']],
         ]],
         ['label' => 'Tournaments', 'url' => ['/tournament/tournaments']],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],

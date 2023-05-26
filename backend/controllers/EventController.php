@@ -142,4 +142,12 @@ class EventController extends Controller
         ]);
     }
 
+    /**
+     * @return string
+     */
+    public function actionAddResult(): string
+    {
+        return $this->render('add-result');
+    }
+
 }
