@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 
+use backend\services\EventResultSave;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use frontend\models\sport\Tournament;
@@ -147,7 +148,13 @@ class EventController extends Controller
      */
     public function actionAddResult(): string
     {
-        return $this->render('add-result');
+        $id = 349;
+        $result = "1:2(6:2, 3:6, 4:6)";
+
+        $obj = new EventResultSave();
+        return $this->render('add-result', [
+            'result' => $obj->run($id, $result, 1)
+        ]);
     }
 
 }
