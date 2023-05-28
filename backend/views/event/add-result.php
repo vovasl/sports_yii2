@@ -2,6 +2,7 @@
 
 /**
  * @var yii\web\View $this
+ * @var array $result
  */
 
 use backend\components\pinnacle\helpers\BaseHelper;

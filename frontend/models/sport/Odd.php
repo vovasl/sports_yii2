@@ -150,8 +150,21 @@ class Odd extends ActiveRecord
         return \round($val * 100);
     }
 
-    public function getOddVal()
+    /**
+     * @return float
+     */
+    public function getOddVal(): float
     {
         return $this->odd/100;
+    }
+
+    /**
+     * @param $profit
+     * @param float $val
+     * @return string
+     */
+    public static function getValueProfit($profit, float $val): string
+    {
+        return ($profit > 0) ? "<span style='background-color: #66FF99;'>{$val}</span>" : $val;
     }
 }

@@ -428,8 +428,11 @@ class Event extends \yii\db\ActiveRecord
      */
     public function getMoneyline(): string
     {
-        if(empty($this->homeMoneyline[0]->oddVal) || empty($this->awayMoneyline[0]->oddVal)) return "";
-        return "{$this->homeMoneyline[0]->oddVal} - {$this->awayMoneyline[0]->oddVal}";
+        if(empty($this->homeMoneyline[0]->oddVal) || empty($this->awayMoneyline[0]->oddVal)) return '';
+        return Odd::getValueProfit($this->homeMoneyline[0]->profit, $this->homeMoneyline[0]->oddVal)
+               . ' - '
+               . Odd::getValueProfit($this->awayMoneyline[0]->profit, $this->awayMoneyline[0]->oddVal)
+        ;
     }
 
 
@@ -443,7 +446,8 @@ class Event extends \yii\db\ActiveRecord
         foreach ($methods as $k => $method) {
             if(empty($this->{$method})) return [];
             foreach ($this->{$method} as $odd) {
-                $data[$odd->value][$k] = $odd->oddVal;
+                //$data[$odd->value][$k] = $odd->oddVal;
+                $data[$odd->value][$k] = Odd::getValueProfit($odd->profit, $odd->oddVal);
             }
         }
 

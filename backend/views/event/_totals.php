@@ -10,6 +10,14 @@ use frontend\models\sport\Event;
 
 ?>
 
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">OVER</div>
+        <div class="col">UNDER</div>
+    </div>
+</div>
+
 <?php foreach ($event->getTotals($methods) as $k => $odd): ?>
     <div class="container">
         <div class="row">

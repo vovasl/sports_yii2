@@ -34,7 +34,7 @@ class EventResultSave extends Component
         $event->winner = $event->{$result['winner']};
         $event->total = $result['setsTotals'];
         $event->total_games = $result['totals'];
-        //$event->save();
+        $event->save();
 
         /** save event sets result */
         foreach ($result['games'] as $set => $games) {
@@ -43,7 +43,7 @@ class EventResultSave extends Component
             $setRes->set = $set;
             $setRes->home = $games[0];
             $setRes->away = $games[1];
-            //$setRes->save();
+            $setRes->save();
         }
 
         /** save odds result */

@@ -7,6 +7,7 @@
  */
 
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 
 ?>
 
@@ -18,7 +19,7 @@ use frontend\models\sport\Event;
                     <div class="container">
                         <div class="row">
                             <div class="col"><?= $odd->value ?></div>
-                            <div class="col"><?= $odd->oddVal ?></div>
+                            <div class="col"><?= Odd::getValueProfit($odd->profit, $odd->oddVal) ?></div>
                         </div>
                     </div>
                 <?php endforeach; ?>
