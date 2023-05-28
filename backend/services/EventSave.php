@@ -190,7 +190,6 @@ class EventSave extends Component
                 /** save odds */
                 $method = "{$type}Odds";
                 if(!method_exists($this, $method)) {
-                    //echo $method . '<br>';
                     // ::log add method {$method}
                     continue;
                 }

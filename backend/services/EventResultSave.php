@@ -5,17 +5,19 @@ namespace backend\services;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\ResultSet;
 use yii\base\Component;
 
 class EventResultSave extends Component
 {
 
+    CONST LOSS = -100;
+
     /**
      * @param $id
      * @param $result
      * @param int $manual
-     * @return false|Event
      */
     public function run($id, $result, int $manual = 0)
     {
@@ -24,7 +26,7 @@ class EventResultSave extends Component
         if($manual && !$result = $this->prepare($result)) return false;
         if(!$this->validate($result)) return false;
 
-        $result = $this->aggregate($result);
+        $result = $this->aggregate($result, $event);
 
         /** save event result */
         $event->home_result = $result['sets'][0];
@@ -32,7 +34,7 @@ class EventResultSave extends Component
         $event->winner = $event->{$result['winner']};
         $event->total = $result['setsTotals'];
         $event->total_games = $result['totals'];
-        $event->save();
+        //$event->save();
 
         /** save event sets result */
         foreach ($result['games'] as $set => $games) {
@@ -41,10 +43,25 @@ class EventResultSave extends Component
             $setRes->set = $set;
             $setRes->home = $games[0];
             $setRes->away = $games[1];
-            $setRes->save();
+            //$setRes->save();
         }
 
-        return $event;
+        /** save odds result */
+        foreach ($event->odds as $odds) {
+
+            if(!empty($odds->profit)) continue;
+
+            $method = "{$odds->oddType->name}Odds";
+            if(!method_exists($this, $method)) {
+                //echo $method . '<br>';
+                // ::log add method {$method}
+                continue;
+            }
+
+            $this->{$method}($odds, $result);
+        }
+
+        return $result;
     }
 
     /**
@@ -53,7 +70,11 @@ class EventResultSave extends Component
      */
     private function getEvent($id)
     {
-        if(!$event = Event::findOne($id)) {
+        if(!$event = Event::find()
+            ->with('odds', 'odds.oddType')
+            ->where(['id' => $id])
+            ->one())
+        {
             // ::log event with $id don't find
             return false;
         }
@@ -116,18 +137,107 @@ class EventResultSave extends Component
     }
 
     /**
-     * @param $data
+     * @param array $data
+     * @param Event $event
      * @return array
      */
-    private function aggregate($data): array
+    private function aggregate(array $data, Event $event): array
     {
+        $data['home_id'] = $event->home;
+        $data['away_id'] = $event->away;
         $data['winner'] = $data['sets'][0] > $data['sets'][1] ? 'home' : 'away';
+        $data['winner_id'] = $data['winner'] == 'home' ? $event->home : $event->away;
         $data['setsTotals'] = array_sum($data['sets']);
         $data['teamTotalHome'] = array_sum(array_column($data['games'], 0));
         $data['teamTotalAway'] = array_sum(array_column($data['games'], 1));
         $data['totals'] = $data['teamTotalHome'] + $data['teamTotalAway'];
 
         return $data;
+    }
+
+    /**
+     * @param Odd $odds
+     * @param array $result
+     * @return bool
+     */
+    private function moneylineOdds(Odd $odds, array $result): bool
+    {
+        $odds->profit = ($odds->player_id == $result['winner_id']) ? $this->calcOdds($odds->odd) : self::LOSS;
+        $odds->save();
+
+        return true;
+    }
+
+    /**
+     * @param Odd $odds
+     * @param array $result
+     * @return bool
+     */
+    private function totalsOdds(Odd $odds, array $result): bool
+    {
+        $odds->profit = $this->totals($odds, $result['totals']);
+        $odds->save();
+
+        return true;
+    }
+
+    /**
+     * @param Odd $odds
+     * @param array $result
+     * @return bool
+     */
+    private function setsTotalsOdds(Odd $odds, array $result): bool
+    {
+        $odds->profit = $this->totals($odds, $result['setsTotals']);
+        $odds->save();
+
+        return true;
+    }
+
+    /**
+     * @param Odd $odds
+     * @param array $result
+     * @return bool
+     */
+    private function teamTotalOdds(Odd $odds, array $result): bool
+    {
+        $val = ($odds->player_id == $result['home_id']) ? $result['teamTotalHome'] : $result['teamTotalAway'];
+        $odds->profit = $this->totals($odds, $val);
+        $odds->save();
+
+        return true;
+    }
+
+    /**
+     * @param Odd $odds
+     * @param int $val
+     * @return int
+     */
+    private function totals(Odd $odds, int $val): int
+    {
+        $profit = NULL;
+
+        /** total over */
+        if($odds->add_type == Odd::ADD_TYPE['over']) {
+            $profit = $val > $odds->value ? $this->calcOdds($odds->odd) : self::LOSS;
+        }
+        /** total under */
+        else if($odds->add_type == Odd::ADD_TYPE['under']) {
+            $profit = $val < $odds->value ? $this->calcOdds($odds->odd) : self::LOSS;
+        }
+        /** total equal */
+        if($odds->value == $val) $profit = 0;
+
+        return $profit;
+    }
+
+    /**
+     * @param int $odd
+     * @return int
+     */
+    private function calcOdds(int $odd): int
+    {
+        return $odd - 100;
     }
 
 }
