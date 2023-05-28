@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 
+use backend\models\AddResult;
+use backend\models\AddResultForm;
 use backend\services\EventResultSave;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
@@ -148,13 +150,18 @@ class EventController extends Controller
      */
     public function actionAddResult(): string
     {
-        $id = 349;
-        $result = "1:2(6:2, 3:6, 4:6)";
 
-        $save = new EventResultSave();
-        return $this->render('add-result', [
-            'result' => $save->run($id, $result, 1)
-        ]);
+        $model = new AddResultForm();
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->validate()) {
+                $result = new EventResultSave();
+                $result->run($model->id, $model->result, 1);
+
+                $model->result = '';
+                Yii::$app->session->setFlash('success', 'Result has been added');
+            }
+        }
+        return $this->render('add-result', ['model' => $model]);
     }
 
 }

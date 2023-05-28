@@ -61,7 +61,7 @@ class EventResultSave extends Component
             $this->{$method}($odds, $result);
         }
 
-        return $result;
+        return true;
     }
 
     /**

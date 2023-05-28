@@ -426,6 +426,14 @@ class Event extends \yii\db\ActiveRecord
     /**
      * @return string
      */
+    public function getFullInfo(): string
+    {
+        return "{$this->id}. {$this->eventTournament->name} {$this->tournamentRound->name} {$this->homePlayer->name} - {$this->awayPlayer->name}";
+    }
+
+    /**
+     * @return string
+     */
     public function getMoneyline(): string
     {
         if(empty($this->homeMoneyline[0]->oddVal) || empty($this->awayMoneyline[0]->oddVal)) return '';
@@ -459,7 +467,7 @@ class Event extends \yii\db\ActiveRecord
      */
     public function getResult(): string
     {
-        if(empty($this->home_result) || empty($this->away_result)) return '';
+        if(is_null($this->home_result) || is_null($this->away_result)) return '';
 
         $games = [];
         foreach ($this->setsResult as $result) {

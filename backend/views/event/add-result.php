@@ -2,10 +2,12 @@
 
 /**
  * @var yii\web\View $this
- * @var array $result
+ * @var AddResultForm $model
  */
 
-use backend\components\pinnacle\helpers\BaseHelper;
+use backend\models\AddResultForm;
+use yii\helpers\Html;
+use yii\bootstrap4\ActiveForm;
 
 $this->title = 'Add event result';
 $this->params['breadcrumbs'][] = $this->title;
@@ -14,4 +16,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <h1><?= $this->title ?></h1>
 
-<?php BaseHelper::outputArray($result); ?>
+<?php $form = ActiveForm::begin(); ?>
+
+<?= $form->field($model, 'id')->dropDownList($model->getEvent(), ['prompt' => 'Select event']) ?>
+
+<?= $form->field($model, 'result') ?>
+
+<div class="form-group">
+    <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
+</div>
+
+<?php ActiveForm::end(); ?>
