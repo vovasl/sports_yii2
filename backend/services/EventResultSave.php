@@ -3,7 +3,6 @@
 namespace backend\services;
 
 
-use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\ResultSet;
@@ -18,6 +17,7 @@ class EventResultSave extends Component
      * @param $id
      * @param $result
      * @param int $manual
+     * @return array|false
      */
     public function run($id, $result, int $manual = 0)
     {
@@ -53,7 +53,6 @@ class EventResultSave extends Component
 
             $method = "{$odds->oddType->name}Odds";
             if(!method_exists($this, $method)) {
-                //echo $method . '<br>';
                 // ::log add method {$method}
                 continue;
             }
@@ -151,6 +150,10 @@ class EventResultSave extends Component
         $data['teamTotalHome'] = array_sum(array_column($data['games'], 0));
         $data['teamTotalAway'] = array_sum(array_column($data['games'], 1));
         $data['totals'] = $data['teamTotalHome'] + $data['teamTotalAway'];
+        $data['teamSpreadHome'] = $data['teamTotalAway'] - $data['teamTotalHome'];
+        $data['teamSpreadAway'] = $data['teamTotalHome'] - $data['teamTotalAway'];
+        $data['teamSetsSpreadHome'] = $data['sets'][1] - $data['sets'][0];
+        $data['teamSetsSpreadAway'] = $data['sets'][0] - $data['sets'][1];
 
         return $data;
     }
@@ -163,6 +166,34 @@ class EventResultSave extends Component
     private function moneylineOdds(Odd $odds, array $result): bool
     {
         $odds->profit = ($odds->player_id == $result['winner_id']) ? $this->calcOdds($odds->odd) : self::LOSS;
+        $odds->save();
+
+        return true;
+    }
+
+    /**
+     * @param Odd $odds
+     * @param array $result
+     * @return bool
+     */
+    private function spreadsOdds(Odd $odds, array $result): bool
+    {
+        $val = ($odds->player_id == $result['home_id']) ? $result['teamSpreadHome'] : $result['teamSpreadAway'];
+        $odds->profit = ($odds->value > $val) ? $this->calcOdds($odds->odd) : self::LOSS;
+        $odds->save();
+
+        return true;
+    }
+
+    /**
+     * @param Odd $odds
+     * @param array $result
+     * @return bool
+     */
+    private function setsSpreadsOdds(Odd $odds, array $result): bool
+    {
+        $val = ($odds->player_id == $result['home_id']) ? $result['teamSetsSpreadHome'] : $result['teamSetsSpreadAway'];
+        $odds->profit = ($odds->value > $val) ? $this->calcOdds($odds->odd) : self::LOSS;
         $odds->save();
 
         return true;
