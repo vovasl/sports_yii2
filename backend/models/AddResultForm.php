@@ -59,7 +59,8 @@ class AddResultForm extends Model
                 ['home_result' => NULL],
                 ['away_result' => NULL]
             ])
-            //->andWhere(['tournament' => 18])
+            //->andWhere(['tournament' => 19])
+            ->orderBy('start_at')
             ->all()
         , 'id', 'fullInfo');
     }

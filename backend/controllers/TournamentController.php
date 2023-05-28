@@ -47,7 +47,7 @@ class TournamentController extends Controller
         $events = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
-            ->with('odds')
+            ->with('odds', 'setsResult')
             ->where(['tournament' => $id])
             ->orderTournament()
             ->all()

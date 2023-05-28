@@ -26,6 +26,7 @@ $this->params['breadcrumbs'][] = $tournament->name;
         <div class="header-col col-2">Round</div>
         <div class="header-col col">Event</div>
         <div class="header-col col-1">Odds</div>
+        <div class="header-col col-2">Result</div>
     </div>
 </div>
 
@@ -39,6 +40,7 @@ $this->params['breadcrumbs'][] = $tournament->name;
                 <a href="<?= Url::to(['/event/index', 'id' => $event->id]) ?>"><?= $event->fullName ?></a>
             </div>
             <div class="col-1 text-center"><?= count($event->odds) ?></div>
+            <div class="col-2 text-center"><?= $event->result ?></div>
         </div>
     </div>
 <?php endforeach; ?>
