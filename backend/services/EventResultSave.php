@@ -34,6 +34,7 @@ class EventResultSave extends Component
         $event->winner = $event->{$result['winner']};
         $event->total = $result['setsTotals'];
         $event->total_games = $result['totals'];
+        $event->five_sets = ($result['sets'][0] == 3 || $result['sets'][1] == 3) ? 1 : 0;
         $event->save();
 
         /** save event sets result */
