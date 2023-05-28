@@ -100,7 +100,7 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 605;
+        $eventId = 707;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
@@ -124,8 +124,8 @@ class EventController extends Controller
         ];
 
         $odds = [
-            'sets' => array_merge($moneyline),
-            'games' => array_merge($spreads, $totals),
+            //'sets' => array_merge($moneyline),
+            'games' => array_merge($spreads),
         ];
 
         $event = [
@@ -151,9 +151,9 @@ class EventController extends Controller
         $id = 349;
         $result = "1:2(6:2, 3:6, 4:6)";
 
-        $obj = new EventResultSave();
+        $save = new EventResultSave();
         return $this->render('add-result', [
-            'result' => $obj->run($id, $result, 1)
+            'result' => $save->run($id, $result, 1)
         ]);
     }
 

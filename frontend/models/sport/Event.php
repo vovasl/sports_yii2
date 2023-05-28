@@ -29,7 +29,7 @@ use yii\helpers\Json;
  * @property Player $awayPlayer
  * @property Player $playerWinner
  * @property Round $tournamentRound
- * @property ResultSet[] $resultSets
+ * @property ResultSet[] $setsResult
  * @property Tournament $eventTournament
  * @property Odd[] $odds
  * @property Odd[] $homeOdds
@@ -149,13 +149,17 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[resultSets]].
+     * Gets query for [[setsResult]].
      *
      * @return ActiveQuery
      */
-    public function getResultSets(): ActiveQuery
+    public function getSetsResult(): ActiveQuery
     {
-        return $this->hasMany(ResultSet::class, ['event' => 'id']);
+        return $this->hasMany(ResultSet::class, ['event' => 'id'])
+            ->orderBy([
+                'set' => SORT_ASC
+            ])
+        ;
     }
 
     /**
@@ -444,6 +448,21 @@ class Event extends \yii\db\ActiveRecord
         }
 
         return $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResult(): string
+    {
+        if(empty($this->home_result) || empty($this->away_result)) return '';
+
+        $games = [];
+        foreach ($this->setsResult as $result) {
+            $games[] = "{$result->home}:{$result->away}";
+        }
+        $sets = implode(', ', $games);
+        return "{$this->home_result}:{$this->away_result}({$sets})";
     }
 
 }
