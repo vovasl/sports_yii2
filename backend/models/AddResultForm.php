@@ -5,6 +5,8 @@ namespace backend\models;
 
 use frontend\models\sport\Event;
 use yii\base\Model;
+use yii\db\Exception;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 class AddResultForm extends Model
@@ -59,7 +61,8 @@ class AddResultForm extends Model
                 ['home_result' => NULL],
                 ['away_result' => NULL]
             ])
-            //->andWhere(['tournament' => 19])
+            //->andWhere(['tournament' => 21])
+            ->andWhere(['<', 'start_at', new Expression('now()')])
             ->orderBy('start_at')
             ->all()
         , 'id', 'fullInfo');

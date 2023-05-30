@@ -86,7 +86,7 @@ class EventController extends Controller
             ->joinWith('odds')
             ->groupBy('event.id')
             ->orderTournament()
-            ->having(['<=', 'odds_count', 2])
+            ->having(['<=', 'odds_count', 0])
             ->all()
         ;
 

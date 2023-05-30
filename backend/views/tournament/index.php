@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $tournament->name;
     <div class="row">
         <div class="header-col col-1">ID</div>
         <div class="header-col col-2">Start</div>
-        <div class="header-col col-2">Round</div>
+        <div class="header-col col-1">Round</div>
         <div class="header-col col">Event</div>
         <div class="header-col col-1">Odds</div>
         <div class="header-col col-2">Result</div>
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $tournament->name;
         <div class="row">
             <div class="col-1 text-center"><?= $event->id ?></div>
             <div class="col-2 text-center"><?= $event->formatStartAt ?></div>
-            <div class="col-2 text-center"><?= $event->tournamentRound->name ?></div>
+            <div class="col-1 text-center"><?= $event->tournamentRound->name ?></div>
             <div class="col">
                 <a href="<?= Url::to(['/event/index', 'id' => $event->id]) ?>"><?= $event->fullName ?></a>
             </div>

@@ -3,6 +3,7 @@
 namespace backend\components\pinnacle\models;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\pinnacle\Pinnacle;
 use backend\components\pinnacle\services\Client;
 
@@ -56,7 +57,7 @@ class League
             if($league['eventCount'] == 0) continue;
             if(!preg_match("#{$this->settings['base']['tour']}.*#i", $league['name'])) continue;
             if(!$tournament = $this->parseTennisTournamentName($league['name'])) continue;
-            if($tournament[1] == 'Doubles') continue;
+            if(preg_match('#doubles#i', $tournament[1])) continue;
 
             $data[] = [
                 'sportid' => $this->settings['base']['sportid'],
@@ -66,6 +67,7 @@ class League
                 'tour' => $tournament[2],
             ];
         }
+        //BaseHelper::outputArray($data); die;
 
         return $data;
     }
