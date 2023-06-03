@@ -38,6 +38,7 @@ class EventResultSave extends Component
             $msg .= TennisEvent::output($event);
             $msg .= "<br> Status: ";
 
+            /** check event */
             if(!$eventLocal = Event::find()
                 ->select([Event::tableName() . '.id'])
                 ->joinWith([
@@ -63,11 +64,13 @@ class EventResultSave extends Component
             $msg .= "OK";
             $msg .= "<br> Event ID: {$eventLocal->id}";
 
+            /** save event result */
             $this->run($eventLocal->id, $event['result']);
 
+            /** save event sofascore id */
             $eventLocal->sofa_id = $event->id;
             $eventLocal->save();
-            //break;
+
         }
         return ($output) ? $msg : '';
     }
