@@ -101,11 +101,11 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 718;
+        $eventId = 870;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
-        $log = EventLog::findOne(['event_id' => $id]);
+        $log = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();
         $eventLog = Json::decode($log->message);
 
         $moneyline = [
@@ -117,7 +117,7 @@ class EventController extends Controller
         ];
 
         $spreads = [
-            'spreads' => $eventLog['odds']['games'][0]['spreads']
+            'spreads' => $eventLog['odds']['games'][1]['spreads']
         ];
 
         $totals = [
