@@ -5,6 +5,7 @@ namespace backend\services;
 
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use frontend\models\sport\Player;
 use frontend\models\sport\ResultSet;
 use yii\base\Component;
 
@@ -15,6 +16,27 @@ class EventResultSave extends Component
 
     public function events(array $events)
     {
+        foreach ($events as $event) {
+
+            if(!empty($event['id']) && Event::findOne($event['id'])) continue;
+
+            $eventLocal = Event::find()
+                ->joinWith([
+                    'homePlayer' => function($q) {
+                        $q->from(Player::tableName() . ' home');
+                    },
+                    'awayPlayer' => function($q) {
+                        $q->from(Player::tableName() . ' away');
+                    }
+                ], 0)
+                ->where([
+                    'home_result' => NULL,
+                    'away_result' => NULL
+                ])
+                ->one()
+            ;
+            //break;
+        }
         return $events;
     }
 

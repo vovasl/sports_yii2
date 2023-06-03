@@ -31,8 +31,11 @@ class TennisEvent
      */
     public function getEvents(): array
     {
+
+        /** filter events */
         $this->filter();
 
+        /** prepare events result */
         $this->prepareResult();
 
         return $this->events;
@@ -47,6 +50,7 @@ class TennisEvent
                 && !preg_match('#doubles#i', $event['tournament']['name']));
         });
 
+        /** status code filter */
         $this->events = array_filter($this->events, function ($event) {
             return ($event['status']['code'] == self::FINISHED);
         });
@@ -65,5 +69,26 @@ class TennisEvent
             }
             $this->events[$k]['result'] = $res;
         }
+    }
+
+    /**
+     * @param array $event
+     * @return string
+     */
+    public static function output(array $event): string
+    {
+        $games = [];
+        foreach ($event['result']['games'] as $res) {
+            $games[] = implode(":", $res);
+        }
+
+        $output = "{$event['tournament']['name']}, {$event['roundInfo']['name']}";
+        $output .= "<br>" . date('d.m H:i' ,$event['startTimestamp']);
+        $output .= " {$event['homeTeam']['name']} ({$event['homeTeam']['id']})";
+        $output .= " - {$event['awayTeam']['name']} ({$event['awayTeam']['id']})";
+        $output .= "<br> " . implode(":", $event['result']['sets']);
+        $output .= "(" . implode(", ", $games) . ")";
+
+        return $output;
     }
 }

@@ -5,20 +5,15 @@
  * @var array $events
  */
 
-use backend\components\pinnacle\helpers\BaseHelper;
+use backend\components\sofascore\models\TennisEvent;
 
-$this->title = 'Result Sofascore';
+$this->title = 'Results';
 
 ?>
 
 <h1><?= $this->title ?></h1>
 
 <?php foreach ($events as $event): ?>
-    <?= "{$event['tournament']['category']['name']} {$event['tournament']['name']}" ?>
-    <?= "<br>" ?>
-    <?= "{$event['homeTeam']['name']} ({$event['homeTeam']['id']}) - {$event['awayTeam']['name']} ({$event['awayTeam']['id']})" ?>
-    <?php BaseHelper::outputArray($event['result']); ?>
+    <?= TennisEvent::output($event) ?>
     <?= "<hr>" ?>
 <?php endforeach; ?>
-
-<?php BaseHelper::outputArray($events); ?>

@@ -113,7 +113,7 @@ class Event extends \yii\db\ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function gethomePlayer(): ActiveQuery
+    public function getHomePlayer(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'home']);
     }
@@ -123,7 +123,7 @@ class Event extends \yii\db\ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getawayPlayer(): ActiveQuery
+    public function getAwayPlayer(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'away']);
     }
