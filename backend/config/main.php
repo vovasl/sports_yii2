@@ -2,6 +2,7 @@
 
 use backend\components\pinnacle\Pinnacle;
 use backend\components\sofascore\Sofascore;
+use backend\services\EventResultSave;
 use backend\services\EventSave;
 
 $params = array_merge(
@@ -50,12 +51,13 @@ return [
                 '/tournament/<id:\d+>' => '/tournament/index',
                 '/event/<id:\d+>' => '/event/index',
                 '/event/add-line/<id:\d+>' => '/event/add-line',
-                '/event/result-sofa/<data:.+>' => '/event/result-sofa',
+                '/event/add-results/<data:.+>' => '/event/add-results',
             ],
         ],
-        'event_save' => EventSave::class,
         'pinnacle' => Pinnacle::class,
-        'sofascore' => Sofascore::class
+        'sofascore' => Sofascore::class,
+        'event_save' => EventSave::class,
+        'result_save' => EventResultSave::class
     ],
     'params' => $params,
 ];

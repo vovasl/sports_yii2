@@ -13,6 +13,11 @@ class EventResultSave extends Component
 
     CONST LOSS = -100;
 
+    public function events(array $events)
+    {
+        return $events;
+    }
+
     /**
      * @param $id
      * @param $result
