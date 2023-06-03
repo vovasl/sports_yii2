@@ -1,10 +1,7 @@
 <?php
 
-use backend\components\pinnacle\Pinnacle;
-use backend\services\EventSave;
-
 return [
-    'name' => 'Sport',
+    'name' => 'Tennis Odds',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -14,7 +11,5 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'event_save' => EventSave::class,
-        'pinnacle' => Pinnacle::class,
     ],
 ];

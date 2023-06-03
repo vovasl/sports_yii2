@@ -3,7 +3,6 @@
 namespace backend\components\pinnacle;
 
 
-use Yii;
 use yii\base\Component;
 use backend\components\pinnacle\models\Setting;
 use backend\components\pinnacle\models\League;

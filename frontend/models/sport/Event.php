@@ -428,7 +428,7 @@ class Event extends \yii\db\ActiveRecord
      */
     public function getFullInfo(): string
     {
-        return "{$this->id}. {$this->eventTournament->name} {$this->tournamentRound->name} {$this->homePlayer->name} - {$this->awayPlayer->name}";
+        return "{$this->id}. {$this->formatStartAt} {$this->eventTournament->name} {$this->tournamentRound->name} {$this->fullName}";
     }
 
     /**

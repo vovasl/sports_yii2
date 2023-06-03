@@ -1,4 +1,9 @@
 <?php
+
+use backend\components\pinnacle\Pinnacle;
+use backend\components\sofascore\Sofascore;
+use backend\services\EventSave;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -45,8 +50,12 @@ return [
                 '/tournament/<id:\d+>' => '/tournament/index',
                 '/event/<id:\d+>' => '/event/index',
                 '/event/add-line/<id:\d+>' => '/event/add-line',
+                '/event/result-sofa/<data:.+>' => '/event/result-sofa',
             ],
         ],
+        'event_save' => EventSave::class,
+        'pinnacle' => Pinnacle::class,
+        'sofascore' => Sofascore::class
     ],
     'params' => $params,
 ];

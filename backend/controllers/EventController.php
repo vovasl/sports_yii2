@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 
+use backend\components\sofascore\Sofascore;
 use backend\models\AddResult;
 use backend\models\AddResultForm;
 use backend\services\EventResultSave;
@@ -150,7 +151,6 @@ class EventController extends Controller
      */
     public function actionAddResult(): string
     {
-
         $model = new AddResultForm();
         if ($model->load(Yii::$app->request->post())) {
             if($model->validate()) {
@@ -162,6 +162,18 @@ class EventController extends Controller
             }
         }
         return $this->render('add-result', ['model' => $model]);
+    }
+
+    /**
+     * @param null $data
+     * @return string
+     */
+    public function actionResultSofa($data = null)
+    {
+        //$data = '2023-06-01';
+        return $this->render('result-sofascore', [
+            'events' => Yii::$app->sofascore->getTennis($data)
+        ]);
     }
 
 }
