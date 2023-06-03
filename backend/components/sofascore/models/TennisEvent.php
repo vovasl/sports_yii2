@@ -63,7 +63,7 @@ class TennisEvent
             $res['sets'] = [$event['homeScore']['display'], $event['awayScore']['display']];
 
             for ($set = 1; $set <= 5; $set++) {
-                if(!empty($event['homeScore']['period' . $set]) && !empty($event['awayScore']['period' . $set])) {
+                if(isset($event['homeScore']['period' . $set]) && isset($event['awayScore']['period' . $set])) {
                     $res['games'][$set] = [$event['homeScore']['period' . $set], $event['awayScore']['period' . $set]];
                 }
             }

@@ -10,6 +10,7 @@ use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
 use frontend\models\sport\ResultSet;
 use yii\base\Component;
+use yii\db\ActiveRecord;
 
 class EventResultSave extends Component
 {
@@ -27,37 +28,15 @@ class EventResultSave extends Component
         foreach ($events as $event) {
 
             /** event with result */
-            if(!empty($event['id']) && Event::find()
-                    ->where(['sofa_id' => $event['id']])
-                    ->andWhere(['IS NOT', 'home_result', NULL])
-                    ->andWhere(['IS NOT', 'away_result', NULL])
-                    ->one()
-            ) continue;
+            if(!empty($event['id']) && $this->checkEventResult($event['id'])) continue;
 
             $msg .= "<hr>";
             $msg .= TennisEvent::output($event);
             $msg .= "<br> Status: ";
 
             /** check event */
-            if(!$eventLocal = Event::find()
-                ->select([Event::tableName() . '.id'])
-                ->joinWith([
-                    'homePlayer' => function($q) {
-                        $q->from(Player::tableName() . ' home');
-                    },
-                    'awayPlayer' => function($q) {
-                        $q->from(Player::tableName() . ' away');
-                    }
-                ], 0)
-                ->where([
-                    'home_result' => NULL,
-                    'away_result' => NULL,
-                    'home.sofa_id' => $event['homeTeam']['id'],
-                    'away.sofa_id' => $event['awayTeam']['id']
-                ])
-                ->one()
-            ) {
-                $msg .= "<span style='color: red;'>Add sofascore player id</span>";
+            if(!$eventLocal = $this->checkEventData($event)) {
+                $msg .= "<span style='color: red;'>Add sofascore player id or event without odds</span>";
                 continue;
             }
 
@@ -68,7 +47,7 @@ class EventResultSave extends Component
             $this->run($eventLocal->id, $event['result']);
 
             /** save event sofascore id */
-            $eventLocal->sofa_id = $event->id;
+            $eventLocal->sofa_id = $event['id'];
             $eventLocal->save();
 
         }
@@ -332,6 +311,46 @@ class EventResultSave extends Component
     private function calcOdds(int $odd): int
     {
         return $odd - 100;
+    }
+
+    /**
+     * @param $id
+     * @return array|ActiveRecord|null
+     */
+    private function checkEventResult($id)
+    {
+        return Event::find()
+            ->where(['sofa_id' => $id])
+            ->andWhere(['IS NOT', 'home_result', NULL])
+            ->andWhere(['IS NOT', 'away_result', NULL])
+            ->one()
+        ;
+    }
+
+    /**
+     * @param $event
+     * @return array|ActiveRecord|null
+     */
+    private function checkEventData($event)
+    {
+        return Event::find()
+            ->select([Event::tableName() . '.id'])
+            ->joinWith([
+                'homePlayer' => function($q) {
+                    $q->from(Player::tableName() . ' home');
+                },
+                'awayPlayer' => function($q) {
+                    $q->from(Player::tableName() . ' away');
+                }
+            ], 0)
+            ->where([
+                'home_result' => NULL,
+                'away_result' => NULL,
+                'home.sofa_id' => $event['homeTeam']['id'],
+                'away.sofa_id' => $event['awayTeam']['id']
+            ])
+            ->one()
+        ;
     }
 
 }
