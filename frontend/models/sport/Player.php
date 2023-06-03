@@ -14,6 +14,7 @@ use yii\db\ActiveQuery;
  * @property string|null $birthday
  * @property string|null $plays
  * @property string|null $comment
+ * @property int $sofa_id
  *
  * @property Event[] $awayEvents
  * @property Event[] $homeEvents
@@ -37,7 +38,7 @@ class Player extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type'], 'integer'],
+            [['type', 'sofa_id'], 'integer'],
             [['name'], 'required'],
             [['birthday'], 'safe'],
             [['comment'], 'string'],
@@ -58,6 +59,7 @@ class Player extends \yii\db\ActiveRecord
             'birthday' => 'Birthday',
             'plays' => 'Plays',
             'comment' => 'Comment',
+            'sofa_id' => 'Sofascore ID'
         ];
     }
 

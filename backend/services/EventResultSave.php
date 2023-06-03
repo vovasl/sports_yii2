@@ -3,6 +3,8 @@
 namespace backend\services;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
+use backend\components\sofascore\models\TennisEvent;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
@@ -14,13 +16,30 @@ class EventResultSave extends Component
 
     CONST LOSS = -100;
 
-    public function events(array $events)
+    /**
+     * @param array $events
+     * @param int $output
+     * @return string
+     */
+    public function events(array $events, int $output = 0): string
     {
+        $msg = "";
         foreach ($events as $event) {
 
-            if(!empty($event['id']) && Event::findOne($event['id'])) continue;
+            /** event with result */
+            if(!empty($event['id']) && Event::find()
+                    ->where(['sofa_id' => $event['id']])
+                    ->andWhere(['IS NOT', 'home_result', NULL])
+                    ->andWhere(['IS NOT', 'away_result', NULL])
+                    ->one()
+            ) continue;
 
-            $eventLocal = Event::find()
+            $msg .= "<hr>";
+            $msg .= TennisEvent::output($event);
+            $msg .= "<br> Status: ";
+
+            if(!$eventLocal = Event::find()
+                ->select([Event::tableName() . '.id'])
                 ->joinWith([
                     'homePlayer' => function($q) {
                         $q->from(Player::tableName() . ' home');
@@ -31,13 +50,26 @@ class EventResultSave extends Component
                 ], 0)
                 ->where([
                     'home_result' => NULL,
-                    'away_result' => NULL
+                    'away_result' => NULL,
+                    'home.sofa_id' => $event['homeTeam']['id'],
+                    'away.sofa_id' => $event['awayTeam']['id']
                 ])
                 ->one()
-            ;
+            ) {
+                $msg .= "<span style='color: red;'>Add sofascore player id</span>";
+                continue;
+            }
+
+            $msg .= "OK";
+            $msg .= "<br> Event ID: {$eventLocal->id}";
+
+            $this->run($eventLocal->id, $event['result']);
+
+            $eventLocal->sofa_id = $event->id;
+            $eventLocal->save();
             //break;
         }
-        return $events;
+        return ($output) ? $msg : '';
     }
 
     /**

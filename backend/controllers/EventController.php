@@ -165,13 +165,13 @@ class EventController extends Controller
      * @param null $data
      * @return string
      */
-    public function actionAddResults($data = null)
+    public function actionAddResults($data = null): string
     {
         //$data = '2023-06-01';
         $events = Yii::$app->sofascore->getTennis($data);
 
         return $this->render('add-results', [
-            'events' => Yii::$app->result_save->events($events)
+            'output' => Yii::$app->result_save->events($events, 1)
         ]);
     }
 
