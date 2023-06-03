@@ -41,3 +41,5 @@ phpunit.phar
 /web/admin/index.php
 /web/admin/index-test.php
 /web/admin/robots.txt
+
+/backup
