@@ -2,6 +2,7 @@
 
 namespace frontend\models\sport;
 
+
 use frontend\models\sport\query\TournamentQuery;
 use Yii;
 use yii\db\ActiveQuery;
@@ -14,7 +15,6 @@ use yii\db\ActiveQuery;
  * @property string $name
  * @property int|null $surface
  * @property string|null $comment
- * @property int $qualification
  *
  * @property Surface $tournamentSurface
  * @property Event[] $events
@@ -22,8 +22,6 @@ use yii\db\ActiveQuery;
  */
 class Tournament extends \yii\db\ActiveRecord
 {
-
-    public $qualification;
 
     /**
      * {@inheritdoc}
@@ -55,10 +53,11 @@ class Tournament extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tour' => 'Tour',
+            'tour_id' => 'Tour',
             'name' => 'Name',
-            'surface' => 'Surface',
+            'surface_id' => 'Surface',
             'comment' => 'Comment',
+            'count_events' => 'Events'
         ];
     }
 

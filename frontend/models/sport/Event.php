@@ -2,10 +2,10 @@
 
 namespace frontend\models\sport;
 
+
 use frontend\models\sport\query\EventQuery;
 use Yii;
 use yii\db\ActiveQuery;
-use yii\helpers\Json;
 
 /**
  * This is the model class for table "tn_event".

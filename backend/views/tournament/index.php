@@ -1,18 +1,19 @@
 <?php
 
+
+use frontend\models\sport\Event;
+use frontend\models\sport\Tournament;
+use yii\helpers\Url;
+
 /**
  * @var yii\web\View $this
  * @var Tournament $tournament
  * @var Event[] $events
  */
 
-use frontend\models\sport\Event;
-use frontend\models\sport\Tournament;
-use yii\helpers\Url;
-
 $this->title = $tournament->name;
 
-$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournament/tournaments']];
+$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournaments']];
 $this->params['breadcrumbs'][] = $tournament->name;
 
 ?>

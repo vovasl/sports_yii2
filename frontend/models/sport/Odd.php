@@ -2,6 +2,7 @@
 
 namespace frontend\models\sport;
 
+
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
