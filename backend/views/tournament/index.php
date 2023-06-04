@@ -1,47 +1,60 @@
 <?php
 
 
-use frontend\models\sport\Event;
 use frontend\models\sport\Tournament;
-use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\web\View;
+use backend\models\TournamentEventSearch;
+use yii\data\ActiveDataProvider;
 
 /**
- * @var yii\web\View $this
- * @var Tournament $tournament
- * @var Event[] $events
+ * @var View $this
+ * @var Tournament $model
+ * @var TournamentEventSearch $searchModel
+ * @var ActiveDataProvider $dataProvider
  */
 
-$this->title = $tournament->name;
+$this->title = $model->name;
 
-$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournaments']];
-$this->params['breadcrumbs'][] = $tournament->name;
+$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<h1><?= $tournament->name ?></h1>
+<div class="tournament-index">
 
-<div class="container header">
-    <div class="row">
-        <div class="header-col col-1">ID</div>
-        <div class="header-col col-2">Start</div>
-        <div class="header-col col-1">Round</div>
-        <div class="header-col col">Event</div>
-        <div class="header-col col-1">Odds</div>
-        <div class="header-col col-2">Result</div>
-    </div>
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            'id',
+            [
+                'label' => 'Start',
+                'value' => 'formatStartAt'
+            ],
+            [
+                'label' => 'Round',
+                'value' => 'tournamentRound.name',
+            ],
+            [
+                'label' => 'Event',
+                'format' => 'raw',
+                'value' => function($model) {
+                    return Html::a($model->fullName, ['/event/index', 'id' => $model->id]);
+                }
+            ],
+            [
+                'label' => 'Odds',
+                'attribute' => 'count_odds',
+                'value' => function($model) {
+                    return count($model->odds);
+                }
+            ],
+            'result'
+        ],
+    ]); ?>
+
 </div>
-
-<?php foreach ($events as $event): ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-1 text-center"><?= $event->id ?></div>
-            <div class="col-2 text-center"><?= $event->formatStartAt ?></div>
-            <div class="col-1 text-center"><?= $event->tournamentRound->name ?></div>
-            <div class="col">
-                <a href="<?= Url::to(['/event/index', 'id' => $event->id]) ?>"><?= $event->fullName ?></a>
-            </div>
-            <div class="col-1 text-center"><?= count($event->odds) ?></div>
-            <div class="col-2 text-center"><?= $event->result ?></div>
-        </div>
-    </div>
-<?php endforeach; ?>
