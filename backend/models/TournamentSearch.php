@@ -70,12 +70,11 @@ class TournamentSearch extends Tournament
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
             Tour::tableName() . '.id' => $this->tour_id,
             Surface::tableName() . '.id' => $this->surface_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->name]);
 
         return $dataProvider;
     }

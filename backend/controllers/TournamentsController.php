@@ -5,6 +5,7 @@ namespace backend\controllers;
 
 use frontend\models\sport\Tournament;
 use backend\models\TournamentSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -28,6 +29,15 @@ class TournamentsController extends Controller
                     'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
                     ],
                 ],
             ]
