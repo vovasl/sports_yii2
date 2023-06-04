@@ -12,6 +12,10 @@ use frontend\models\sport\Round;
 class TournamentEventSearch extends Event
 {
 
+    public $round_id;
+
+    public $player;
+
     /**
      * {@inheritdoc}
      */
@@ -19,7 +23,8 @@ class TournamentEventSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games'], 'integer'],
+            [['round', 'home', 'away', 'total', 'total_games', 'round_id'], 'integer'],
+            [['player'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
@@ -44,8 +49,16 @@ class TournamentEventSearch extends Event
     {
         $query = Event::find()
             ->from(['event' => 'tn_event'])
-            ->withData()
-            ->with('odds', 'setsResult')
+            ->with(['odds', 'setsResult'])
+            ->joinWith([
+                'tournamentRound',
+                'homePlayer' => function($q) {
+                    $q->from(Player::tableName() . ' home');
+                },
+                'awayPlayer' => function($q) {
+                    $q->from(Player::tableName() . ' away');
+                }
+            ])
             ->where(['tournament' => $id])
             ->orderTournament()
         ;
@@ -64,14 +77,15 @@ class TournamentEventSearch extends Event
         }
 
         // grid filtering conditions
-        /*
-        $query->andFilterWhere([
-            Tour::tableName() . '.id' => $this->tour_id,
-            Surface::tableName() . '.id' => $this->surface_id,
-        ]);
-        */
 
-        //$query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->name]);
+        $query->andFilterWhere([
+            Round::tableName() . '.id' => $this->round_id,
+        ]);
+
+        $query->andFilterWhere(['or',
+            ['like', 'home.name', $this->player],
+            ['like', 'away.name', $this->player]
+        ]);
 
         return $dataProvider;
     }

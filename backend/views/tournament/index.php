@@ -1,6 +1,7 @@
 <?php
 
 
+use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -17,7 +18,7 @@ use yii\data\ActiveDataProvider;
 
 $this->title = $model->name;
 
-$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournaments']];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -37,10 +38,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => 'Round',
+                'attribute' => 'round_id',
                 'value' => 'tournamentRound.name',
+                'filter' => Round::dropdown(),
             ],
             [
                 'label' => 'Event',
+                'attribute' => 'player',
                 'format' => 'raw',
                 'value' => function($model) {
                     return Html::a($model->fullName, ['/event/index', 'id' => $model->id]);

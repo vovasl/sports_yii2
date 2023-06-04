@@ -4,6 +4,7 @@ namespace frontend\models\sport;
 
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tn_round".
@@ -14,10 +15,8 @@ use yii\db\ActiveQuery;
  *
  * @property Event[] $events
  */
-class Round extends \yii\db\ActiveRecord
+class Round extends ActiveRecord
 {
-
-    CONST QUALIFICATION = 5;
 
     /**
      * {@inheritdoc}
@@ -60,4 +59,13 @@ class Round extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Event::class, ['round' => 'id']);
     }
+
+    /**
+     * @return array
+     */
+    public static function dropdown(): array
+    {
+        return self::find()->select(['name', 'id'])->indexBy('id')->orderBy('rank')->column();
+    }
+
 }

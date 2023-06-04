@@ -9,7 +9,7 @@ use frontend\models\sport\Event;
 
 $this->title = $event->fullName;
 
-$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournament/tournaments']];
+$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournaments']];
 $this->params['breadcrumbs'][] = ['label' => $event->eventTournament->name, 'url' => ['/tournament/' . $event->tournament]];
 $this->params['breadcrumbs'][] = $event->fullName;
 
