@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 
-use frontend\models\sport\Event;
+use backend\models\TournamentEventSearch;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -38,23 +38,32 @@ class TournamentController extends Controller
     public function actionIndex(int $id): string
     {
 
-        if (!$tournament = Tournament::findOne($id)) {
-            throw new NotFoundHttpException('This tournament does not exist');
-        }
-
-        $events = Event::find()
-            ->from(['event' => 'tn_event'])
-            ->withData()
-            ->with('odds', 'setsResult')
-            ->where(['tournament' => $id])
-            ->orderTournament()
-            ->all()
-        ;
+        $model = $this->findModel($id);
+        $searchModel = new TournamentEventSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams, $id);
 
         return $this->render('index', [
-            'tournament' => $tournament,
-            'events' => $events
+            'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
+
+    }
+
+    /**
+     * Finds the Tournament model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return Tournament the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel(int $id): Tournament
+    {
+        if (($model = Tournament::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested tournament does not exist.');
     }
 
 }

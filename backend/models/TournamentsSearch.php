@@ -3,16 +3,16 @@
 namespace backend\models;
 
 
-use frontend\models\sport\Surface;
-use frontend\models\sport\Tour;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use frontend\models\sport\Surface;
+use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 
 /**
- * TournamentSearch represents the model behind the search form of `frontend\models\sport\Tournament`.
+ * TournamentsSearch represents the model behind the search form of `frontend\models\sport\Tournament`.
  */
-class TournamentSearch extends Tournament
+class TournamentsSearch extends Tournament
 {
 
     public $tour_id;

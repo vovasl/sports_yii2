@@ -9,12 +9,12 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\web\View;
-use backend\models\TournamentSearch;
+use backend\models\TournamentsSearch;
 use yii\data\ActiveDataProvider;
 
 /**
  * @var View $this
- * @var TournamentSearch $searchModel
+ * @var TournamentsSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 
@@ -36,11 +36,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             [
+                'label' => 'Tour',
                 'attribute' => 'tour_id',
                 'value' => 'tournamentTour.name',
                 'filter' => Tour::dropdown(),
             ],
             [
+                'label' => 'Surface',
                 'attribute' => 'surface_id',
                 'value' => 'tournamentSurface.name',
                 'filter' => Surface::dropdown(),
@@ -53,6 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'label' => 'Events',
                 'attribute' => 'count_events',
                 'value' => function($model) {
                     return count($model->events);

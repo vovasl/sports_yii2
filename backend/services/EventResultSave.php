@@ -36,7 +36,7 @@ class EventResultSave extends Component
 
             /** check event */
             if(!$eventLocal = $this->checkEventData($event)) {
-                $msg .= "<span style='color: red;'>Add sofascore player id or event without odds</span>";
+                $msg .= "<span style='color: red;'>Add sofascore player id or event has not been added</span>";
                 continue;
             }
 
