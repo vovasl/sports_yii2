@@ -54,4 +54,13 @@ class Surface extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Tournament::class, ['surface' => 'id']);
     }
+
+    /**
+     * @return array
+     */
+    public static function dropdown(): array
+    {
+        return self::find()->select(['name', 'id'])->indexBy('id')->column();
+    }
+
 }

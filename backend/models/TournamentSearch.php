@@ -79,4 +79,5 @@ class TournamentSearch extends Tournament
 
         return $dataProvider;
     }
+
 }

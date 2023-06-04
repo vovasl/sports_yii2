@@ -54,7 +54,7 @@ class Tournament extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'tour_id' => 'Tour',
-            'name' => 'Name',
+            'name' => 'Tournament',
             'surface_id' => 'Surface',
             'comment' => 'Comment',
             'count_events' => 'Events'

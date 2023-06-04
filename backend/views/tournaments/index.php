@@ -38,7 +38,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'tour_id',
                 'value' => 'tournamentTour.name',
-                'filter' => Tour::find()->select(['name', 'id'])->indexBy('id')->column(),
+                'filter' => Tour::dropdown(),
+            ],
+            [
+                'attribute' => 'surface_id',
+                'value' => 'tournamentSurface.name',
+                'filter' => Surface::dropdown(),
             ],
             [
                 'attribute' => 'name',
@@ -46,11 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function($model) {
                     return Html::a($model->name, ['/tournament/index', 'id' => $model->id]);
                 }
-            ],
-            [
-                'attribute' => 'surface_id',
-                'value' => 'tournamentSurface.name',
-                'filter' => Surface::find()->select(['name', 'id'])->indexBy('id')->column(),
             ],
             [
                 'attribute' => 'count_events',
