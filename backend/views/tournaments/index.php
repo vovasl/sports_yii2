@@ -28,7 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Tournament', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Reset', ['/tournaments'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= GridView::widget([

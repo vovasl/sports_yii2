@@ -28,6 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <p>
+        <?= Html::a('Reset', ['/tournament/' . $model->id], ['class' => 'btn btn-primary']) ?>
+    </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
