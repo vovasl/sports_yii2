@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'summary' => 'Total: {totalCount}',
         'columns' => [
             [
                 'label' => 'Tour',

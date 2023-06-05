@@ -479,4 +479,25 @@ class Event extends \yii\db\ActiveRecord
         return "{$this->home_result}:{$this->away_result}({$sets})";
     }
 
+
+    /**
+     * @return string[]
+     */
+    public static function resultDropdown(): array
+    {
+        return [
+            1 => 'Yes',
+            2 => 'No'
+        ];
+    }
+
+    /**
+     * @return int[]
+     */
+    public static function setsDropdown(): array
+    {
+        $values = range(2, 5);
+        return array_combine($values, $values);
+    }
+
 }

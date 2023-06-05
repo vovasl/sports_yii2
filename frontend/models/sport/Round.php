@@ -18,6 +18,9 @@ use yii\db\ActiveRecord;
 class Round extends ActiveRecord
 {
 
+    const QUALIFIER = 5;
+    const QUALIFIER_FILTER = 100;
+
     /**
      * {@inheritdoc}
      */
@@ -65,7 +68,9 @@ class Round extends ActiveRecord
      */
     public static function dropdown(): array
     {
-        return self::find()->select(['name', 'id'])->indexBy('id')->orderBy('rank')->column();
+        $rounds = self::find()->select(['name', 'id'])->indexBy('id')->orderBy('rank')->column();
+        $rounds[self::QUALIFIER_FILTER] = 'No Qualifiers';
+        return $rounds;
     }
 
 }

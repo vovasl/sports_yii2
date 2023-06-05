@@ -16,6 +16,10 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'nullDisplay' => '',
+        ],
         'pinnacle' => Pinnacle::class,
         'sofascore' => Sofascore::class,
         'event_save' => EventSave::class,

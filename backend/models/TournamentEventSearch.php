@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use frontend\models\sport\Event;
 use frontend\models\sport\Player;
 use frontend\models\sport\Round;
+use yii\db\Expression;
 
 class TournamentEventSearch extends Event
 {
@@ -16,6 +17,8 @@ class TournamentEventSearch extends Event
 
     public $player;
 
+    public $result;
+
     /**
      * {@inheritdoc}
      */
@@ -23,7 +26,7 @@ class TournamentEventSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games', 'round_id'], 'integer'],
+            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result'], 'integer'],
             [['player'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
@@ -77,15 +80,42 @@ class TournamentEventSearch extends Event
         }
 
         // grid filtering conditions
-
         $query->andFilterWhere([
-            Round::tableName() . '.id' => $this->round_id,
+            'total' => $this->total
         ]);
 
-        $query->andFilterWhere(['or',
-            ['like', 'home.name', $this->player],
-            ['like', 'away.name', $this->player]
-        ]);
+        if(!is_null($this->round_id)) {
+            if($this->round_id == Round::QUALIFIER_FILTER) {
+                $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
+            }
+            else {
+                $query->andFilterWhere([Round::tableName() . '.id' => $this->round_id]);
+            }
+        }
+
+        if(!is_null($this->player)) {
+            $query->andFilterWhere(['or',
+                ['like', 'home.name', $this->player],
+                ['like', 'away.name', $this->player]
+            ]);
+        }
+
+        if(!is_null($this->result)) {
+            if($this->result == 1) {
+                $query->andFilterWhere(['IS NOT', 'home_result', new Expression('null')]);
+                $query->andFilterWhere(['IS NOT', 'away_result', new Expression('null')]);
+            }
+            else if($this->result == 2) {
+                $query->andFilterWhere(['IS', 'home_result', new Expression('null')]);
+                $query->andFilterWhere(['IS', 'away_result', new Expression('null')]);
+            }
+        }
+
+        if(!is_null($this->total_games)) {
+            $query->andFilterWhere([
+                '>=', 'total_games', $this->total_games
+            ]);
+        }
 
         return $dataProvider;
     }

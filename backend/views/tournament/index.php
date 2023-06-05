@@ -1,6 +1,7 @@
 <?php
 
 
+use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\helpers\Html;
@@ -30,8 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'summary' => 'Total: {totalCount}',
         'columns' => [
-            'id',
             [
                 'label' => 'Start',
                 'value' => 'formatStartAt'
@@ -51,13 +52,29 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'result',
+                'label' => 'Result',
+                'value' =>'result',
+                'filter' => Event::resultDropdown(),
+            ],
+            [
+                'attribute' => 'total',
+                'label' => 'Sets',
+                'value' => 'total',
+                'filter' => Event::setsDropdown(),
+            ],
+            [
+                'attribute' => 'total_games',
+                'label' => 'Games',
+                'value' => 'total_games'
+            ],
+            [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
                 'value' => function($model) {
                     return count($model->odds);
                 }
             ],
-            'result'
         ],
     ]); ?>
 
