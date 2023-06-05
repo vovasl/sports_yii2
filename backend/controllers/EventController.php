@@ -73,27 +73,6 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionWithoutOdds(): string
-    {
-        $events = Event::find()
-            ->select(['event.*','odds_count' => 'count(sp_odd.id)'])
-            ->from(['event' => 'tn_event'])
-            ->withData()
-            ->joinWith('odds')
-            ->groupBy('event.id')
-            ->orderTournament()
-            ->having(['<=', 'odds_count', 0])
-            ->all()
-        ;
-
-        return $this->render('without-odds', [
-            'events' => $events
-        ]);
-    }
-
 
     /**
      * @param null $id

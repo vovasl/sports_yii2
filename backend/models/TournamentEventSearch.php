@@ -22,6 +22,8 @@ class TournamentEventSearch extends Event
 
     public $result;
 
+    public $count_odds;
+
     /**
      * {@inheritdoc}
      */
@@ -29,7 +31,7 @@ class TournamentEventSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result'], 'integer'],
+            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds'], 'integer'],
             [['player', 'tournament_name'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
@@ -55,9 +57,11 @@ class TournamentEventSearch extends Event
     public function search(array $params, $id = null): ActiveDataProvider
     {
         $query = Event::find()
+            ->select(['event.*', 'count(sp_odd.id) count_odds'])
             ->from(['event' => 'tn_event'])
-            ->with(['odds', 'setsResult'])
+            ->with(['setsResult'])
             ->joinWith([
+                'odds',
                 'tournamentRound',
                 'eventTournament',
                 'homePlayer' => function($q) {
@@ -67,7 +71,7 @@ class TournamentEventSearch extends Event
                     $q->from(Player::tableName() . ' away');
                 }
             ])
-            //->where(['tournament' => $id])
+            ->groupBy('event.id')
         ;
 
         if(!is_null($id)) {
@@ -139,6 +143,16 @@ class TournamentEventSearch extends Event
             $query->andFilterWhere([
                 '>=', 'total_games', $this->total_games
             ]);
+        }
+
+        if(!is_null($this->count_odds)) {
+            //$query->andFilterWhere(['IS', 'home_result', new Expression('null')]);
+            if($this->count_odds == 2) {
+                $query->having(['count_odds' => 0]);
+            }
+            else if($this->count_odds == 1) {
+                $query->having(['>', 'count_odds', 0]);
+            }
         }
 
         return $dataProvider;

@@ -39,6 +39,7 @@ $reset = (!is_null($model)) ? "/tournaments/{$model->id}/events" : "/tournaments
         'filterModel' => $searchModel,
         'summary' => 'Total: {totalCount}',
         'columns' => [
+            'id',
             [
                 'label' => 'Start',
                 'attribute' => 'start_at',
@@ -85,7 +86,8 @@ $reset = (!is_null($model)) ? "/tournaments/{$model->id}/events" : "/tournaments
                 'attribute' => 'count_odds',
                 'value' => function($model) {
                     return count($model->odds);
-                }
+                },
+                'filter' => [1 => 'Yes', 2 => 'No']
             ],
         ],
     ]); ?>

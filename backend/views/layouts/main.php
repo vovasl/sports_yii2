@@ -37,8 +37,7 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'Events', 'items' => [
-            ['label' => 'Without Odds', 'url' => ['/event/without-odds']],
-            ['label' => 'Add', 'url' => ['/event/add']],
+            ['label' => 'Add Events', 'url' => ['/event/add']],
             ['label' => 'Add Line', 'url' => ['/event/add-line']],
             ['label' => 'Add Result', 'url' => ['/event/add-result']],
             ['label' => 'Add Results', 'url' => ['/event/add-results']],
