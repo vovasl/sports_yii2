@@ -22,6 +22,8 @@ $this->title = (!is_null($model)) ? $model->name : 'Events';
 $this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournaments']];
 $this->params['breadcrumbs'][] = $this->title;
 
+$reset = (!is_null($model)) ? "/tournaments/{$model->id}/events" : "/tournaments/events";
+
 ?>
 
 <div class="tournament-index">
@@ -29,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Reset', ['/tournament/' . $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Reset', [$reset], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= GridView::widget([
