@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'name',
                 'format' => 'raw',
                 'value' => function($model) {
-                    return Html::a($model->name, ['/tournament/index', 'id' => $model->id]);
+                    return Html::a($model->name, ["/tournaments/{$model->id}/events"]);
                 }
             ],
             [

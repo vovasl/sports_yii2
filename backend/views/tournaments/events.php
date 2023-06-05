@@ -12,12 +12,12 @@ use yii\data\ActiveDataProvider;
 
 /**
  * @var View $this
- * @var Tournament $model
+ * @var Tournament|null $model
  * @var TournamentEventSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 
-$this->title = $model->name;
+$this->title = (!is_null($model)) ? $model->name : 'Events';
 
 $this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournaments']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -39,7 +39,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             [
                 'label' => 'Start',
+                'attribute' => 'start_at',
                 'value' => 'formatStartAt'
+            ],
+            [
+                'label' => 'Tournament',
+                'attribute' => 'tournament_name',
+                'value' => 'eventTournament.name'
             ],
             [
                 'label' => 'Round',

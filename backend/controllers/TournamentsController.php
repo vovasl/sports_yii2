@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 
+use backend\models\TournamentEventSearch;
 use frontend\models\sport\Tournament;
 use backend\models\TournamentsSearch;
 use yii\filters\AccessControl;
@@ -57,6 +58,25 @@ class TournamentsController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * @param int|null $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionEvents(int $id = null): string
+    {
+
+        $searchModel = new TournamentEventSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams, $id);
+
+        return $this->render('events', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'model' => (!is_null($id)) ? $this->findModel($id) : null,
+        ]);
+
     }
 
     /**

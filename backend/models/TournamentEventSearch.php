@@ -3,6 +3,7 @@
 namespace backend\models;
 
 
+use frontend\models\sport\Tournament;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\sport\Event;
@@ -12,6 +13,8 @@ use yii\db\Expression;
 
 class TournamentEventSearch extends Event
 {
+
+    public $tournament_name;
 
     public $round_id;
 
@@ -27,10 +30,11 @@ class TournamentEventSearch extends Event
         return [
             [['start_at'], 'safe'],
             [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result'], 'integer'],
-            [['player'], 'string'],
+            [['player', 'tournament_name'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
+            [['tournament'], 'exist', 'skipOnError' => true, 'targetClass' => Tournament::class, 'targetAttribute' => ['tournament' => 'id']],
         ];
     }
 
@@ -48,13 +52,14 @@ class TournamentEventSearch extends Event
      * @param $id
      * @return ActiveDataProvider
      */
-    public function search(array $params, $id): ActiveDataProvider
+    public function search(array $params, $id = null): ActiveDataProvider
     {
         $query = Event::find()
             ->from(['event' => 'tn_event'])
             ->with(['odds', 'setsResult'])
             ->joinWith([
                 'tournamentRound',
+                'eventTournament',
                 'homePlayer' => function($q) {
                     $q->from(Player::tableName() . ' home');
                 },
@@ -62,12 +67,27 @@ class TournamentEventSearch extends Event
                     $q->from(Player::tableName() . ' away');
                 }
             ])
-            ->where(['tournament' => $id])
-            ->orderTournament()
+            //->where(['tournament' => $id])
         ;
+
+        if(!is_null($id)) {
+            $query->where(['tournament' => $id]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['start_at' => SORT_DESC],
+                'attributes' => [
+                    'start_at',
+                    'round_id' => [
+                        'asc' => [Round::tableName() . '.rank' => SORT_ASC, 'event.start_at' => SORT_DESC],
+                        'desc' => [Round::tableName() . '.rank' => SORT_DESC, 'event.start_at' => SORT_ASC],
+                    ],
+                    'total',
+                    'total_games'
+                ]
+            ],
             'pagination' => false
         ]);
 
@@ -77,6 +97,10 @@ class TournamentEventSearch extends Event
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
+        }
+
+        if(is_null($id) && !is_null($this->tournament_name)) {
+            $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
         }
 
         // grid filtering conditions
