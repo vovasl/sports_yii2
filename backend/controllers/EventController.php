@@ -80,8 +80,8 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 884;
-        $save = 0;
+        $eventId = 994;
+        $save = 1;
 
         $id = (empty($id)) ? $eventId : $id;
         $log = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();

@@ -6,6 +6,7 @@ namespace frontend\models\sport;
 use frontend\models\sport\query\EventQuery;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "tn_event".
@@ -198,9 +199,8 @@ class Event extends \yii\db\ActiveRecord
         return $this
             ->hasMany(Odd::class, ['event' => 'id', 'player_id' => 'home'])
             ->joinWith('oddType', false)
-            ->orderBy([
-                'sp_odd.value' => SORT_ASC
-            ])
+            //->orderBy(['sp_odd.value' => SORT_ASC])
+            ->orderBy(new Expression('sp_odd.value * 1 DESC'))
         ;
 
     }
@@ -213,9 +213,8 @@ class Event extends \yii\db\ActiveRecord
         return $this
             ->hasMany(Odd::class, ['event' => 'id', 'player_id' => 'away'])
             ->joinWith('oddType', false)
-            ->orderBy([
-                'sp_odd.value' => SORT_ASC
-            ])
+            //->orderBy(['sp_odd.value' => SORT_ASC])
+            ->orderBy(new Expression('sp_odd.value * 1 ASC'))
         ;
     }
 
