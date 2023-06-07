@@ -64,9 +64,9 @@ class Odd extends ActiveRecord
     {
         return [
             [['event', 'odd'], 'required'],
-            [['event', 'type', 'player_id', 'odd', 'profit', 'value'], 'integer'],
+            [['event', 'type', 'player_id', 'odd', 'profit'], 'integer'],
             [['created_at'], 'safe'],
-            [['add_type'], 'string', 'max' => 255],
+            [['add_type', 'value'], 'string', 'max' => 255],
             [['event'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event' => 'id']],
             [['type'], 'exist', 'skipOnError' => true, 'targetClass' => OddType::class, 'targetAttribute' => ['type' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
