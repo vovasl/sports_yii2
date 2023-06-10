@@ -1,28 +1,31 @@
 <?php
 
-
-use frontend\models\sport\Surface;
-use frontend\models\sport\Tour;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\web\View;
+use frontend\models\sport\Player;
 
 /**
- * @var yii\web\View $this
- * @var frontend\models\sport\Tournament $model
- * @var yii\widgets\ActiveForm $form
+ * @var View $this
+ * @var Player $model
+ * @var ActiveForm $form
  */
 
 ?>
 
-<div class="tournament-form">
+<div class="player-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'tour')->dropDownList(Tour::dropdown(), ['prompt' => 'Select Tour']) ?>
-
-    <?= $form->field($model, 'surface')->dropDownList(Surface::dropdown(), ['prompt' => 'Select Surface']) ?>
+    <?php //echo $form->field($model, 'type')->textInput() ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+
+    <?php //echo $form->field($model, 'birthday')->textInput() ?>
+
+    <?php //echo $form->field($model, 'plays')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'sofa_id')->textInput() ?>
 
     <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
 

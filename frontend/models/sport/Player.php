@@ -16,8 +16,8 @@ use yii\db\ActiveQuery;
  * @property string|null $comment
  * @property int $sofa_id
  *
- * @property Event[] $awayEvents
  * @property Event[] $homeEvents
+ * @property Event[] $awayEvents
  * @property Event[] $winnerEvents
  * @property PlayerType $playerType
  * @property Odd[] $odds;
@@ -35,7 +35,7 @@ class Player extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['type', 'sofa_id'], 'integer'],
@@ -64,6 +64,16 @@ class Player extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[homeEvents]].
+     *
+     * @return ActiveQuery
+     */
+    public function getHomeEvents(): ActiveQuery
+    {
+        return $this->hasMany(Event::class, ['home' => 'id']);
+    }
+
+    /**
      * Gets query for [[awayEvents]].
      *
      * @return ActiveQuery
@@ -74,13 +84,11 @@ class Player extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[homeEvents]].
-     *
-     * @return ActiveQuery
+     * @return Event[]
      */
-    public function getHomeEvents(): ActiveQuery
+    public function getEvents(): array
     {
-        return $this->hasMany(Event::class, ['home' => 'id']);
+        return array_merge($this->homeEvents, $this->awayEvents);
     }
 
     /**
