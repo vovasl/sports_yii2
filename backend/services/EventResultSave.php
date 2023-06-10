@@ -40,6 +40,12 @@ class EventResultSave extends Component
                 continue;
             }
 
+            /** check the event for odds */
+            if(count($eventLocal->odds) == 0) {
+                $msg .= "<span style='color: red;'>Event without odds</span>";
+                continue;
+            }
+
             $msg .= "OK";
             $msg .= "<br> Event ID: {$eventLocal->id}";
 
