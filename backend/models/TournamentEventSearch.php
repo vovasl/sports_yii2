@@ -92,7 +92,10 @@ class TournamentEventSearch extends Event
                     'total_games'
                 ]
             ],
-            'pagination' => false
+            'pagination' => [
+                'pageSize' => 100,
+            ],
+            //'pagination' => false
         ]);
 
         $this->load($params);

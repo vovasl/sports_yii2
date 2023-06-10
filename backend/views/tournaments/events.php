@@ -9,6 +9,7 @@ use yii\grid\GridView;
 use yii\web\View;
 use backend\models\TournamentEventSearch;
 use yii\data\ActiveDataProvider;
+use yii\widgets\LinkPager;
 
 /**
  * @var View $this
@@ -38,6 +39,19 @@ $reset = (!is_null($model)) ? "/tournaments/{$model->id}/events" : "/tournaments
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'summary' => 'Total: {totalCount}',
+        'pager' => [
+            'linkContainerOptions' => [
+                'class' => 'page-item'
+            ],
+            'linkOptions' => [
+                'class' => 'page-link'
+            ],
+            'disabledListItemSubTagOptions' => [
+                'class' => 'page-link'
+            ],
+            'pagination' => $dataProvider->pagination,
+            'class' => LinkPager::class
+        ],
         'columns' => [
             'id',
             [

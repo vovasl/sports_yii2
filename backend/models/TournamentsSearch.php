@@ -58,7 +58,10 @@ class TournamentsSearch extends Tournament
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => false
+            'pagination' => [
+                'pageSize' => 100,
+            ],
+            //'pagination' => false
         ]);
 
         $this->load($params);

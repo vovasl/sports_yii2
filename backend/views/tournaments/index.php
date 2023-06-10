@@ -11,6 +11,7 @@ use yii\grid\GridView;
 use yii\web\View;
 use backend\models\TournamentsSearch;
 use yii\data\ActiveDataProvider;
+use yii\widgets\LinkPager;
 
 /**
  * @var View $this
@@ -36,6 +37,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'summary' => 'Total: {totalCount}',
+        'pager' => [
+            'linkContainerOptions' => [
+                'class' => 'page-item'
+            ],
+            'linkOptions' => [
+                'class' => 'page-link'
+            ],
+            'disabledListItemSubTagOptions' => [
+                'class' => 'page-link'
+            ],
+            'pagination' => $dataProvider->pagination,
+            'class' => LinkPager::class
+        ],
         'columns' => [
             [
                 'label' => 'Tour',
