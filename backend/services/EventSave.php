@@ -148,8 +148,8 @@ class EventSave extends Component
         $fixture->save();
         $event['id'] = $fixture->id;
 
-        /** exit for an existing event with odds */
-        if($updateEvent && count($fixture->odds) > 0) return true;
+        /** exit for an existing event with odds(number of odds must be more than 5) */
+        if($updateEvent && count($fixture->odds) > 5) return true;
 
         /** save logs */
         $log = new EventLog();
@@ -169,6 +169,9 @@ class EventSave extends Component
      */
     public function addOdds($event): bool
     {
+        /** remove all odds */
+        $this->removeOdds($event);
+
         foreach($event['odds'] as $k => $period) {
             foreach(self::TENNIS_ODDS_CONFIG[$k] as $line) {
 
@@ -198,6 +201,14 @@ class EventSave extends Component
         }
 
         return true;
+    }
+
+    /**
+     * @param $event
+     */
+    private function removeOdds($event)
+    {
+        Odd::deleteAll(['event' => $event['id']]);
     }
 
     /**
