@@ -80,8 +80,8 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 994;
-        $save = 1;
+        $eventId = 1139;
+        $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
         $log = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();
@@ -96,7 +96,7 @@ class EventController extends Controller
         ];
 
         $spreads = [
-            'spreads' => $eventLog['odds']['games'][1]['spreads']
+            'spreads' => $eventLog['odds']['games'][0]['spreads']
         ];
 
         $totals = [
@@ -104,8 +104,8 @@ class EventController extends Controller
         ];
 
         $odds = [
-            'sets' => array_merge($moneyline),
-            //'games' => array_merge($spreads),
+            //'sets' => array_merge($moneyline),
+            'games' => array_merge($spreads),
         ];
 
         $event = [
