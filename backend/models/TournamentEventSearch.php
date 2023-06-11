@@ -3,6 +3,8 @@
 namespace backend\models;
 
 
+use frontend\models\sport\Surface;
+use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -16,7 +18,11 @@ class TournamentEventSearch extends Event
 
     public $tournament_name;
 
+    public $tour_id;
+
     public $round_id;
+
+    public $surface_id;
 
     public $player;
 
@@ -31,7 +37,7 @@ class TournamentEventSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds'], 'integer'],
+            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id'], 'integer'],
             [['player', 'tournament_name'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
@@ -58,12 +64,14 @@ class TournamentEventSearch extends Event
     {
         $query = Event::find()
             ->select(['event.*', 'count(sp_odd.id) count_odds'])
-            ->from(['event' => 'tn_event'])
+            ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
                 'odds',
                 'tournamentRound',
                 'eventTournament',
+                'eventTournament.tournamentTour',
+                'eventTournament.tournamentSurface',
                 'homePlayer' => function($q) {
                     $q->from(Player::tableName() . ' home');
                 },
@@ -156,6 +164,14 @@ class TournamentEventSearch extends Event
             else if($this->count_odds == 1) {
                 $query->having(['>', 'count_odds', 0]);
             }
+        }
+
+        if(!is_null($this->surface_id)) {
+            $query->andFilterWhere([Surface::tableName() . '.id' => $this->surface_id]);
+        }
+
+        if(!is_null($this->tour_id)) {
+            $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
         }
 
         return $dataProvider;

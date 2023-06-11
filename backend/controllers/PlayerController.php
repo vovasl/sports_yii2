@@ -63,28 +63,6 @@ class PlayerController extends Controller
     }
 
     /**
-     * Creates a new Player model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|Response
-     */
-    public function actionCreate()
-    {
-        $model = new Player();
-
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
      * Updates an existing Player model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID

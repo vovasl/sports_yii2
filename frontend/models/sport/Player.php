@@ -24,6 +24,9 @@ use yii\db\ActiveQuery;
  */
 class Player extends \yii\db\ActiveRecord
 {
+
+    public $count_events;
+
     /**
      * {@inheritdoc}
      */
@@ -38,7 +41,7 @@ class Player extends \yii\db\ActiveRecord
     public function rules(): array
     {
         return [
-            [['type', 'sofa_id'], 'integer'],
+            [['type', 'sofa_id', 'count_events'], 'integer'],
             [['name'], 'required'],
             [['birthday'], 'safe'],
             [['comment'], 'string'],
@@ -59,7 +62,8 @@ class Player extends \yii\db\ActiveRecord
             'birthday' => 'Birthday',
             'plays' => 'Plays',
             'comment' => 'Comment',
-            'sofa_id' => 'Sofascore ID'
+            'sofa_id' => 'Sofascore ID',
+            'count_events' => 'Events'
         ];
     }
 
@@ -119,5 +123,16 @@ class Player extends \yii\db\ActiveRecord
     public function getOdds(): ActiveQuery
     {
         return $this->hasMany(Odd::class, ['id' => 'player_id']);
+    }
+
+    /**
+     * @param $tour
+     * @return array
+     */
+    public function getTourEvents($tour): array
+    {
+        return array_filter($this->events, function (Event $event) use ($tour) {
+            return ($event->eventTournament->tour == $tour);
+        });
     }
 }

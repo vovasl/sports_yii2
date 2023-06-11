@@ -3,6 +3,7 @@
 
 namespace backend\models;
 
+use frontend\models\sport\Event;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\sport\Player;
@@ -12,13 +13,14 @@ use frontend\models\sport\Player;
  */
 class PlayerSearch extends Player
 {
+
     /**
      * {@inheritdoc}
      */
     public function rules(): array
     {
         return [
-            [['id', 'type', 'sofa_id'], 'integer'],
+            [['id', 'type', 'sofa_id', 'count_events'], 'integer'],
             [['name', 'birthday', 'plays', 'comment'], 'safe'],
         ];
     }
@@ -42,13 +44,27 @@ class PlayerSearch extends Player
     public function search(array $params): ActiveDataProvider
     {
         $query = Player::find();
-        $query->with(['homeEvents', 'awayEvents']);
-
-        // add conditions that should always apply here
+        $query
+            ->select(['players.*', 'count(events.id) count_events'])
+            ->from(['players' => Player::tableName()])
+            ->with(['homeEvents', 'awayEvents', 'homeEvents.eventTournament', 'awayEvents.eventTournament'])
+            ->leftJoin(Event::tableName() . " events", "events.home = players.id OR events.away = players.id")
+            ->groupBy('players.id')
+        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => false
+            'sort' => [
+                'defaultOrder' => ['count_events' => SORT_DESC],
+                'attributes' => [
+                    'name',
+                    'sofa_id',
+                    'count_events'
+                ]
+            ],
+            'pagination' => [
+                'pageSize' => 100,
+            ],
         ]);
 
         $this->load($params);
@@ -70,6 +86,10 @@ class PlayerSearch extends Player
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'plays', $this->plays])
             ->andFilterWhere(['like', 'comment', $this->comment]);
+
+        if(!is_null($this->count_events)) {
+            $query->having(['>=', 'count_events', $this->count_events]);
+        }
 
         return $dataProvider;
     }

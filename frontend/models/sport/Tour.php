@@ -15,6 +15,10 @@ use yii\db\ActiveQuery;
  */
 class Tour extends \yii\db\ActiveRecord
 {
+
+    const ATP = 1;
+    const CHALLENGER = 2;
+
     /**
      * {@inheritdoc}
      */

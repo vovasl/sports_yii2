@@ -3,6 +3,8 @@
 
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
+use frontend\models\sport\Surface;
+use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -58,6 +60,18 @@ $reset = (!is_null($model)) ? "/tournaments/{$model->id}/events" : "/tournaments
                 'label' => 'Start',
                 'attribute' => 'start_at',
                 'value' => 'formatStartAt'
+            ],
+            [
+                'label' => 'Tour',
+                'attribute' => 'tour_id',
+                'value' => 'eventTournament.tournamentTour.name',
+                'filter' => Tour::dropdown(),
+            ],
+            [
+                'label' => 'Surface',
+                'attribute' => 'surface_id',
+                'value' => 'eventTournament.tournamentSurface.name',
+                'filter' => Surface::dropdown(),
             ],
             [
                 'label' => 'Tournament',

@@ -2,6 +2,7 @@
 
 
 use frontend\models\sport\Player;
+use frontend\models\sport\Tour;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -26,8 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Player', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Reset', ['/player'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Clear', ['/player'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -50,16 +50,32 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => LinkPager::class
         ],
         'columns' => [
-            'name',
-            //'plays',
-            //'comment:ntext',
-            'sofa_id',
             [
-                'attribute' => 'events',
-                'value' => function (Player $model) {
-                    return count($model->events);
+                'attribute' => 'name',
+                'format' => 'raw',
+                'value' => function(Player $model) {
+                    return Html::a($model->name, [
+                        "/tournaments/events",
+                        "TournamentEventSearch[player]" => $model->name
+                    ], ['target'=>'_blank']);
                 }
             ],
+            //'plays',
+            //'comment:ntext',
+            'count_events',
+            [
+                'label' => 'ATP',
+                'value' => function(Player $model) {
+                    return count($model->getTourEvents(Tour::ATP));
+                }
+            ],
+            [
+                'label' => 'Challenger',
+                'value' => function(Player $model) {
+                    return count($model->getTourEvents(Tour::CHALLENGER));
+                }
+            ],
+            'sofa_id',
             [
                 'class' => ActionColumn::class,
                 'template'=>'{view} {update}',
