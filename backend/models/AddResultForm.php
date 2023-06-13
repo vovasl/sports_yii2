@@ -62,7 +62,7 @@ class AddResultForm extends Model
                 ['away_result' => NULL]
             ])
             //->andWhere(['tournament' => 21])
-            ->andWhere(['<', 'start_at', new Expression('now() - INTERVAL 1 HOUR')])
+            ->andWhere(['<', 'start_at', new Expression('now() - INTERVAL 2 HOUR')])
             ->orderBy('start_at')
             ->all()
         , 'id', 'fullInfo');

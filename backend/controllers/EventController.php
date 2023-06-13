@@ -80,7 +80,7 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 1139;
+        $eventId = 1167;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
@@ -101,6 +101,10 @@ class EventController extends Controller
 
         $totals = [
             'totals' => $eventLog['odds']['games'][0]['totals']
+        ];
+
+        $teamTotals = [
+            'teamTotal' => $eventLog['odds']['games'][1]['teamTotal']
         ];
 
         $odds = [
