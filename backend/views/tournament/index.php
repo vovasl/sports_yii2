@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Reset', ['/tournaments'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Clear', ['/tournament'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= GridView::widget([
@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'name',
                 'format' => 'raw',
                 'value' => function($model) {
-                    return Html::a($model->name, ["/tournaments/{$model->id}/events"]);
+                    return Html::a($model->name, ["/tournament/{$model->id}"]);
                 }
             ],
             [
@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::class,
-                'template'=>'{view} {update}',
+                'template'=>'{update}',
                 'urlCreator' => function ($action, Tournament $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

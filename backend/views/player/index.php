@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function(Player $model) {
                     return Html::a($model->name, [
-                        "/tournaments/events",
+                        "/tournament/events",
                         "TournamentEventSearch[player]" => $model->name
                     ], ['target'=>'_blank']);
                 }

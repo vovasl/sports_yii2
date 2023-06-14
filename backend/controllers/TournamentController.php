@@ -15,7 +15,7 @@ use yii\web\Response;
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
-class TournamentsController extends Controller
+class TournamentController extends Controller
 {
 
     /**

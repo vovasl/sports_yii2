@@ -22,10 +22,11 @@ use yii\widgets\LinkPager;
 
 $this->title = (!is_null($model)) ? $model->name : 'Events';
 
-$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournaments']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournament']];
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ["/tournament/{$model->id}"]];
+$this->params['breadcrumbs'][] = 'Events';
 
-$reset = (!is_null($model)) ? "/tournaments/{$model->id}/events" : "/tournaments/events";
+$reset = (!is_null($model)) ? "/tournament/{$model->id}/events" : "/tournament/events";
 
 ?>
 
@@ -34,7 +35,7 @@ $reset = (!is_null($model)) ? "/tournaments/{$model->id}/events" : "/tournaments
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Reset', [$reset], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Clear', [$reset], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= GridView::widget([
