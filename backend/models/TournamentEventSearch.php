@@ -18,17 +18,11 @@ class TournamentEventSearch extends Event
 
     public $tournament_name;
 
-    public $tour_id;
-
     public $round_id;
-
-    public $surface_id;
 
     public $player;
 
     public $result;
-
-    public $count_odds;
 
     /**
      * {@inheritdoc}
@@ -37,12 +31,11 @@ class TournamentEventSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id'], 'integer'],
-            [['player', 'tournament_name'], 'string'],
+            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result'], 'integer'],
+            [['player'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
-            [['tournament'], 'exist', 'skipOnError' => true, 'targetClass' => Tournament::class, 'targetAttribute' => ['tournament' => 'id']],
         ];
     }
 
@@ -115,11 +108,6 @@ class TournamentEventSearch extends Event
             $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'total' => $this->total
-        ]);
-
         if(!is_null($this->round_id)) {
             if($this->round_id == Round::QUALIFIER_FILTER) {
                 $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
@@ -147,28 +135,16 @@ class TournamentEventSearch extends Event
             }
         }
 
+        if(!is_null($this->total)) {
+            $query->andFilterWhere([
+                'total' => $this->total
+            ]);
+        }
+
         if(!is_null($this->total_games)) {
             $query->andFilterWhere([
                 '>=', 'total_games', $this->total_games
             ]);
-        }
-
-        if(!is_null($this->count_odds)) {
-            //$query->andFilterWhere(['IS', 'home_result', new Expression('null')]);
-            if($this->count_odds == 2) {
-                $query->having(['count_odds' => 0]);
-            }
-            else if($this->count_odds == 1) {
-                $query->having(['>', 'count_odds', 0]);
-            }
-        }
-
-        if(!is_null($this->surface_id)) {
-            $query->andFilterWhere([Surface::tableName() . '.id' => $this->surface_id]);
-        }
-
-        if(!is_null($this->tour_id)) {
-            $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
         }
 
         return $dataProvider;

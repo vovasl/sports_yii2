@@ -3,8 +3,6 @@
 
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
-use frontend\models\sport\Surface;
-use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -32,6 +30,7 @@ $reset = "/tournament/{$model->id}/event";
 
 <div class="tournament-index">
 
+    <h4><?php echo "{$model->tournamentTour->name} {$model->tournamentSurface->name}" ?></h4>
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
@@ -56,28 +55,11 @@ $reset = "/tournament/{$model->id}/event";
             'class' => LinkPager::class
         ],
         'columns' => [
-            'id',
             [
                 'label' => 'Start',
                 'attribute' => 'start_at',
-                'value' => 'formatStartAt'
-            ],
-            [
-                'label' => 'Tour',
-                'attribute' => 'tour_id',
-                'value' => 'eventTournament.tournamentTour.name',
-                'filter' => Tour::dropdown(),
-            ],
-            [
-                'label' => 'Surface',
-                'attribute' => 'surface_id',
-                'value' => 'eventTournament.tournamentSurface.name',
-                'filter' => Surface::dropdown(),
-            ],
-            [
-                'label' => 'Tournament',
-                'attribute' => 'tournament_name',
-                'value' => 'eventTournament.name'
+                'value' => 'formatStartAt',
+                'filter' => '',
             ],
             [
                 'label' => 'Round',
@@ -108,15 +90,8 @@ $reset = "/tournament/{$model->id}/event";
             [
                 'attribute' => 'total_games',
                 'label' => 'Games',
-                'value' => 'total_games'
-            ],
-            [
-                'label' => 'Odds',
-                'attribute' => 'count_odds',
-                'value' => function($model) {
-                    return count($model->odds);
-                },
-                'filter' => [1 => 'Yes', 2 => 'No']
+                'value' => 'total_games',
+                'filter' => '',
             ],
         ],
     ]); ?>
