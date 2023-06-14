@@ -30,7 +30,7 @@ $reset = "/tournament/{$model->id}/event";
 
 <div class="tournament-index">
 
-    <h4><?php echo "{$model->tournamentTour->name} {$model->tournamentSurface->name}" ?></h4>
+    <h4><?php echo "{$model->tournamentTour->name}: {$model->tournamentSurface->name}" ?></h4>
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>

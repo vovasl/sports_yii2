@@ -57,7 +57,8 @@ $reset = "/event";
             [
                 'label' => 'Start',
                 'attribute' => 'start_at',
-                'value' => 'formatStartAt'
+                'value' => 'formatStartAt',
+                'filter' => '',
             ],
             [
                 'label' => 'Tour',
@@ -105,7 +106,8 @@ $reset = "/event";
             [
                 'attribute' => 'total_games',
                 'label' => 'Games',
-                'value' => 'total_games'
+                'value' => 'total_games',
+                'filter' => '',
             ],
             [
                 'label' => 'Odds',

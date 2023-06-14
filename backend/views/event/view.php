@@ -18,6 +18,6 @@ $this->params['breadcrumbs'][] = $event->fullName;
 
 <h4><?= $event->formatStartAt . ' ' . $event->tournamentRound->name . ' ' . $event->fullName .' ' . $event->result ?></h4>
 
-<?= $this->render('_games', ['event' => $event]) ?>
-<?= $this->render('_teams', ['event' => $event]) ?>
-<?= $this->render('_sets', ['event' => $event]) ?>
+<?= $this->render('view/_games', ['event' => $event]) ?>
+<?= $this->render('view/_teams', ['event' => $event]) ?>
+<?= $this->render('view/_sets', ['event' => $event]) ?>
