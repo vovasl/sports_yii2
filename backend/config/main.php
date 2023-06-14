@@ -43,7 +43,7 @@ return [
             'rules' => [
                 '/tournament/<id:\d+>' => '/tournament/view',
                 '/tournament/<id:\d+>/event' => '/tournament/event',
-                '/event/<id:\d+>' => '/event/index',
+                '/event/<id:\d+>' => '/event/view',
                 '/event/add-line/<id:\d+>' => '/event/add-line',
                 '/event/add-results/<data:.+>' => '/event/add-results',
             ],

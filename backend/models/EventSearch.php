@@ -13,7 +13,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use yii\db\Expression;
 
-class TournamentEventSearch extends Event
+class EventSearch extends Event
 {
 
     public $tournament_name;
@@ -57,10 +57,9 @@ class TournamentEventSearch extends Event
 
     /**
      * @param array $params
-     * @param int $id
      * @return ActiveDataProvider
      */
-    public function search(array $params, int $id): ActiveDataProvider
+    public function search(array $params): ActiveDataProvider
     {
         $query = Event::find()
             ->select(['event.*', 'count(sp_odd.id) count_odds'])
@@ -79,7 +78,6 @@ class TournamentEventSearch extends Event
                     $q->from(Player::tableName() . ' away');
                 }
             ])
-            ->where(['tournament' => $id])
             ->groupBy('event.id')
         ;
 

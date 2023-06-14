@@ -15,18 +15,18 @@ use yii\widgets\LinkPager;
 
 /**
  * @var View $this
- * @var Tournament|null $model
+ * @var Tournament $model
  * @var TournamentEventSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 
-$this->title = (!is_null($model)) ? $model->name : 'Events';
+$this->title = $model->name;
 
 $this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['/tournament']];
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ["/tournament/{$model->id}"]];
 $this->params['breadcrumbs'][] = 'Events';
 
-$reset = (!is_null($model)) ? "/tournament/{$model->id}/events" : "/tournament/events";
+$reset = "/tournament/{$model->id}/event";
 
 ?>
 
@@ -90,7 +90,7 @@ $reset = (!is_null($model)) ? "/tournament/{$model->id}/events" : "/tournament/e
                 'attribute' => 'player',
                 'format' => 'raw',
                 'value' => function($model) {
-                    return Html::a($model->fullName, ['/event/index', 'id' => $model->id]);
+                    return Html::a($model->fullName, ['/event/view', 'id' => $model->id]);
                 }
             ],
             [

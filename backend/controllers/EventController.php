@@ -4,16 +4,14 @@ namespace backend\controllers;
 
 
 use backend\models\AddResultForm;
-use backend\services\EventResultSave;
+use backend\models\EventSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
-use frontend\models\sport\Tournament;
 use Yii;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use backend\components\pinnacle\Pinnacle;
-use backend\components\pinnacle\helpers\BaseHelper;
 use yii\web\NotFoundHttpException;
 
 class EventController extends Controller
@@ -38,11 +36,27 @@ class EventController extends Controller
     }
 
     /**
+     * @return string
+     */
+    public function actionIndex(): string
+    {
+
+        $searchModel = new EventSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+
+    }
+
+    /**
      * @param int $id
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionIndex(int $id): string
+    public function actionView(int $id): string
     {
         $event = Event::find()
             ->from(['event' => 'tn_event'])
@@ -53,7 +67,7 @@ class EventController extends Controller
         if (!$event) {
             throw new NotFoundHttpException('This event does not exist');
         }
-        return $this->render('index', [
+        return $this->render('view', [
             'event' => $event
         ]);
     }

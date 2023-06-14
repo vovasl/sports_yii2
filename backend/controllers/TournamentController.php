@@ -61,11 +61,11 @@ class TournamentController extends Controller
     }
 
     /**
-     * @param int|null $id
+     * @param int $id
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionEvent(int $id = null): string
+    public function actionEvent(int $id): string
     {
 
         $searchModel = new TournamentEventSearch();
@@ -74,7 +74,7 @@ class TournamentController extends Controller
         return $this->render('events', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model' => (!is_null($id)) ? $this->findModel($id) : null,
+            'model' => $this->findModel($id),
         ]);
 
     }
