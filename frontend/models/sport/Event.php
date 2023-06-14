@@ -478,25 +478,19 @@ class Event extends \yii\db\ActiveRecord
         return "{$this->home_result}:{$this->away_result}({$sets})";
     }
 
-
     /**
-     * @return string[]
+     * @param $type
+     * @return string
      */
-    public static function resultDropdown(): array
+    public function getStatsTotal($type): string
     {
-        return [
-            1 => 'Yes',
-            2 => 'No'
-        ];
-    }
+        if(is_null($this->winner)) return '';
 
-    /**
-     * @return int[]
-     */
-    public static function setsDropdown(): array
-    {
-        $values = range(2, 5);
-        return array_combine($values, $values);
+        $i = 0;
+        foreach($this->{$type} as $odd) {
+            if($odd->profit > 0) $i++;
+        }
+        return "{$i}/" . count($this->{$type});
     }
 
 }

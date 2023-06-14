@@ -1,7 +1,7 @@
 <?php
 
 
-use frontend\models\sport\Event;
+use common\helpers\EventHelper;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
@@ -95,13 +95,13 @@ $reset = "/event";
                 'attribute' => 'result',
                 'label' => 'Result',
                 'value' =>'result',
-                'filter' => Event::resultDropdown(),
+                'filter' => EventHelper::resultDropdown(),
             ],
             [
                 'attribute' => 'total',
                 'label' => 'Sets',
                 'value' => 'total',
-                'filter' => Event::setsDropdown(),
+                'filter' => EventHelper::setsDropdown(),
             ],
             [
                 'attribute' => 'total_games',

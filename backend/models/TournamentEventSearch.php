@@ -3,9 +3,7 @@
 namespace backend\models;
 
 
-use frontend\models\sport\Surface;
-use frontend\models\sport\Tour;
-use frontend\models\sport\Tournament;
+;use frontend\models\sport\Tournament;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\sport\Event;
@@ -15,8 +13,6 @@ use yii\db\Expression;
 
 class TournamentEventSearch extends Event
 {
-
-    public $tournament_name;
 
     public $round_id;
 
@@ -61,6 +57,12 @@ class TournamentEventSearch extends Event
             ->with(['setsResult'])
             ->joinWith([
                 'odds',
+                'totalsOver',
+                /*
+                'totalsUnder' => function($q) {
+                    $q->from(Odd::tableName() . ' totals_under');
+                },
+                */
                 'tournamentRound',
                 'eventTournament',
                 'eventTournament.tournamentTour',
@@ -102,10 +104,6 @@ class TournamentEventSearch extends Event
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
-        }
-
-        if(!is_null($this->tournament_name)) {
-            $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
         }
 
         if(!is_null($this->round_id)) {

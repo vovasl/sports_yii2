@@ -1,6 +1,7 @@
 <?php
 
 
+use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
@@ -79,19 +80,37 @@ $reset = "/tournament/{$model->id}/event";
                 'attribute' => 'result',
                 'label' => 'Result',
                 'value' =>'result',
-                'filter' => Event::resultDropdown(),
+                'filter' => EventHelper::resultDropdown(),
             ],
             [
                 'attribute' => 'total',
                 'label' => 'Sets',
                 'value' => 'total',
-                'filter' => Event::setsDropdown(),
+                'filter' => EventHelper::setsDropdown(),
             ],
             [
                 'attribute' => 'total_games',
                 'label' => 'Games',
                 'value' => 'total_games',
                 'filter' => '',
+            ],
+            [
+                'label' => 'Over',
+            ],
+            [
+                'label' => 'Odds',
+                'value' => function(Event $model) {
+                    return EventHelper::getOddStats($model->totalsOver);
+                }
+            ],
+            [
+                'label' => 'Under',
+            ],
+            [
+                'label' => 'Odds',
+                'value' => function(Event $model) {
+                    return EventHelper::getOddStats($model->totalsUnder);
+                }
             ],
         ],
     ]); ?>
