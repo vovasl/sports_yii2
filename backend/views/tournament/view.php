@@ -27,7 +27,7 @@ YiiAsset::register($this);
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Events', ["/tournament/{$model->id}/events"], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Events', ["/tournament/{$model->id}/event"], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= DetailView::widget([

@@ -5,7 +5,7 @@ namespace backend\controllers;
 
 use backend\models\TournamentEventSearch;
 use frontend\models\sport\Tournament;
-use backend\models\TournamentsSearch;
+use backend\models\TournamentSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -51,7 +51,7 @@ class TournamentController extends Controller
      */
     public function actionIndex(): string
     {
-        $searchModel = new TournamentsSearch();
+        $searchModel = new TournamentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -65,7 +65,7 @@ class TournamentController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionEvents(int $id = null): string
+    public function actionEvent(int $id = null): string
     {
 
         $searchModel = new TournamentEventSearch();

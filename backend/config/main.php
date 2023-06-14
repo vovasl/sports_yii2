@@ -42,7 +42,7 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '/tournament/<id:\d+>' => '/tournament/view',
-                '/tournament/<id:\d+>/events' => '/tournament/events',
+                '/tournament/<id:\d+>/event' => '/tournament/event',
                 '/event/<id:\d+>' => '/event/index',
                 '/event/add-line/<id:\d+>' => '/event/add-line',
                 '/event/add-results/<data:.+>' => '/event/add-results',

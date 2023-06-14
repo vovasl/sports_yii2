@@ -12,7 +12,7 @@ use frontend\models\sport\Tournament;
 /**
  * TournamentsSearch represents the model behind the search form of `frontend\models\sport\Tournament`.
  */
-class TournamentsSearch extends Tournament
+class TournamentSearch extends Tournament
 {
 
     public $tour_id;

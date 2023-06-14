@@ -9,13 +9,13 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\web\View;
-use backend\models\TournamentsSearch;
+use backend\models\TournamentSearch;
 use yii\data\ActiveDataProvider;
 use yii\widgets\LinkPager;
 
 /**
  * @var View $this
- * @var TournamentsSearch $searchModel
+ * @var TournamentSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 
