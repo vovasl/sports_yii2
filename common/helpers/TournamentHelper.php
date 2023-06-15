@@ -21,7 +21,7 @@ class TournamentHelper
         $emptyKey = 'no';
         $data = [0 => [], 20 => [], 40 => [], 60 => [], 80 => [], 100 => [], $emptyKey => []];
         array_walk($data, function (&$val) {
-            //$val['events'] = [];
+            $val['events'] = [];
         });
 
         $count = 0;
