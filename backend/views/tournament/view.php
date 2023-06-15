@@ -2,7 +2,6 @@
 
 
 use common\helpers\EventHelper;
-use common\helpers\TournamentHelper;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
@@ -20,8 +19,6 @@ $this->params['breadcrumbs'][] = ['label' => 'Tournaments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 YiiAsset::register($this);
-
-$totalsOver = TournamentHelper::getOddStat($model->events, 'totalsOver');
 
 ?>
 
@@ -41,20 +38,24 @@ $totalsOver = TournamentHelper::getOddStat($model->events, 'totalsOver');
             'name',
             'tournamentSurface.name',
             'comment:ntext',
+            [
+                'label' => 'Events',
+                'value' => count($model->events)
+            ],
+            [
+                'label' => 'Main',
+                'value' => EventHelper::getCount($model->events)
+            ],
+            [
+                'label' => 'Qualifiers',
+                'value' => EventHelper::getCount($model->events, 1)
+            ]
         ],
     ]) ?>
 
-    <h4>Total Over</h4>
-
-    <table class="w-25 table table-striped table-bordered detail-view">
-        <tbody>
-            <?php foreach ($totalsOver as $percent => $val): ?>
-                <tr>
-                    <th><?= $percent ?>%</th>
-                    <td><?= $val ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <?= $this->render('view/_total', [
+        'events' => $model->events
+    ])
+    ?>
 
 </div>

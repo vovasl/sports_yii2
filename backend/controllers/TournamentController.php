@@ -72,7 +72,7 @@ class TournamentController extends Controller
 
         $model = Tournament::find()
             ->with([
-                'events', 'events.totalsOver'
+                'events', 'events.totalsOver', 'events.totalsUnder'
             ])
             ->where(['id' => $id])
             ->one()

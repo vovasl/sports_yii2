@@ -3,6 +3,8 @@
 
 namespace common\helpers;
 
+use frontend\models\sport\Round;
+
 class EventHelper
 {
 
@@ -60,6 +62,20 @@ class EventHelper
         }
 
         return $data;
+    }
+
+    /**
+     * @param array $events
+     * @return int
+     */
+    public static function getCount(array $events, int $qualifier = -1): int
+    {
+        $count = 0;
+        foreach ($events as $event) {
+            if($qualifier == -1 && $event->round != Round::QUALIFIER) $count++;
+            else if($qualifier == 1 && $event->round == Round::QUALIFIER) $count++;
+        }
+        return $count;
     }
 
 }

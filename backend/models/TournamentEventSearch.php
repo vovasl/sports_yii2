@@ -57,7 +57,7 @@ class TournamentEventSearch extends Event
             ->with(['setsResult'])
             ->joinWith([
                 'odds',
-                'totalsOver',
+                //'totalsOver',
                 /*
                 'totalsUnder' => function($q) {
                     $q->from(Odd::tableName() . ' totals_under');
@@ -93,7 +93,7 @@ class TournamentEventSearch extends Event
                 ]
             ],
             'pagination' => [
-                'pageSize' => 100,
+                'pageSize' => 200,
             ],
             //'pagination' => false
         ]);

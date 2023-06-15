@@ -56,6 +56,7 @@ $reset = "/tournament/{$model->id}/event";
             'class' => LinkPager::class
         ],
         'columns' => [
+             'id',
             [
                 'label' => 'Start',
                 'attribute' => 'start_at',
@@ -98,6 +99,12 @@ $reset = "/tournament/{$model->id}/event";
                 'label' => 'Over',
                 'value' => function(Event $model) {
                     return EventHelper::getOddStat($model->totalsOver);
+                }
+            ],
+            [
+                'label' => 'Under',
+                'value' => function(Event $model) {
+                    return EventHelper::getOddStat($model->totalsUnder);
                 }
             ],
         ],
