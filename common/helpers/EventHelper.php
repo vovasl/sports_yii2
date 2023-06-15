@@ -6,7 +6,6 @@ namespace common\helpers;
 class EventHelper
 {
 
-
     /**
      * @return string[]
      */

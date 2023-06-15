@@ -46,10 +46,13 @@ $totalsOver = TournamentHelper::getOddStat($model->events, 'totalsOver');
 
     <h4>Total Over</h4>
 
-    <table class="table table-striped table-bordered detail-view">
+    <table class="w-25 table table-striped table-bordered detail-view">
         <tbody>
-            <?php foreach ($totalsOver as $k => $val): ?>
-                <tr><th><?= $k ?>%</th><td><?= $val ?></td></tr>
+            <?php foreach ($totalsOver as $percent => $val): ?>
+                <tr>
+                    <th><?= $percent ?>%</th>
+                    <td><?= $val ?></td>
+                </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
