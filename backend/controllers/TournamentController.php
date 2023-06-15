@@ -68,8 +68,17 @@ class TournamentController extends Controller
      */
     public function actionView(int $id): string
     {
+        $this->findModel($id);
+
+        $model = Tournament::find()
+            ->with([
+                'events', 'events.totalsOver'
+            ])
+            ->where(['id' => $id])
+            ->one()
+        ;
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 

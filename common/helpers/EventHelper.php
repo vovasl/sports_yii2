@@ -3,8 +3,6 @@
 
 namespace common\helpers;
 
-use frontend\models\sport\Odd;
-
 class EventHelper
 {
 
@@ -33,16 +31,36 @@ class EventHelper
      * @param array $odds
      * @return string
      */
-    public static function getOddStats(array $odds): string
+    public static function getOddStat(array $odds): string
     {
-        $count = $i = 0;
+        $data = self::_getOddStat($odds);
+        return $data['count'] > 0 ? "{$data['val']}/{$data['count']}" : "";
+    }
+
+    /**
+     * @param array $odds
+     * @return int
+     */
+    public static function getOddStatPercent(array $odds): int
+    {
+        $data = self::_getOddStat($odds);
+        return $data['count'] > 0 ? round($data['val'] / $data['count'] * 100) : 0;
+    }
+
+    /**
+     * @param array $odds
+     * @return array
+     */
+    public static function _getOddStat(array $odds): array
+    {
+        $data = ['val' => 0, 'count' => 0];
         foreach($odds as $odd) {
             if(is_null($odd->profit)) continue;
-            if($odd->profit > 0) $i++;
-            $count++;
+            if($odd->profit > 0) $data['val']++;
+            $data['count']++;
         }
 
-        return $count > 0 ? "{$i}/{$count}" : "";
+        return $data;
     }
 
 }

@@ -96,20 +96,8 @@ $reset = "/tournament/{$model->id}/event";
             ],
             [
                 'label' => 'Over',
-            ],
-            [
-                'label' => 'Odds',
                 'value' => function(Event $model) {
-                    return EventHelper::getOddStats($model->totalsOver);
-                }
-            ],
-            [
-                'label' => 'Under',
-            ],
-            [
-                'label' => 'Odds',
-                'value' => function(Event $model) {
-                    return EventHelper::getOddStats($model->totalsUnder);
+                    return EventHelper::getOddStat($model->totalsOver);
                 }
             ],
         ],
