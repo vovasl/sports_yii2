@@ -15,9 +15,9 @@ use common\helpers\TournamentHelper;
     <thead>
     <tr>
         <td>Tournament</td>
-        <td colspan="8">Odds</td>
-        <td colspan="8">Events</td>
-        <td colspan="8">Percent</td>
+        <td colspan="8">All</td>
+        <td colspan="8">Main</td>
+        <td colspan="8">Qualifiers</td>
     </tr>
     </thead>
     <tbody>
