@@ -39,12 +39,8 @@ class TournamentStatisticController extends Controller
     public function actionTotal($tour, $surface, $qualifier = 0): string
     {
 
-        //$tour = 2;
-        //$surface = 3;
-        //$qualifier = -1;
-
         $tournaments = Tournament::find()
-            //->with(['events.totalsUnder'])
+            ->with(['events.totalsUnder', 'events.totalsOver'])
             ->joinWith(['events'])
             ->where([
                 'tour' => $tour,
