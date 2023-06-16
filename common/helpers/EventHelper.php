@@ -66,6 +66,7 @@ class EventHelper
 
     /**
      * @param array $events
+     * @param int $qualifier
      * @return int
      */
     public static function getCount(array $events, int $qualifier = -1): int
@@ -76,6 +77,28 @@ class EventHelper
             else if($qualifier == 1 && $event->round == Round::QUALIFIER) $count++;
         }
         return $count;
+    }
+
+    /**
+     * @param $val
+     * @return string
+     */
+    public static function getQualifierText($val): string
+    {
+        $text = "";
+        switch ($val) {
+            case -1:
+                $text = "Main";
+                break;
+            case 0:
+                $text = "All";
+                break;
+            case 1:
+                $text = "Qualifiers";
+                break;
+        }
+
+        return $text;
     }
 
 }

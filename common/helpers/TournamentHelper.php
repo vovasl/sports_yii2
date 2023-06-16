@@ -66,7 +66,7 @@ class TournamentHelper
             $val['percent'] = ($key !== $emptyKey) ? round(count($val['events']) / $count * 100) : ' - ';
         });
 
-        ksort($data);
+        //ksort($data);
 
         return $data;
     }
