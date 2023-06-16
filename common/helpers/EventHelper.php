@@ -91,7 +91,7 @@ class EventHelper
                 $text = "Main";
                 break;
             case 0:
-                $text = "All";
+                $text = "ALL";
                 break;
             case 1:
                 $text = "Qualifiers";

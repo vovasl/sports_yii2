@@ -40,12 +40,15 @@ class TournamentStatisticController extends Controller
     {
 
         $tournaments = Tournament::find()
+            ->select([Tournament::tableName() . '.*', 'count(tn_event.id) count_events'])
             ->with(['events.totalsUnder', 'events.totalsOver'])
             ->joinWith(['events'])
             ->where([
                 'tour' => $tour,
                 'surface' => $surface,
             ])
+            ->andWhere(['IS NOT', Event::tableName() . '.winner', null])
+            ->groupBy([Tournament::tableName() . '.id'])
             ->orderBy([
                 'name' => SORT_ASC
             ])
@@ -57,7 +60,6 @@ class TournamentStatisticController extends Controller
         else if($qualifier == 1) {
             $tournaments->andWhere(['=' , Event::tableName() . '.round', Round::QUALIFIER]);
         }
-
 
         return $this->render('total', [
             'tournaments' => $tournaments->all(),

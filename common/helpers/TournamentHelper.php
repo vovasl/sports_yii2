@@ -62,6 +62,8 @@ class TournamentHelper
         $count -= count($data[self::STAT_EMPTY_KEY]['events']);
         $emptyKey = self::STAT_EMPTY_KEY;
 
+        if($count == 0) return $data;
+
         array_walk($data, function (&$val, $key) use ($count, $emptyKey) {
             $val['percent'] = ($key !== $emptyKey) ? round(count($val['events']) / $count * 100) : ' - ';
         });
