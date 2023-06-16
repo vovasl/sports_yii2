@@ -18,7 +18,6 @@ foreach ($tournaments as $tournament) {
     $count += $tournament->count_events;
 }
 
-
 ?>
 
 <h1><?= "{$tournaments[0]->tournamentTour->name}: {$tournaments[0]->tournamentSurface->name}" ?></h1>
