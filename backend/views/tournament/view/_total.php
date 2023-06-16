@@ -10,8 +10,6 @@ use common\helpers\TournamentHelper;
 
 ?>
 
-<h3>Totals</h3>
-
 <div class="container">
     <div class="row">
 
@@ -21,19 +19,19 @@ use common\helpers\TournamentHelper;
         ]) ?>
 
         <?= $this->render('_stat', [
-            'title' => 'Total Over - Main',
+            'title' => 'Main',
             'stats' => TournamentHelper::getOddStat($events, 'totalsOver', -1)
         ]) ?>
 
         <?= $this->render('_stat', [
-            'title' => 'Total Over - Qualifiers',
+            'title' => 'Qualifiers',
             'stats' => TournamentHelper::getOddStat($events, 'totalsOver', 1)
         ]) ?>
 
     </div>
 </div>
 
-<div class="container">
+<div class="container mt-5">
     <div class="row">
 
         <?= $this->render('_stat', [
@@ -42,12 +40,12 @@ use common\helpers\TournamentHelper;
         ]) ?>
 
         <?= $this->render('_stat', [
-            'title' => 'Total Under - Main',
+            'title' => 'Main',
             'stats' => TournamentHelper::getOddStat($events, 'totalsUnder', -1)
         ]) ?>
 
         <?= $this->render('_stat', [
-            'title' => 'Total Under - Qualifiers',
+            'title' => 'Qualifiers',
             'stats' => TournamentHelper::getOddStat($events, 'totalsUnder', 1)
         ]) ?>
 

@@ -11,29 +11,32 @@ use common\helpers\TournamentHelper;
 
 ?>
 
-<table class="w-25 table table-striped table-bordered detail-view mr-5">
+<table class="table table-striped table-bordered detail-view mb-0">
     <thead>
-        <tr>
-            <th colspan="3" class="text-center"><h5><?= $title ?></h5></th>
-        </tr>
-        <tr>
-            <th>Odds</th>
-            <th>Events</th>
-            <th>Percent</th>
-        </tr>
+    <tr>
+        <td colspan="8" class="text-center"><h4><?= $title ?></h4></td>
+    </tr>
     </thead>
     <tbody>
-    <?php foreach ($stats as $percent => $stat): ?>
-        <tr>
-            <td>
-                <?= $percent ?><?php if($percent !== TournamentHelper::STAT_EMPTY_KEY):?>%<?php endif; ?>
-            </td>
+    <tr>
+        <td>Odds</td>
+        <?php foreach ($stats as $percent => $stat): ?>
+            <td><?= $percent; ?></td>
+        <?php endforeach; ?>
+    </tr>
+    <tr>
+        <td>Events</td>
+        <?php foreach ($stats as $percent => $stat): ?>
             <td><?= count($stat['events']); ?></td>
+        <?php endforeach; ?>
+    </tr>
+    <tr>
+        <td>Percent</td>
+        <?php foreach ($stats as $percent => $stat): ?>
             <td>
                 <?= $stat['percent'] ?><?php if($percent !== TournamentHelper::STAT_EMPTY_KEY):?>%<?php endif; ?>
             </td>
-            <!--<td><?php \backend\components\pinnacle\helpers\BaseHelper::outputArray($stat['events']) ?></td>-->
-        </tr>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </tr>
     </tbody>
 </table>
