@@ -6,6 +6,8 @@
  * @var array $stats
  */
 
+use common\helpers\TournamentHelper;
+
 
 ?>
 
@@ -24,11 +26,11 @@
     <?php foreach ($stats as $percent => $stat): ?>
         <tr>
             <td>
-                <?= $percent ?><?php if($percent != 'no'):?>%<?php endif; ?>
+                <?= $percent ?><?php if($percent !== TournamentHelper::STAT_EMPTY_KEY):?>%<?php endif; ?>
             </td>
             <td><?= count($stat['events']); ?></td>
             <td>
-                <?= $stat['percent'] ?><?php if($percent != 'no'):?>%<?php endif; ?>
+                <?= $stat['percent'] ?><?php if($percent !== TournamentHelper::STAT_EMPTY_KEY):?>%<?php endif; ?>
             </td>
             <!--<td><?php \backend\components\pinnacle\helpers\BaseHelper::outputArray($stat['events']) ?></td>-->
         </tr>
