@@ -41,6 +41,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/tournament-statistic/total/<tour:\d+>/<surface:\d+>/<qualifier:.+>' => '/tournament-statistic/total',
                 '/tournament/<id:\d+>' => '/tournament/view',
                 '/tournament/<id:\d+>/event' => '/tournament/event',
                 '/event/<id:\d+>' => '/event/view',

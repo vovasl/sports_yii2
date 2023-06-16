@@ -3,6 +3,8 @@
 
 namespace backend\controllers;
 
+use frontend\models\sport\Event;
+use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -34,16 +36,16 @@ class TournamentStatisticController extends Controller
     /**
      * @return string
      */
-    public function actionTotal(): string
+    public function actionTotal($tour, $surface, $qualifier = 0): string
     {
 
-        $tour = 2;
-        $surface = 1;
-        $type = 'Under';
-        $qualifier = -1;
+        //$tour = 2;
+        //$surface = 3;
+        //$qualifier = -1;
 
         $tournaments = Tournament::find()
-            ->with(['events', 'events.totalsUnder'])
+            //->with(['events.totalsUnder'])
+            ->joinWith(['events'])
             ->where([
                 'tour' => $tour,
                 'surface' => $surface,
@@ -51,11 +53,18 @@ class TournamentStatisticController extends Controller
             ->orderBy([
                 'name' => SORT_ASC
             ])
-            ->all();
         ;
+
+        if($qualifier == -1) {
+            $tournaments->andWhere(['!=' , Event::tableName() . '.round', Round::QUALIFIER]);
+        }
+        else if($qualifier == 1) {
+            $tournaments->andWhere(['=' , Event::tableName() . '.round', Round::QUALIFIER]);
+        }
+
+
         return $this->render('total', [
-            'tournaments' => $tournaments,
-            'type' => $type,
+            'tournaments' => $tournaments->all(),
             'qualifier' => $qualifier,
         ]);
     }
