@@ -5,6 +5,8 @@ namespace common\helpers;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Round;
+use frontend\models\sport\Surface;
+use frontend\models\sport\Tour;
 
 class TournamentHelper
 {
@@ -44,7 +46,7 @@ class TournamentHelper
     public static function prepareOddStatData(): array
     {
         $data = [];
-        $odds = [0, 20, 40, 60, 80, 100, self::STAT_EMPTY_KEY];
+        $odds = [0, 20, 33, 40, 60, 67, 80, 100, self::STAT_EMPTY_KEY];
         array_walk( $odds, function (&$val) use (&$data) {
             $data[$val]['events'] = [];
         });
@@ -71,5 +73,38 @@ class TournamentHelper
         //ksort($data);
 
         return $data;
+    }
+
+    /**
+     * @param int|null $tour
+     * @param int|null $surface
+     * @return string
+     */
+    public static function getTourSurfaceTitle(int $tour = null, int $surface = null): string
+    {
+        $title = [];
+        if(!is_null($tour) && $tour = Tour::findOne($tour)) {
+            $title[] = $tour->name;
+        }
+
+        if(!is_null($surface) && $surface = Surface::findOne($surface)) {
+            $title[] = $surface->name;
+        }
+
+        return implode(', ', $title);
+    }
+
+    /**
+     * @param array $tournaments
+     * @return int
+     */
+    public static function getEventsCount(array $tournaments): int
+    {
+        $count = 0;
+        foreach ($tournaments as $tournament) {
+            $count += $tournament->count_events;
+        }
+
+        return $count;
     }
 }
