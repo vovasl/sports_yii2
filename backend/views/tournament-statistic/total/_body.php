@@ -31,7 +31,8 @@ $emptyBlock = str_repeat('<td></td>', $emptyCount);
 
     <?php foreach ($stats as $percent => $stat): ?>
         <td>
-            <?= $stat['percent'] ?><?php if($percent !== TournamentHelper::STAT_EMPTY_KEY):?>%<?php endif; ?>
+            <!--<?= $stat['percent'] ?><?php if($percent !== TournamentHelper::STAT_EMPTY_KEY):?>%<?php endif; ?>-->
+            <?= $stat['profit'] ?>
         </td>
     <?php endforeach; ?>
     <?= $emptyBlock; ?>
