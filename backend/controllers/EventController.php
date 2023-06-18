@@ -94,7 +94,7 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 1283;
+        $eventId = 1401;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
@@ -125,7 +125,7 @@ class EventController extends Controller
         ];
 
         $odds = [
-            //'sets' => array_merge($moneyline),
+            'sets' => array_merge($moneyline),
             'games' => array_merge($spreads),
         ];
 

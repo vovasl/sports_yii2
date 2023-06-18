@@ -53,7 +53,7 @@ class TournamentHelper
     public static function initOddStatData(): array
     {
         $data = [];
-        $odds = [0, 20, 33, 40, 60, 67, 80, 100, self::STAT_EMPTY_KEY];
+        $odds = [0, 20, 40, 60, 80, 100, 33, 67, self::STAT_EMPTY_KEY,];
         array_walk( $odds, function (&$val) use (&$data) {
             $data[$val]['events'] = [];
         });
@@ -82,73 +82,65 @@ class TournamentHelper
 
     public static function getOddStatProfit($data, $type, $count)
     {
-        $settings = [100 => 1, 80 => 2, 60 => 3, 40 => 4, 20 => 5, 67 => 1, 33 => 2];
+        $settings = [100 => 1, 80 => 2, 60 => 3, 40 => 4, 20 => 5];
+        $settingsTwo = [60 => 1, 40 => 2, 20 => 3];
 
-        $eventsArr = [];
-        foreach ($data as $percent => $stat) {
-            if($percent == 100) {
-                $eventsArr[$percent] = array_merge($data[100]['events'], $data[80]['events']);
-            }
-            else if($percent == 80) {
-                $eventsArr[$percent] = array_merge($data[100]['events'], $data[80]['events'], $data[60]['events']);
-            }
-            else if($percent == 67) {}
-            else if($percent == 60) {
-                $eventsArr[$percent] = array_merge($data[100]['events'], $data[80]['events'], $data[67]['events'], $stat['events']);
-            }
-            else if($percent == 40) {
-                $eventsArr[$percent] = array_merge($data[100]['events'], $data[80]['events'], $data[67]['events'], $data[60]['events'], $stat['events']);
-            }
-            else if($percent == 33) {}
-            else if($percent == 20) {
-                $eventsArr[$percent] = array_merge($data[100]['events'], $data[80]['events'], $data[67]['events'], $data[60]['events'], $data[40]['events'], $stat['events']);
-            }
-        }
+        $settingsEvents = [
+            100 => [80],
+            80 => [100, 60],
+            60 => [100, 80, 40],
+            40 => [100, 80, 60, 20],
+            20 => [100, 80, 60, 40, 0],
+        ];
+
+        $eventsArr[100] = array_merge($data[100]['events'], $data[80]['events']);
+        $eventsArr[80] = array_merge($data[100]['events'], $data[80]['events'], $data[60]['events']);
+        $eventsArr[60] = array_merge($data[100]['events'], $data[80]['events'], $data[60]['events'], $data[40]['events']);
+        $eventsArr[40] = array_merge($data[100]['events'], $data[80]['events'], $data[60]['events'], $data[40]['events'], $data[20]['events']);
+        $eventsArr[20] = array_merge($data[100]['events'], $data[80]['events'], $data[60]['events'], $data[40]['events'], $data[20]['events'], $data[0]['events']);
 
         foreach ($eventsArr as $percent => $events) {
             $profit = 0;
             foreach ($events as $event) {
-                $key = count($event->{$type}) - $settings[$percent];
+
+                $key = '-';
+                if(count($event->{$type}) == 5) {
+                    $key = count($event->{$type}) - $settings[$percent];
+                }
+                else if(count($event->{$type}) == 3) {
+                    if(!isset($settingsTwo[$percent])) continue;
+                    $key = count($event->{$type}) - $settingsTwo[$percent];
+                }
                 $profit += $event->{$type}[$key]->profit;
+                //if($percent == 60) echo $key .' '. $percent. ' ' . $event->id . ' - ' . $event->{$type}[$key]->profit . '<br>';
             }
             if($percent == 100) {
-                $count_events = count($data[0]['events']) + count($data[20]['events']) + count($data[33]['events']) + count($data[40]['events']) + count($data[60]['events']);
+                $count_events = count($data[0]['events']) + count($data[20]['events']) + count($data[40]['events']) + count($data[60]['events']);
                 $data[$percent]['profit'] = $profit - $count_events  * 100;
+                //$data[$percent]['profit'] = $profit;
             }
-            else if($percent == 80 || $percent == 67) {
-                $count_events = count($data[0]['events']) + count($data[20]['events']) + count($data[33]['events']) + count($data[40]['events']) + count($data[60]['events']);
+
+            else if($percent == 80) {
+                $count_events = count($data[0]['events']) + count($data[20]['events']) + count($data[40]['events']);
                 $data[$percent]['profit'] = $profit - $count_events  * 100;
+                //$data[$percent]['profit'] = $count_events;
             }
-            else if($percent == 60) {
-                $count_events = count($data[0]['events']) + count($data[20]['events']) + count($data[33]['events']) + count($data[40]['events']);
-                $data[$percent]['profit'] = $profit - $count_events  * 100;
-            }
-            else if($percent == 40) {
-                $count_events = count($data[0]['events']) + count($data[20]['events']) + count($data[33]['events']);
-                $data[$percent]['profit'] = $profit -  $count_events * 100;
-            }
-            else if($percent == 20 || $percent == 33) {
-                $data[$percent]['profit'] = $profit - count($data[0]['events']) * 100;
-            }
+
+           else if($percent == 60) {
+               $count_events = count($data[0]['events']) + count($data[20]['events']);
+               $data[$percent]['profit'] = $profit - $count_events  * 100;
+               //$data[$percent]['profit'] = $profit;
+           }
+           else if($percent == 40) {
+               $count_events = count($data[0]['events']);
+               $data[$percent]['profit'] = $profit - $count_events * 100;
+           }
+
+           else if($percent == 20) {
+               $data[$percent]['profit'] = $profit;
+           }
             else $data[$percent]['profit'] = 0;
         }
-
-        /*
-        foreach ($data as $percent => $stat) {
-            if($percent === 0 || $percent == self::STAT_EMPTY_KEY) {
-                $data[$percent]['profit_2'] = 0;
-                continue;
-            }
-            $profit = 0;
-            foreach ($stat['events'] as $event) {
-                $key = count($event->{$type}) - $settings[$percent];
-                $profit += $event->{$type}[$key]->profit;
-            }
-            if($percent == 100) $data[$percent]['profit_2'] = $profit - ($count - count($data[100]['events'])) * 100;
-            else $data[$percent]['profit_2'] = $profit;
-            //if($percent == 20) $data[$percent]['profit_2'] = $profit - (count($data[0]['events']) * 100);
-        }
-        */
 
         return $data;
     }
