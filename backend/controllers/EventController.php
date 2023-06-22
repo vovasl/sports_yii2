@@ -94,38 +94,42 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 1401;
+        $eventId = 1571;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
         $log = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();
         $eventLog = Json::decode($log->message);
 
-        $sets = $eventLog['odds']['sets'];
-        $games = $eventLog['odds']['games'];
+        $sets = $eventLog['odds']['sets'][0];
+        $games = $eventLog['odds']['games'][0];
 
         $moneyline = [
-            'moneyline' => $sets[0]['moneyline']
+            'moneyline' => $sets['moneyline']
         ];
 
         $setsSpreads = [
-            'spreads' => $sets[0]['spreads']
+            'spreads' => $sets['spreads']
+        ];
+
+        $setsTotals = [
+            'totals' => $sets['totals']
         ];
 
         $spreads = [
-            'spreads' => $games[1]['spreads']
+            'spreads' => $games['spreads']
         ];
 
         $totals = [
-            'totals' => $games[0]['totals']
+            'totals' => $games['totals']
         ];
 
         $teamTotals = [
-            'teamTotal' => $games[1]['teamTotal']
+            'teamTotal' => $games['teamTotal']
         ];
 
         $odds = [
-            'sets' => array_merge($moneyline),
+            //'sets' => array_merge($moneyline, $setsSpreads, $setsTotals),
             'games' => array_merge($spreads),
         ];
 

@@ -7,6 +7,7 @@ use frontend\models\sport\Event;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\sport\Player;
+use yii\db\Expression;
 
 /**
  * PlayerSearch represents the model behind the search form of `frontend\models\sport\Player`.
@@ -58,7 +59,6 @@ class PlayerSearch extends Player
                 'defaultOrder' => ['count_events' => SORT_DESC],
                 'attributes' => [
                     'name',
-                    'sofa_id',
                     'count_events'
                 ]
             ],
@@ -75,19 +75,14 @@ class PlayerSearch extends Player
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'type' => $this->type,
-            'birthday' => $this->birthday,
-            'sofa_id' => $this->sofa_id,
-        ]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'plays', $this->plays])
-            ->andFilterWhere(['like', 'comment', $this->comment]);
+        if(!is_null($this->sofa_id)) {
+            if($this->sofa_id == 1) $query->andFilterWhere(['IS NOT', 'players.sofa_id', new Expression('null')]);
+            else if($this->sofa_id == 2) $query->andFilterWhere(['IS', 'players.sofa_id', new Expression('null')]);
+        }
 
-        if(!is_null($this->count_events)) {
+        if(!empty($this->count_events)) {
             $query->having(['>=', 'count_events', $this->count_events]);
         }
 

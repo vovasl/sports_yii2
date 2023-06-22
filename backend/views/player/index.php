@@ -75,7 +75,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     return count($model->getTourEvents(Tour::CHALLENGER));
                 }
             ],
-            'sofa_id',
+            [
+                'label' => 'Sofa ID',
+                'attribute' => 'sofa_id',
+                'filter' => [1 => 'Yes', 2 => 'No']
+            ],
             [
                 'class' => ActionColumn::class,
                 'template'=>'{view} {update}',
