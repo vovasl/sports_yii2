@@ -8,11 +8,13 @@ use backend\models\EventSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use Yii;
+use yii\db\StaleObjectException;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use backend\components\pinnacle\Pinnacle;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class EventController extends Controller
 {
@@ -73,6 +75,18 @@ class EventController extends Controller
     }
 
     /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionDelete($id): Response
+    {
+        $model = $this->findModel($id);
+        $model->delete();
+        return $this->redirect(['index']);
+    }
+
+    /**
      * @return string
      */
     public function actionAdd(): string
@@ -94,7 +108,7 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 1571;
+        $eventId = 1683;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
@@ -129,8 +143,8 @@ class EventController extends Controller
         ];
 
         $odds = [
-            //'sets' => array_merge($moneyline, $setsSpreads, $setsTotals),
-            'games' => array_merge($spreads),
+            'sets' => array_merge($moneyline),
+            //'games' => array_merge($spreads),
         ];
 
         $event = [
@@ -177,6 +191,18 @@ class EventController extends Controller
         return $this->render('add-results', [
             'output' => Yii::$app->result_save->events($events, 1)
         ]);
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    protected function findModel(int $id): Event
+    {
+        if (($model = Event::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested event does not exist.');
     }
 
 }

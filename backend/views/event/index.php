@@ -2,6 +2,7 @@
 
 
 use common\helpers\EventHelper;
+use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
@@ -11,6 +12,8 @@ use yii\web\View;
 use backend\models\TournamentEventSearch;
 use yii\data\ActiveDataProvider;
 use yii\widgets\LinkPager;
+use yii\helpers\Url;
+use yii\grid\ActionColumn;
 
 /**
  * @var View $this
@@ -116,6 +119,15 @@ $reset = "/event";
                     return count($model->odds);
                 },
                 'filter' => [1 => 'Yes', 2 => 'No']
+            ],
+            [
+                'class' => ActionColumn::class,
+                'template'=> '{delete}',
+                'visibleButtons' => [
+                    'delete' => function (Event $model, $key, $index) {
+                        return $model->actionDelete();
+                    },
+                ]
             ],
         ],
     ]); ?>

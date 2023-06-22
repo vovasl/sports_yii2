@@ -493,4 +493,12 @@ class Event extends \yii\db\ActiveRecord
         return "{$i}/" . count($this->{$type});
     }
 
+    /**
+     * @return bool
+     */
+    public function actionDelete(): bool
+    {
+        return ($this->winner === null && strtotime($this->start_at) < time() - 60 * 60 * 3);
+    }
+
 }
