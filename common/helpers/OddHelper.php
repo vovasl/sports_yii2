@@ -57,7 +57,7 @@ class OddHelper
      */
     public static function totalSettings(): array
     {
-        return [210, 200, 190, 180, 170, 160];
+        return [210, 200, 190, 180, 170, 0];
     }
 
     /**
@@ -67,16 +67,27 @@ class OddHelper
      */
     public static function getStatsTitle($odd, $settings): string
     {
+        $oddKey = array_search ($odd, $settings);
 
         $prefix = '';
-        $lastKey = array_key_last($settings);
-        if($odd == $settings[0]) $prefix = '>=';
-        else if($odd == $settings[$lastKey]) {
-            $odd = $settings[$lastKey - 1];
+        if($oddKey == array_key_first($settings)) {
+            $prefix = '>=';
+            $val[] = $odd;
+        }
+        else if($oddKey == array_key_last($settings)) {
             $prefix = '<';
+            $val[] = $settings[$oddKey - 1];
+        }
+        else {
+            $val[] = $odd;
+            $val[] = $settings[$oddKey - 1];
         }
 
-        return $prefix . round($odd / 100, 2);
+        array_walk($val, function (&$val) {
+            $val = round($val / 100, 2);
+        });
+
+        return $prefix . implode("-", $val);
     }
 
 }
