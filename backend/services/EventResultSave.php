@@ -11,6 +11,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\ResultSet;
 use yii\base\Component;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 class EventResultSave extends Component
 {
@@ -403,7 +404,10 @@ class EventResultSave extends Component
 
             /** get player by name */
             $name = explode(' ', trim($event[$field]['name']));
-            $q = Player::find()->where(["like", "name", "{$name[0]}"]);
+            $q = Player::find()
+                ->where(["like", "name", "{$name[0]}"])
+                ->andWhere(["IS", "sofa_id", new Expression('null')])
+            ;
 
             /** player not found or more than one result */
             if($q->count() != 1) return false;
