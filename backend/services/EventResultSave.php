@@ -364,9 +364,9 @@ class EventResultSave extends Component
             ->one()
         ) return $event;
 
-        return false;
+        //$this->addEvent($data);
 
-        $this->addEvent($data);
+        return false;
     }
 
     /**
@@ -375,17 +375,19 @@ class EventResultSave extends Component
      */
     private function addEvent(array $data): bool
     {
-        BaseHelper::outputArray($data);
-        die;
 
         $event = new Event();
         $event->start_at = $data['startTimestamp'];
-        //$event->tournament = $event['tournament'];
+        //$event->tournament = $data['tournament'];
         //$event->round = $event['round'];
-        //$event->home = $event['home'];
-        //$event->away = $event['away'];
-        $event->sofa_id = $event['id'];
-        //$event->odd = 0;
+        $event->home = Player::find()->select('id')->where(['sofa_id' => $data['homeTeam']['id']])->scalar();
+        $event->away = Player::find()->select('id')->where(['sofa_id' => $data['awayTeam']['id']])->scalar();
+        $event->sofa_id = $data['id'];
+        $event->has_odd = 0;
+
+        BaseHelper::outputArray($data);
+        var_dump($event);
+        die;
 
         return $event->save(0);
     }
