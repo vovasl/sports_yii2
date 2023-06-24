@@ -4,6 +4,7 @@ namespace frontend\models\sport;
 
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tn_player".
@@ -22,7 +23,7 @@ use yii\db\ActiveQuery;
  * @property PlayerType $playerType
  * @property Odd[] $odds;
  */
-class Player extends \yii\db\ActiveRecord
+class Player extends ActiveRecord
 {
 
     public $count_events;
@@ -134,5 +135,14 @@ class Player extends \yii\db\ActiveRecord
         return array_filter($this->events, function (Event $event) use ($tour) {
             return ($event->eventTournament->tour == $tour);
         });
+    }
+
+    /**
+     * @param $id
+     * @return Player|null
+     */
+    public static function findBySofa($id): ?Player
+    {
+        return self::findOne(['sofa_id' => $id]);
     }
 }

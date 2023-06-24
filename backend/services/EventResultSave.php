@@ -28,33 +28,39 @@ class EventResultSave extends Component
         foreach ($events as $event) {
 
             /** event with result */
-            if(!empty($event['id']) && $this->checkEventResult($event['id'])) continue;
+            if($this->checkEventResult($event)) continue;
 
             $msg .= "<hr>";
             $msg .= TennisEvent::output($event);
             $msg .= "<br> Status: ";
 
-            /** check event */
-            if(!$eventLocal = $this->checkEventData($event)) {
-                $msg .= "<span style='color: red;'>Add sofascore player id or event has not been added</span>";
+            /** check players */
+            if(!$this->checkPlayers($event)) {
+                $msg .= "<span style='color: red;'>Add player sofa id</span>";
                 continue;
             }
 
-            /** check the event for odds */
-            if(count($eventLocal->odds) == 0) {
+            /** check event exist */
+            if(!$eventDB = $this->checkEventExist($event)) {
+                $msg .= "<span style='color: red;'>Event has not been added</span>";
+                continue;
+            }
+
+            /** event has not odds */
+            if(count($eventDB->odds) == 0) {
                 $msg .= "<span style='color: red;'>Event without odds</span>";
                 continue;
             }
 
             $msg .= "OK";
-            $msg .= "<br> Event ID: {$eventLocal->id}";
+            $msg .= "<br> Event ID: {$eventDB->id}";
 
             /** save event result */
-            $this->run($eventLocal->id, $event['result']);
+            $this->run($eventDB->id, $event['result']);
 
             /** save event sofascore id */
-            $eventLocal->sofa_id = $event['id'];
-            $eventLocal->save();
+            $eventDB->sofa_id = $event['id'];
+            $eventDB->save();
 
         }
         return ($output) ? $msg : '';
@@ -64,9 +70,9 @@ class EventResultSave extends Component
      * @param $id
      * @param $result
      * @param int $manual
-     * @return array|false
+     * @return bool|false
      */
-    public function run($id, $result, int $manual = 0)
+    public function run($id, $result, int $manual = 0): bool
     {
 
         if(!$event = $this->getEvent($id)) return false;
@@ -320,13 +326,14 @@ class EventResultSave extends Component
     }
 
     /**
-     * @param $id
-     * @return array|ActiveRecord|null
+     * @param array $event
+     * @return false|ActiveRecord|null
      */
-    private function checkEventResult($id)
+    private function checkEventResult(array $event)
     {
+        if(empty($event['id'])) return false;
         return Event::find()
-            ->where(['sofa_id' => $id])
+            ->where(['sofa_id' => $event['id']])
             ->andWhere(['IS NOT', 'home_result', NULL])
             ->andWhere(['IS NOT', 'away_result', NULL])
             ->one()
@@ -334,12 +341,12 @@ class EventResultSave extends Component
     }
 
     /**
-     * @param $event
-     * @return array|ActiveRecord|null
+     * @param $data
+     * @return false|ActiveRecord|null
      */
-    private function checkEventData($event)
+    private function checkEventExist($data)
     {
-        return Event::find()
+        if($event = Event::find()
             ->select([Event::tableName() . '.id'])
             ->joinWith([
                 'homePlayer' => function($q) {
@@ -350,13 +357,64 @@ class EventResultSave extends Component
                 }
             ], 0)
             ->where([
-                'home_result' => NULL,
-                'away_result' => NULL,
-                'home.sofa_id' => $event['homeTeam']['id'],
-                'away.sofa_id' => $event['awayTeam']['id']
+                'home.sofa_id' => $data['homeTeam']['id'],
+                'away.sofa_id' => $data['awayTeam']['id']
             ])
             ->one()
-        ;
+        ) return $event;
+
+        return false;
+
+        $this->addEvent($data);
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    private function addEvent(array $data): bool
+    {
+        BaseHelper::outputArray($data);
+        die;
+
+        $event = new Event();
+        $event->start_at = $data['startTimestamp'];
+        //$event->tournament = $event['tournament'];
+        //$event->round = $event['round'];
+        //$event->home = $event['home'];
+        //$event->away = $event['away'];
+        $event->sofa_id = $event['id'];
+        //$event->odd = 0;
+
+        return $event->save(0);
+    }
+
+    /**
+     * @param $event
+     * @return bool
+     */
+    private function checkPlayers($event): bool
+    {
+        $fields = ['homeTeam', 'awayTeam'];
+        foreach ($fields as $field) {
+
+            /** player with sofa id */
+            if(Player::findBySofa($event[$field]['id'])) continue;
+
+            /** get player by name */
+            $name = explode(' ', trim($event[$field]['name']));
+            $q = Player::find()->where(["like", "name", "{$name[0]}"]);
+
+            /** player not found or more than one result */
+            if($q->count() != 1) return false;
+
+            /** save sofa id */
+            $player = $q->one();
+            $player->sofa_id = $event[$field]['id'];
+            $player->save(0);
+        }
+
+        return true;
     }
 
 }
