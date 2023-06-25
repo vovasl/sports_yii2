@@ -16,6 +16,7 @@ use yii\db\ActiveQuery;
  * @property int|null $surface
  * @property string|null $comment
  * @property int $count_events
+ * @property int $sofa_id
  *
  * @property Surface $tournamentSurface
  * @property Event[] $events
@@ -40,7 +41,7 @@ class Tournament extends \yii\db\ActiveRecord
     public function rules(): array
     {
         return [
-            [['tour', 'surface', 'count_events'], 'integer'],
+            [['tour', 'surface', 'count_events', 'sofa_id'], 'integer'],
             [['name'], 'required'],
             [['comment'], 'string'],
             [['name'], 'string', 'max' => 255],
@@ -60,6 +61,7 @@ class Tournament extends \yii\db\ActiveRecord
             'name' => 'Tournament',
             'surface' => 'Surface',
             'comment' => 'Comment',
+            'sofa_id' => 'Sofascore ID',
         ];
     }
 

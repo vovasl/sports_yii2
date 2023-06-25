@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property string $name
  * @property string $rank
+ * @property int $sofa_id
  *
  * @property Event[] $events
  */
@@ -37,7 +38,7 @@ class Round extends ActiveRecord
         return [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['rank'], 'integer'],
+            [['rank', 'sofa_id'], 'integer'],
         ];
     }
 
@@ -49,7 +50,8 @@ class Round extends ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'rank' => 'Rank'
+            'rank' => 'Rank',
+            'sofa_id' => 'Sofascore ID',
         ];
     }
 
