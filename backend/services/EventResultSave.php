@@ -51,8 +51,8 @@ class EventResultSave extends Component
                 continue;
             }
 
-            /** event has not odds */
-            if($eventDB->has_odd == 1 && count($eventDB->odds) == 0) {
+            /** pinnacle odds has not added */
+            if(!empty($eventDB->pin_id) && count($eventDB->odds) == 0) {
                 $this->err[] = 'Event without odds';
                 $msg .= $this->errorHandler();
                 continue;

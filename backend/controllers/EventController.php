@@ -108,7 +108,7 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 1718;
+        $eventId = 1768;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;
@@ -116,7 +116,7 @@ class EventController extends Controller
         $eventLog = Json::decode($log->message);
 
         $sets = $eventLog['odds']['sets'][0];
-        $games = $eventLog['odds']['games'][4];
+        $games = $eventLog['odds']['games'][1];
 
         $moneyline = [
             'moneyline' => $sets['moneyline']
@@ -143,8 +143,8 @@ class EventController extends Controller
         ];
 
         $odds = [
-            'sets' => array_merge($moneyline),
-            //'games' => array_merge($spreads),
+            //'sets' => array_merge($moneyline),
+            'games' => array_merge($spreads),
         ];
 
         $event = [
