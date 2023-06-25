@@ -9,6 +9,8 @@ use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
 use frontend\models\sport\ResultSet;
+use frontend\models\sport\Round;
+use frontend\models\sport\Tournament;
 use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -17,6 +19,9 @@ class EventResultSave extends Component
 {
 
     CONST LOSS = -100;
+
+    private $err = [];
+    private $warning = [];
 
     /**
      * @param array $events
@@ -31,30 +36,27 @@ class EventResultSave extends Component
             /** event with result */
             if($this->checkEventResult($event)) continue;
 
-            $msg .= "<hr>";
-            $msg .= TennisEvent::output($event);
-            $msg .= "<br> Status: ";
+            $msg .= "<hr>" . TennisEvent::output($event);
 
             /** check players */
             if(!$this->checkPlayers($event)) {
-                $msg .= "<span style='color: red;'>Add player sofa id</span>";
+                $msg .= $this->errorHandler();
                 continue;
             }
 
-            /** check event exist */
-            if(!$eventDB = $this->checkEventExist($event)) {
-                $msg .= "<span style='color: red;'>Event has not been added</span>";
+            /** get event */
+            if(!$eventDB = $this->getEventData($event)) {
+                $this->err[] = 'Event has not been added';
+                $msg .= $this->errorHandler();
                 continue;
             }
 
             /** event has not odds */
-            if(count($eventDB->odds) == 0) {
-                $msg .= "<span style='color: red;'>Event without odds</span>";
+            if($eventDB->has_odd == 1 && count($eventDB->odds) == 0) {
+                $this->err[] = 'Event without odds';
+                $msg .= $this->errorHandler();
                 continue;
             }
-
-            $msg .= "OK";
-            $msg .= "<br> Event ID: {$eventDB->id}";
 
             /** save event result */
             $this->run($eventDB->id, $event['result']);
@@ -62,6 +64,10 @@ class EventResultSave extends Component
             /** save event sofascore id */
             $eventDB->sofa_id = $event['id'];
             $eventDB->save();
+
+            $msg .= "<br> Status: Added";
+            $msg .= "<br> Event ID: {$eventDB->id}";
+            $msg .= $this->warningHandler();
 
         }
         return ($output) ? $msg : '';
@@ -120,7 +126,7 @@ class EventResultSave extends Component
 
     /**
      * @param $id
-     * @return Event|false
+     * @return ActiveRecord|array|false|null
      */
     private function getEvent($id)
     {
@@ -134,7 +140,7 @@ class EventResultSave extends Component
         }
 
         if(!empty($event->home_result) || !empty($event->away_result)) {
-            // ::log event with $id has result
+            $this->warning[] = 'Event has result';
             return false;
         }
 
@@ -343,11 +349,11 @@ class EventResultSave extends Component
 
     /**
      * @param $data
-     * @return false|ActiveRecord|null
+     * @return ActiveRecord|null
      */
-    private function checkEventExist($data)
+    private function getEventData($data)
     {
-        if($event = Event::find()
+        if(!$event = Event::find()
             ->select([Event::tableName() . '.id'])
             ->joinWith([
                 'homePlayer' => function($q) {
@@ -362,34 +368,65 @@ class EventResultSave extends Component
                 'away.sofa_id' => $data['awayTeam']['id']
             ])
             ->one()
-        ) return $event;
+        ) {
+            /** add event */
+            $event = $this->addEvent($data);
+        }
 
-        //$this->addEvent($data);
-
-        return false;
+        return $event;
     }
 
     /**
      * @param array $data
-     * @return bool
+     * @return Event
      */
-    private function addEvent(array $data): bool
+    private function addEvent(array $data): Event
     {
-
         $event = new Event();
-        $event->start_at = $data['startTimestamp'];
-        //$event->tournament = $data['tournament'];
-        //$event->round = $event['round'];
-        $event->home = Player::find()->select('id')->where(['sofa_id' => $data['homeTeam']['id']])->scalar();
-        $event->away = Player::find()->select('id')->where(['sofa_id' => $data['awayTeam']['id']])->scalar();
+        $event->start_at = date('Y-m-d H:i:s', $data['startTimestamp']);
+        $event->tournament = $this->getTournament($data);
+        $event->round = $this->getRound($data);
+        $event->home = Player::getIdBySofa($data['homeTeam']['id']);
+        $event->away = Player::getIdBySofa($data['awayTeam']['id']);
         $event->sofa_id = $data['id'];
         $event->has_odd = 0;
+        $event->save(0);
 
-        BaseHelper::outputArray($data);
-        var_dump($event);
-        die;
+        return $event;
+    }
 
-        return $event->save(0);
+    /**
+     * @param $data
+     * @return int|null
+     */
+    private function getTournament($data): ?int
+    {
+        $val = null;
+        if(empty($data['tournament']['uniqueTournament']['id'])) {
+            $this->warning[] = "Add information about the tournament. Empty [uniqueTournament]";
+        }
+        else if(!$val = Tournament::getIdBySofa($data['tournament']['uniqueTournament']['id'])) {
+            $this->warning[] = "Add information about the tournament. Unable to find {$data['tournament']['uniqueTournament']['id']}";
+        }
+
+        return $val;
+    }
+
+    /**
+     * @param $data
+     * @return int|null
+     */
+    private function getRound($data): ?int
+    {
+        $val = null;
+        if(empty($data['roundInfo']['name'])) {
+            $this->warning[] = "Add information about the round to the event. Empty [roundInfo]";
+        }
+        else if(!$val = Round::getIdBySofa($data['roundInfo']['name'])) {
+            $this->warning[] = "Add information about the round to the event. Unable to find {$data['roundInfo']['name']}";
+        }
+
+        return $val;
     }
 
     /**
@@ -412,7 +449,10 @@ class EventResultSave extends Component
             ;
 
             /** player not found or more than one result */
-            if($q->count() != 1) return false;
+            if($q->count() != 1) {
+                $this->err[] = 'Add player sofa id';
+                return false;
+            }
 
             /** save sofa id */
             $player = $q->one();
@@ -421,6 +461,38 @@ class EventResultSave extends Component
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    private function errorHandler(): string
+    {
+        $output = "";
+        if(count($this->err) != 0) {
+            foreach ($this->err as $msg) {
+                $output .= "<br><span style='color: red;'>{$msg}</span>";
+            }
+            $this->err = [];
+        }
+
+        return $output;
+    }
+
+    /**
+     * @return string
+     */
+    private function warningHandler(): string
+    {
+        $output = "";
+        if(count($this->warning) != 0) {
+            foreach ($this->warning as $msg) {
+                $output .= "<br><span style='color: coral;'>{$msg}</span>";
+            }
+            $this->warning = [];
+        }
+
+        return $output;
     }
 
 }

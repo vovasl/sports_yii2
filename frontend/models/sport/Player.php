@@ -138,11 +138,20 @@ class Player extends ActiveRecord
     }
 
     /**
-     * @param $id
+     * @param $value
      * @return Player|null
      */
-    public static function findBySofa($id): ?Player
+    public static function findBySofa($value): ?Player
     {
-        return self::findOne(['sofa_id' => $id]);
+        return self::findOne(['sofa_id' => $value]);
+    }
+
+    /**
+     * @param $value
+     * @return int|null
+     */
+    public static function getIdBySofa($value): ?int
+    {
+        return ($res = self::findBySofa($value)) ? $res->id : null;
     }
 }

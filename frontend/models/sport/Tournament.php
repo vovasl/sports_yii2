@@ -103,4 +103,23 @@ class Tournament extends \yii\db\ActiveRecord
     {
         return new TournamentQuery(get_called_class());
     }
+
+    /**
+     * @param $value
+     * @return Tournament|null
+     */
+    public static function findBySofa($value): ?Tournament
+    {
+        return self::findOne(['sofa_id' => $value]);
+    }
+
+    /**
+     * @param $value
+     * @return int|null
+     */
+    public static function getIdBySofa($value): ?int
+    {
+        return ($res = self::findBySofa($value)) ? $res->id : null;
+    }
+
 }

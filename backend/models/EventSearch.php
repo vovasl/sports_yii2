@@ -154,9 +154,11 @@ class EventSearch extends Event
         if(!is_null($this->count_odds)) {
             //$query->andFilterWhere(['IS', 'home_result', new Expression('null')]);
             if($this->count_odds == 2) {
+                $query->andFilterWhere(['has_odd' => 1]);
                 $query->having(['count_odds' => 0]);
             }
             else if($this->count_odds == 1) {
+                $query->andFilterWhere(['has_odd' => 1]);
                 $query->having(['>', 'count_odds', 0]);
             }
         }
