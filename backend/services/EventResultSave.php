@@ -364,6 +364,7 @@ class EventResultSave extends Component
                 }
             ], 0)
             ->where([
+                'winner' => null,
                 'home.sofa_id' => $data['homeTeam']['id'],
                 'away.sofa_id' => $data['awayTeam']['id']
             ])
