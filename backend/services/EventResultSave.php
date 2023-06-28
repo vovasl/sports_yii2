@@ -391,7 +391,6 @@ class EventResultSave extends Component
         $event->home = Player::getIdBySofa($data['homeTeam']['id']);
         $event->away = Player::getIdBySofa($data['awayTeam']['id']);
         $event->sofa_id = $data['id'];
-        $event->has_odd = 0;
         $event->save(0);
 
         return $event;

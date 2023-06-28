@@ -26,7 +26,6 @@ use yii\db\Expression;
  * @property int $five_sets
  * @property int $pin_id
  * @property int $sofa_id
- * @property int $has_odd
  *
  * @property Player $homePlayer
  * @property Player $awayPlayer
@@ -70,7 +69,7 @@ class Event extends \yii\db\ActiveRecord
     {
         return [
             [['start_at'], 'safe'],
-            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'has_odd'], 'integer'],
+            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id'], 'integer'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
@@ -100,7 +99,6 @@ class Event extends \yii\db\ActiveRecord
             'five_sets' => 'Five Sets',
             'pin_id' => 'Pinnacle ID',
             'sofa_id' => 'Sofascore ID',
-            'has_odd' => 'Odd'
         ];
     }
 
