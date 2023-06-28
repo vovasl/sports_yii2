@@ -354,7 +354,8 @@ class EventResultSave extends Component
     private function getEventData($data)
     {
         if(!$event = Event::find()
-            ->select([Event::tableName() . '.id'])
+            ->select([Event::tableName() . '.*'])
+            ->with(['odds'])
             ->joinWith([
                 'homePlayer' => function($q) {
                     $q->from(Player::tableName() . ' home');
