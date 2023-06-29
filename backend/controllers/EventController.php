@@ -8,7 +8,7 @@ use backend\models\EventSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use Yii;
-use yii\db\StaleObjectException;
+use yii\base\BaseObject;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -170,9 +170,9 @@ class EventController extends Controller
         $model = new AddResultForm();
         if ($model->load(Yii::$app->request->post())) {
             if($model->validate()) {
-                Yii::$app->result_save->run($model->id, $model->result, 1);
+                Yii::$app->result_save->run($model->id, $model->result, $model->sofa_id, 1);
 
-                $model->result = '';
+                $model = new AddResultForm();
                 Yii::$app->session->setFlash('success', 'Result has been added');
             }
         }

@@ -20,6 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?= $form->field($model, 'id')->dropDownList($model->getEvent(), ['prompt' => 'Select event']) ?>
 
+<?= $form->field($model, 'sofa_id') ?>
+
 <?= $form->field($model, 'result') ?>
 
 <div class="form-group">

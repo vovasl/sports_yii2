@@ -5,7 +5,6 @@ namespace backend\models;
 
 use frontend\models\sport\Event;
 use yii\base\Model;
-use yii\db\Exception;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
@@ -13,6 +12,7 @@ class AddResultForm extends Model
 {
     public $id;
     public $result;
+    public $sofa_id;
 
     /**
      * @return array[]
@@ -20,7 +20,7 @@ class AddResultForm extends Model
     public function rules(): array
     {
         return [
-            [['id', 'result'], 'required'],
+            [['id', 'result', 'sofa_id'], 'required'],
             ['result', 'validateResult'],
         ];
     }
@@ -32,7 +32,8 @@ class AddResultForm extends Model
     {
         return [
             'id' => 'Event',
-            'result' => 'Result'
+            'result' => 'Result',
+            'sofa_id' => 'Sofascore ID'
         ];
     }
 

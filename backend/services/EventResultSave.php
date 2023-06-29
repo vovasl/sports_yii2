@@ -47,16 +47,12 @@ class EventResultSave extends Component
             if(!$this->issetOdds($eventDB)) continue;
 
             /** save event result */
-            $this->run($eventDB->id, $event['result']);
+            $this->run($eventDB->id, $event['result'], $event['id']);
 
             /** event was not finished */
             if(!in_array($event['status']['code'], self::FINISHED_STATUSES)) {
-                $eventDB = $this->eventNotFinished($eventDB);
+                $this->eventNotFinished($eventDB);
             }
-
-            /** save event */
-            $eventDB->sofa_id = $event['id'];
-            $eventDB->save();
 
             $this->message .= "<br> Status: Added";
             $this->message .= "<br> Event ID: {$eventDB->id}";
@@ -68,12 +64,13 @@ class EventResultSave extends Component
     /**
      * @param $id
      * @param $result
+     * @param int $sofaId
      * @param int $manual
      * @return bool|false
      */
-    public function run($id, $result, int $manual = 0): bool
+    public function run($id, $result, int $sofaId, int $manual = 0): bool
     {
-
+        /** @var Event $event */
         if(!$event = $this->getEvent($id)) return false;
         if($manual && !$result = $this->prepare($result)) return false;
         if(!$this->validate($result)) return false;
@@ -87,6 +84,7 @@ class EventResultSave extends Component
         $event->total = $result['setsTotals'];
         $event->total_games = $result['totals'];
         $event->five_sets = ($result['sets'][0] == 3 || $result['sets'][1] == 3) ? 1 : 0;
+        $event->sofa_id = $sofaId;
         $event->save();
 
         /** save event sets result */
@@ -479,21 +477,21 @@ class EventResultSave extends Component
 
     /**
      * @param Event $event
-     * @return Event
+     * @return void
      */
-    private function eventNotFinished(Event $event): Event
+    private function eventNotFinished(Event $event): void
     {
         $event->total = null;
         $event->status = 0;
         $event->total_games = null;
         $event->pin_id = null;
+        $event->save();
 
         /** remove odds */
         $this->removeOdds($event->id);
 
         $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result');
 
-        return $event;
     }
 
     /**
