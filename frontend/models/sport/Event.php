@@ -469,6 +469,7 @@ class Event extends \yii\db\ActiveRecord
     public function getResult(): string
     {
         if(is_null($this->home_result) || is_null($this->away_result)) return '';
+        if(count($this->setsResult) == 0) return '';
 
         $games = [];
         foreach ($this->setsResult as $result) {
