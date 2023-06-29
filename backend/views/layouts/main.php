@@ -37,13 +37,13 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'Events', 'items' => [
-            ['label' => 'Add Events', 'url' => ['/event/add']],
+            ['label' => 'Events', 'url' => ['/event']],
+            ['label' => 'Add Odds', 'url' => ['/event/add-odds']],
             ['label' => 'Add Line', 'url' => ['/event/add-line']],
             ['label' => 'Add Result', 'url' => ['/event/add-result']],
             ['label' => 'Add Results', 'url' => ['/event/add-results']],
         ]],
         ['label' => 'Tournaments', 'url' => ['/tournament']],
-        ['label' => 'Events', 'url' => ['/event']],
         ['label' => 'Players', 'url' => ['/player']],
         ['label' => 'Stats', 'items' => [
             ['label' => 'Totals', 'url' => ['statistic/total']],

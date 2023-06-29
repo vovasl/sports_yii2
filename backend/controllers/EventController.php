@@ -89,7 +89,7 @@ class EventController extends Controller
     /**
      * @return string
      */
-    public function actionAdd(): string
+    public function actionAddOdds(): string
     {
         $settings = [
             'sportid' => Pinnacle::TENNIS,

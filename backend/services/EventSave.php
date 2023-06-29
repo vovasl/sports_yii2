@@ -28,13 +28,14 @@ class EventSave extends Component
     CONST TENNIS_FIELDS_REQUIRED = ['tour', 'tournament', 'round', 'home', 'away'];
     CONST MIN_ODDS = 10;
 
+    private $message = '';
+
     /**
      * @param $events
      * @return string
      */
     public function events($events): string
     {
-        $output = "";
         foreach ($events as $event) {
 
             if(empty($event['id'])) {
@@ -42,13 +43,13 @@ class EventSave extends Component
                 continue;
             }
 
-            $output .= "{$event['tournament']} {$event['round']} <br>";
-            $output .= "{$event['o_starts']} {$event['home']} - {$event['away']} - ";
-            $output .= $this->event($event) ? 'OK' : 'Error';
-            $output .= "<br>";
+            $this->message .= "{$event['tournament']} {$event['round']}";
+            $this->message .= "<br>{$event['o_starts']} {$event['home']} - {$event['away']}";
+            $this->message .= $this->event($event) ? "<br>OK" : "<br>Error";
+            $this->message .= "<hr>";
         }
 
-        return $output;
+        return $this->message;
     }
 
     /**
@@ -148,6 +149,9 @@ class EventSave extends Component
         }
         $fixture->save();
         $event['id'] = $fixture->id;
+
+        $this->message .= "<br>Status: ";
+        $this->message .= ($updateEvent) ? "Update" : "Insert";
 
         /** exit for an existing event with odds(number of odds must be more than MIN value) */
         if($updateEvent && count($fixture->odds) > self::MIN_ODDS) return true;
