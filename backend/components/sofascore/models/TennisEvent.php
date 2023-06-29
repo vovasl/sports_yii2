@@ -10,7 +10,7 @@ class TennisEvent
     CONST TOUR = [3, 72];
 
     /** allowed status codes */
-    CONST STATUS_CODES = [100, 92];
+    CONST STATUS_CODES = [100, 98, 92, 91];
 
     /**
      * @var array
@@ -78,8 +78,10 @@ class TennisEvent
     public static function output(array $event): string
     {
         $games = [];
-        foreach ($event['result']['games'] as $res) {
-            $games[] = implode(":", $res);
+        if($event['result']['games']) {
+            foreach ($event['result']['games'] as $res) {
+                $games[] = implode(":", $res);
+            }
         }
 
         $output = "{$event['tournament']['name']}, {$event['roundInfo']['name']}";

@@ -73,4 +73,12 @@ class EventQuery extends \yii\db\ActiveQuery
         return $this->andWhere(['>','event.start_at', new Expression('NOW()')]);
     }
 
+    /**
+     * @return EventQuery
+     */
+    public function active(): EventQuery
+    {
+        return $this->andWhere(['status' => 1]);
+    }
+
 }

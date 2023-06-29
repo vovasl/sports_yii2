@@ -21,7 +21,7 @@ class EventResultSave extends Component
     CONST LOSS = -100;
     const FINISHED_STATUSES = [100];
 
-    private $message;
+    private $message = '';
 
     /**
      * @param array $events
@@ -486,9 +486,12 @@ class EventResultSave extends Component
         $event->total = null;
         $event->status = 0;
         $event->total_games = null;
+        $event->pin_id = null;
 
         /** remove odds */
         $this->removeOdds($event->id);
+
+        $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result');
 
         return $event;
     }
