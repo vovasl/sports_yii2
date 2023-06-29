@@ -9,8 +9,8 @@ class TennisEvent
     /** allowed tournament categories */
     CONST TOUR = [3, 72];
 
-    /** finished match code */
-    CONST FINISHED = 100;
+    /** allowed status codes */
+    CONST STATUS_CODES = [100, 92];
 
     /**
      * @var array
@@ -52,7 +52,7 @@ class TennisEvent
 
         /** status code filter */
         $this->events = array_filter($this->events, function ($event) {
-            return ($event['status']['code'] == self::FINISHED);
+            return in_array($event['status']['code'], self::STATUS_CODES);
         });
     }
 

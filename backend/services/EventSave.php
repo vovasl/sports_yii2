@@ -26,6 +26,7 @@ class EventSave extends Component
         'games' => ['spreads', 'totals', 'teamTotal'],
     ];
     CONST TENNIS_FIELDS_REQUIRED = ['tour', 'tournament', 'round', 'home', 'away'];
+    CONST MIN_ODDS = 10;
 
     /**
      * @param $events
@@ -148,8 +149,8 @@ class EventSave extends Component
         $fixture->save();
         $event['id'] = $fixture->id;
 
-        /** exit for an existing event with odds(number of odds must be more than 5) */
-        if($updateEvent && count($fixture->odds) > 5) return true;
+        /** exit for an existing event with odds(number of odds must be more than MIN value) */
+        if($updateEvent && count($fixture->odds) > self::MIN_ODDS) return true;
 
         /** save logs */
         $log = new EventLog();

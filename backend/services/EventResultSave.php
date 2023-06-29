@@ -19,9 +19,9 @@ class EventResultSave extends Component
 {
 
     CONST LOSS = -100;
+    const FINISHED_STATUSES = [100];
 
-    private $err = [];
-    private $warning = [];
+    private $message;
 
     /**
      * @param array $events
@@ -30,47 +30,39 @@ class EventResultSave extends Component
      */
     public function events(array $events, int $output = 0): string
     {
-        $msg = "";
         foreach ($events as $event) {
 
             /** event with result */
-            if($this->checkEventResult($event)) continue;
+            if($this->eventHasResult($event)) continue;
 
-            $msg .= "<hr>" . TennisEvent::output($event);
+            $this->message .= "<hr>" . TennisEvent::output($event);
 
             /** check players */
-            if(!$this->checkPlayers($event)) {
-                $msg .= $this->errorHandler();
-                continue;
-            }
+            if(!$this->issetPlayers($event)) continue;
 
             /** get event */
-            if(!$eventDB = $this->getEventData($event)) {
-                $this->err[] = 'Event has not been added';
-                $msg .= $this->errorHandler();
-                continue;
-            }
+            $eventDB = $this->getEventData($event);
 
             /** pinnacle odds has not added */
-            if(!empty($eventDB->pin_id) && count($eventDB->odds) == 0) {
-                $this->err[] = 'Event without odds';
-                $msg .= $this->errorHandler();
-                continue;
-            }
+            if(!$this->issetOdds($eventDB)) continue;
 
             /** save event result */
             $this->run($eventDB->id, $event['result']);
 
-            /** save event sofascore id */
+            /** event was not finished */
+            if(!in_array($event['status']['code'], self::FINISHED_STATUSES)) {
+                $eventDB = $this->eventNotFinished($eventDB);
+            }
+
+            /** save event */
             $eventDB->sofa_id = $event['id'];
             $eventDB->save();
 
-            $msg .= "<br> Status: Added";
-            $msg .= "<br> Event ID: {$eventDB->id}";
-            $msg .= $this->warningHandler();
+            $this->message .= "<br> Status: Added";
+            $this->message .= "<br> Event ID: {$eventDB->id}";
 
         }
-        return ($output) ? $msg : '';
+        return ($output) ? $this->message : '';
     }
 
     /**
@@ -140,7 +132,7 @@ class EventResultSave extends Component
         }
 
         if(!empty($event->home_result) || !empty($event->away_result)) {
-            $this->warning[] = 'Event has result';
+            $this->message .= $this->warningMsg('Event has result');
             return false;
         }
 
@@ -334,24 +326,27 @@ class EventResultSave extends Component
 
     /**
      * @param array $event
-     * @return false|ActiveRecord|null
+     * @return bool
      */
-    private function checkEventResult(array $event)
+    private function eventHasResult(array $event): bool
     {
         if(empty($event['id'])) return false;
-        return Event::find()
+        $event = Event::find()
             ->where(['sofa_id' => $event['id']])
             ->andWhere(['IS NOT', 'home_result', NULL])
             ->andWhere(['IS NOT', 'away_result', NULL])
+            ->andWhere(['IS NOT', 'winner', NULL])
             ->one()
         ;
+
+        return (bool)$event;
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @return ActiveRecord|null
      */
-    private function getEventData($data)
+    private function getEventData(array $data)
     {
         if(!$event = Event::find()
             ->select([Event::tableName() . '.*'])
@@ -365,7 +360,9 @@ class EventResultSave extends Component
                 }
             ], 0)
             ->where([
-                'winner' => null,
+                'home_result' => NULL,
+                'away_result' => NULL,
+                'winner' => NULL,
                 'home.sofa_id' => $data['homeTeam']['id'],
                 'away.sofa_id' => $data['awayTeam']['id']
             ])
@@ -404,10 +401,10 @@ class EventResultSave extends Component
     {
         $val = null;
         if(empty($data['tournament']['uniqueTournament']['id'])) {
-            $this->warning[] = "Add information about the tournament. Empty [uniqueTournament]";
+            $this->message .= $this->warningMsg("Add information about the tournament. Empty [uniqueTournament]");
         }
         else if(!$val = Tournament::getIdBySofa($data['tournament']['uniqueTournament']['id'])) {
-            $this->warning[] = "Add information about the tournament. Unable to find {$data['tournament']['uniqueTournament']['id']}";
+            $this->message .= $this->warningMsg("Add information about the tournament. Unable to find {$data['tournament']['uniqueTournament']['id']}");
         }
 
         return $val;
@@ -421,10 +418,11 @@ class EventResultSave extends Component
     {
         $val = null;
         if(empty($data['roundInfo']['name'])) {
-            $this->warning[] = "Add information about the round to the event. Empty [roundInfo]";
+            $this->message .= $this->warningMsg("Add information about the round to the event. Empty [roundInfo]");
+
         }
         else if(!$val = Round::getIdBySofa($data['roundInfo']['name'])) {
-            $this->warning[] = "Add information about the round to the event. Unable to find {$data['roundInfo']['name']}";
+            $this->message .= $this->warningMsg("Add information about the round to the event. Unable to find {$data['roundInfo']['name']}");
         }
 
         return $val;
@@ -434,7 +432,7 @@ class EventResultSave extends Component
      * @param $event
      * @return bool
      */
-    private function checkPlayers($event): bool
+    private function issetPlayers($event): bool
     {
         $fields = ['homeTeam', 'awayTeam'];
         foreach ($fields as $field) {
@@ -451,7 +449,8 @@ class EventResultSave extends Component
 
             /** player not found or more than one result */
             if($q->count() != 1) {
-                $this->err[] = 'Add player sofa id';
+                $message = ($q->count() == 0) ? "Player {$event[$field]['name']} does not exist" : "Add player {$event[$field]['name']} sofa id";
+                $this->message .= $this->errorMsg($message);
                 return false;
             }
 
@@ -465,35 +464,59 @@ class EventResultSave extends Component
     }
 
     /**
-     * @return string
+     * @param Event $event
+     * @return bool
      */
-    private function errorHandler(): string
+    private function issetOdds(Event $event): bool
     {
-        $output = "";
-        if(count($this->err) != 0) {
-            foreach ($this->err as $msg) {
-                $output .= "<br><span style='color: red;'>{$msg}</span>";
-            }
-            $this->err = [];
+        if(!empty($event->pin_id) && count($event->odds) == 0) {
+            $this->message .= $this->errorMsg('Event without odds');
+            return false;
         }
 
-        return $output;
+        return true;
     }
 
     /**
+     * @param Event $event
+     * @return Event
+     */
+    private function eventNotFinished(Event $event): Event
+    {
+        $event->total = null;
+        $event->status = 0;
+        $event->total_games = null;
+
+        /** remove odds */
+        $this->removeOdds($event->id);
+
+        return $event;
+    }
+
+    /**
+     * @param int $id
+     */
+    private function removeOdds(int $id)
+    {
+        Odd::deleteAll(['event' => $id]);
+    }
+
+    /**
+     * @param string $message
      * @return string
      */
-    private function warningHandler(): string
+    private function errorMsg(string $message): string
     {
-        $output = "";
-        if(count($this->warning) != 0) {
-            foreach ($this->warning as $msg) {
-                $output .= "<br><span style='color: coral;'>{$msg}</span>";
-            }
-            $this->warning = [];
-        }
+        return "<br><span style='color: red;'>{$message}</span>";
+    }
 
-        return $output;
+    /**
+     * @param string $message
+     * @return string
+     */
+    private function warningMsg(string $message): string
+    {
+        return "<br><span style='color: coral;'>{$message}</span>";
     }
 
 }
