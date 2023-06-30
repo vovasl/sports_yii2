@@ -170,7 +170,7 @@ class EventController extends Controller
         $model = new AddResultForm();
         if ($model->load(Yii::$app->request->post())) {
             if($model->validate()) {
-                Yii::$app->result_save->run($model->id, $model->result, $model->sofa_id, 1);
+                Yii::$app->result_save->run($model, 1);
 
                 $model = new AddResultForm();
                 Yii::$app->session->setFlash('success', 'Result has been added');

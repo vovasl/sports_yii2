@@ -151,7 +151,7 @@ class EventSave extends Component
         $event['id'] = $fixture->id;
 
         $this->message .= "<br>Status: ";
-        $this->message .= ($updateEvent) ? "Update" : "Insert";
+        $this->message .= ($updateEvent) ? "Updated" : "Added";
 
         /** exit for an existing event with odds(number of odds must be more than MIN value) */
         if($updateEvent && count($fixture->odds) > self::MIN_ODDS) return true;

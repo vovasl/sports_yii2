@@ -5,6 +5,7 @@ namespace backend\services;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\sofascore\models\TennisEvent;
+use backend\models\AddResultForm;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
@@ -46,13 +47,15 @@ class EventResultSave extends Component
             /** pinnacle odds has not added */
             if(!$this->issetOdds($eventDB)) continue;
 
-            /** save event result */
-            $this->run($eventDB->id, $event['result'], $event['id']);
+            /** add result form model */
+            $model = new AddResultForm();
+            $model->id = $eventDB->id;
+            $model->status = $event['status']['code'];
+            $model->result = $event['result'];
+            $model->sofa_id = $event['id'];
 
-            /** event was not finished */
-            if(!in_array($event['status']['code'], self::FINISHED_STATUSES)) {
-                $this->eventNotFinished($eventDB);
-            }
+            /** save event result */
+            $this->run($model);
 
             $this->message .= "<br> Status: Added";
             $this->message .= "<br> Event ID: {$eventDB->id}";
@@ -62,20 +65,18 @@ class EventResultSave extends Component
     }
 
     /**
-     * @param $id
-     * @param $result
-     * @param int $sofaId
+     * @param AddResultForm $model
      * @param int $manual
      * @return bool|false
      */
-    public function run($id, $result, int $sofaId, int $manual = 0): bool
+    public function run(AddResultForm $model, int $manual = 0): bool
     {
         /** @var Event $event */
-        if(!$event = $this->getEvent($id)) return false;
-        if($manual && !$result = $this->prepare($result)) return false;
-        if(!$this->validate($result)) return false;
+        if(!$event = $this->getEvent($model->id)) return false;
+        if($manual && !$model->result = $this->prepare($model->result)) return false;
+        if(!$this->validate($model->result)) return false;
 
-        $result = $this->aggregate($result, $event);
+        $result = $this->aggregate($model->result, $event);
 
         /** save event result */
         $event->home_result = $result['sets'][0];
@@ -84,7 +85,13 @@ class EventResultSave extends Component
         $event->total = $result['setsTotals'];
         $event->total_games = $result['totals'];
         $event->five_sets = ($result['sets'][0] == 3 || $result['sets'][1] == 3) ? 1 : 0;
-        $event->sofa_id = $sofaId;
+        $event->sofa_id = $model->sofa_id;
+
+        /** event was not finished */
+        if(!in_array($model->status, self::FINISHED_STATUSES)) {
+            $event = $this->eventNotFinished($event);
+        }
+
         $event->save();
 
         /** save event sets result */
@@ -97,17 +104,15 @@ class EventResultSave extends Component
             $setRes->save();
         }
 
-        /** save odds result */
+        /** calculate odds profit */
         foreach ($event->odds as $odds) {
 
             if(!empty($odds->profit)) continue;
-
             $method = "{$odds->oddType->name}Odds";
             if(!method_exists($this, $method)) {
                 // ::log add method {$method}
                 continue;
             }
-
             $this->{$method}($odds, $result);
         }
 
@@ -477,9 +482,9 @@ class EventResultSave extends Component
 
     /**
      * @param Event $event
-     * @return void
+     * @return Event
      */
-    private function eventNotFinished(Event $event): void
+    private function eventNotFinished(Event $event): Event
     {
         $event->total = null;
         $event->status = 0;
@@ -490,8 +495,9 @@ class EventResultSave extends Component
         /** remove odds */
         $this->removeOdds($event->id);
 
-        $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result');
+        $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result, five_sets');
 
+        return $event;
     }
 
     /**
