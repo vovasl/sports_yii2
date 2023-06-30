@@ -499,7 +499,8 @@ class Event extends \yii\db\ActiveRecord
      */
     public function actionDelete(): bool
     {
-        return ($this->winner === null && strtotime($this->start_at) < time() - 60 * 60 * 3);
+        return false;
+        //return ($this->winner === null && strtotime($this->start_at) < time() - 60 * 60 * 3);
     }
 
 }

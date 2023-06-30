@@ -12,7 +12,6 @@ use yii\web\View;
 use backend\models\TournamentEventSearch;
 use yii\data\ActiveDataProvider;
 use yii\widgets\LinkPager;
-use yii\helpers\Url;
 use yii\grid\ActionColumn;
 
 /**

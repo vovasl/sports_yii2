@@ -15,6 +15,7 @@ use frontend\models\sport\Tournament;
 use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\helpers\Html;
 
 class EventResultSave extends Component
 {
@@ -58,7 +59,7 @@ class EventResultSave extends Component
             $this->run($model);
 
             $this->message .= "<br> Status: Added";
-            $this->message .= "<br> Event ID: {$eventDB->id}";
+            $this->message .= "<br>" . Html::a('Link', ['/event/view', 'id' => $eventDB->id], ['target'=>'_blank']);
 
         }
         return ($output) ? $this->message : '';
