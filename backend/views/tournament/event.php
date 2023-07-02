@@ -68,6 +68,7 @@ $reset = "/tournament/{$model->id}/event";
                 'value' => 'tournamentRound.name',
                 'filter' => Round::dropdown(),
             ],
+            /*
             [
                 'label' => 'Event',
                 'attribute' => 'player',
@@ -75,6 +76,30 @@ $reset = "/tournament/{$model->id}/event";
                 'value' => function($model) {
                     return Html::a($model->fullName, ['/event/view', 'id' => $model->id]);
                 }
+            ],
+            */
+            [
+                'label' => 'Event',
+                'attribute' => 'player',
+                'value' => function(Event $model) {
+                    return $model->homePlayer->name;
+                },
+                'headerOptions' => [
+                    'colspan' => 2,
+                    'style' => 'text-align: center;'
+                ],
+                'filterOptions' => [
+                    'colspan' => 2,
+                ],
+            ],
+            [
+                'attribute' => 'awayPlayer.name',
+                'headerOptions' => [
+                    'style' => 'display: none;',
+                ],
+                'filterOptions' => [
+                    'style' => 'display: none;',
+                ]
             ],
             [
                 'attribute' => 'result',

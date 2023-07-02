@@ -87,10 +87,25 @@ $reset = "/event";
             [
                 'label' => 'Event',
                 'attribute' => 'player',
-                'format' => 'raw',
-                'value' => function($model) {
-                    return Html::a($model->fullName, ['/event/view', 'id' => $model->id]);
-                }
+                'value' => function(Event $model) {
+                    return $model->homePlayer->name;
+                },
+                'headerOptions' => [
+                    'colspan' => 2,
+                    'style' => 'text-align: center;'
+                ],
+                'filterOptions' => [
+                    'colspan' => 2,
+                ],
+            ],
+            [
+                'attribute' => 'awayPlayer.name',
+                'headerOptions' => [
+                    'style' => 'display: none;',
+                ],
+                'filterOptions' => [
+                    'style' => 'display: none;',
+                ]
             ],
             [
                 'attribute' => 'result',
@@ -120,7 +135,7 @@ $reset = "/event";
             ],
             [
                 'class' => ActionColumn::class,
-                'template'=> '{delete}',
+                'template'=> '{view}{delete}',
                 'visibleButtons' => [
                     'delete' => function (Event $model, $key, $index) {
                         return $model->actionDelete();
