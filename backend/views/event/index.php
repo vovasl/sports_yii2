@@ -55,7 +55,6 @@ $reset = "/event";
             'class' => LinkPager::class
         ],
         'columns' => [
-            'id',
             [
                 'label' => 'Start',
                 'attribute' => 'start_at',

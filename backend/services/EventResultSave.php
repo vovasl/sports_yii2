@@ -45,6 +45,8 @@ class EventResultSave extends Component
             /** get event */
             $eventDB = $this->getEventData($event);
 
+            $this->message .= "<br>" . self::getLink($eventDB->id);
+
             /** pinnacle odds has not added */
             if(!$this->issetOdds($eventDB)) continue;
 
@@ -59,7 +61,6 @@ class EventResultSave extends Component
             $this->run($model);
 
             $this->message .= "<br> Status: Added";
-            $this->message .= "<br>" . Html::a('Link', ['/event/view', 'id' => $eventDB->id], ['target'=>'_blank']);
 
         }
         return ($output) ? $this->message : '';
@@ -474,7 +475,7 @@ class EventResultSave extends Component
     private function issetOdds(Event $event): bool
     {
         if(!empty($event->pin_id) && count($event->odds) == 0) {
-            $this->message .= $this->errorMsg('Event without odds');
+            $this->message .= $this->errorMsg("Event without odds");
             return false;
         }
 
@@ -525,6 +526,15 @@ class EventResultSave extends Component
     private function warningMsg(string $message): string
     {
         return "<br><span style='color: coral;'>{$message}</span>";
+    }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public static function getLink($id): string
+    {
+        return Html::a('Link', ['/event/view', 'id' => $id], ['target'=>'_blank']);
     }
 
 }
