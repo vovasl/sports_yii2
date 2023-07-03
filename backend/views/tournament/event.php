@@ -5,6 +5,7 @@ use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\web\View;
@@ -136,6 +137,16 @@ $reset = "/tournament/{$model->id}/event";
                 'value' => function($model) {
                     return count($model->odds);
                 },
+            ],
+            [
+                'controller' => 'event',
+                'class' => ActionColumn::class,
+                'template'=> '{view}{delete}',
+                'visibleButtons' => [
+                    'delete' => function (Event $model, $key, $index) {
+                        return $model->actionDelete();
+                    },
+                ],
             ],
         ],
     ]); ?>
