@@ -58,9 +58,12 @@ class EventResultSave extends Component
             $model->sofa_id = $event['id'];
 
             /** save event result */
-            $this->run($model);
+            if(!$this->run($model)) {
+               $this->message .= $event['id'];
+                continue;
+            }
 
-            $this->message .= "<br> Status: Added";
+            $this->message .= "<br> Status: OK";
 
         }
         return ($output) ? $this->message : '';
@@ -187,6 +190,7 @@ class EventResultSave extends Component
 
         if(empty($data['sets']) || empty($data['games'])) {
             // :: log print_r($data, 1) wrong format
+            $this->message .= $this->errorMsg('Wrong result format');
             return false;
         }
 
@@ -498,6 +502,7 @@ class EventResultSave extends Component
         $this->removeOdds($event->id);
 
         $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result, five_sets');
+        $this->message .= Html::a('Edit', ['/event/edit', 'id' => $event->id], ['target'=>'_blank']);
 
         return $event;
     }

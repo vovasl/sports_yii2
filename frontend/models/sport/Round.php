@@ -71,7 +71,15 @@ class Round extends ActiveRecord
      */
     public static function dropdown(): array
     {
-        $rounds = self::find()->select(['name', 'id'])->indexBy('id')->orderBy('rank')->column();
+        return self::find()->select(['name', 'id'])->indexBy('id')->orderBy('rank')->column();
+    }
+
+    /**
+     * @return array
+     */
+    public static function dropdownFilter(): array
+    {
+        $rounds = self::dropdown();
         $rounds[self::QUALIFIER_FILTER] = 'No Qualifiers';
         return $rounds;
     }

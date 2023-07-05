@@ -7,8 +7,10 @@ use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
+use Throwable;
 use Yii;
 use yii\base\BaseObject;
+use yii\db\StaleObjectException;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -76,8 +78,26 @@ class EventController extends Controller
 
     /**
      * @param $id
-     * @return Response
+     * @return string|Response
      * @throws NotFoundHttpException
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException|StaleObjectException|Throwable
      */
     public function actionDelete($id): Response
     {
@@ -108,7 +128,7 @@ class EventController extends Controller
      */
     public function actionAddLine($id = null): string
     {
-        $eventId = 2353;
+        $eventId = 2372;
         $save = 0;
 
         $id = (empty($id)) ? $eventId : $id;

@@ -67,18 +67,8 @@ $reset = "/tournament/{$model->id}/event";
                 'label' => 'Round',
                 'attribute' => 'round_id',
                 'value' => 'tournamentRound.name',
-                'filter' => Round::dropdown(),
+                'filter' => Round::dropdownFilter(),
             ],
-            /*
-            [
-                'label' => 'Event',
-                'attribute' => 'player',
-                'format' => 'raw',
-                'value' => function($model) {
-                    return Html::a($model->fullName, ['/event/view', 'id' => $model->id]);
-                }
-            ],
-            */
             [
                 'label' => 'Event',
                 'attribute' => 'player',
@@ -141,11 +131,13 @@ $reset = "/tournament/{$model->id}/event";
             [
                 'controller' => 'event',
                 'class' => ActionColumn::class,
-                'template'=> '{view}{delete}',
                 'visibleButtons' => [
                     'delete' => function (Event $model, $key, $index) {
                         return $model->actionDelete();
                     },
+                    'update' => function (Event $model, $key, $index) {
+                        return $model->actionUpdate();
+                    }
                 ],
             ],
         ],

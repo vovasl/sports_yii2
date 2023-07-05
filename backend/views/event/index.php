@@ -82,7 +82,7 @@ $reset = "/event";
                 'label' => 'Round',
                 'attribute' => 'round_id',
                 'value' => 'tournamentRound.name',
-                'filter' => Round::dropdown(),
+                'filter' => Round::dropdownFilter(),
             ],
             [
                 'label' => 'Event',
@@ -135,10 +135,12 @@ $reset = "/event";
             ],
             [
                 'class' => ActionColumn::class,
-                'template'=> '{view}{delete}',
                 'visibleButtons' => [
                     'delete' => function (Event $model, $key, $index) {
                         return $model->actionDelete();
+                    },
+                    'update' => function (Event $model, $key, $index) {
+                        return $model->actionUpdate();
                     },
                 ]
             ],

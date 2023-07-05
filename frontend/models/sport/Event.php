@@ -497,6 +497,14 @@ class Event extends \yii\db\ActiveRecord
     /**
      * @return bool
      */
+    public function actionUpdate(): bool
+    {
+        return ($this->pin_id === null);
+    }
+
+    /**
+     * @return bool
+     */
     public function actionDelete(): bool
     {
         return ($this->winner === null && strtotime($this->start_at) < time() - 60 * 60 * 3);
