@@ -21,6 +21,10 @@ use frontend\models\sport\Event;
 
     <?= $form->field($model, 'round')->dropDownList(Round::dropdown()) ?>
 
+    <?= $form->field($model, 'winner')->dropDownList($model->dropdownPlayers()) ?>
+
+    <?= $form->field($model, 'five_sets')->checkbox() ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

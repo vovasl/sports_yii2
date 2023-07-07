@@ -495,6 +495,17 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function dropdownPlayers(): array
+    {
+        return [
+            $this->home => $this->homePlayer->name,
+            $this->away => $this->awayPlayer->name
+        ];
+    }
+
+    /**
      * @return bool
      */
     public function actionUpdate(): bool
