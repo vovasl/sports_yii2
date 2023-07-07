@@ -84,29 +84,8 @@ $reset = "/event";
                 'value' => 'tournamentRound.name',
                 'filter' => Round::dropdownFilter(),
             ],
-            [
-                'label' => 'Event',
-                'attribute' => 'player',
-                'value' => function(Event $model) {
-                    return $model->homePlayer->name;
-                },
-                'headerOptions' => [
-                    'colspan' => 2,
-                    'style' => 'text-align: center;'
-                ],
-                'filterOptions' => [
-                    'colspan' => 2,
-                ],
-            ],
-            [
-                'attribute' => 'awayPlayer.name',
-                'headerOptions' => [
-                    'style' => 'display: none;',
-                ],
-                'filterOptions' => [
-                    'style' => 'display: none;',
-                ]
-            ],
+            EventHelper::gridHomePlayer(),
+            EventHelper::gridAwayPlayer(),
             [
                 'attribute' => 'result',
                 'label' => 'Result',
@@ -124,6 +103,18 @@ $reset = "/event";
                 'label' => 'Games',
                 'value' => 'total_games',
                 'filter' => '',
+            ],
+            [
+                'label' => 'Over',
+                'value' => function(Event $model) {
+                    return EventHelper::getOddStat($model->totalsOver);
+                }
+            ],
+            [
+                'label' => 'Under',
+                'value' => function(Event $model) {
+                    return EventHelper::getOddStat($model->totalsUnder);
+                }
             ],
             [
                 'label' => 'Odds',

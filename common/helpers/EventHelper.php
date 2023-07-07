@@ -3,6 +3,7 @@
 
 namespace common\helpers;
 
+use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 
 class EventHelper
@@ -99,6 +100,47 @@ class EventHelper
         }
 
         return $text;
+    }
+
+    /**
+     * @return array
+     */
+    public static function gridHomePlayer(): array
+    {
+        return [
+            'label' => 'Event',
+            'attribute' => 'player',
+            'format' => 'raw',
+            'value' => function(Event $model) {
+                return $model->outputPlayer('homePlayer');
+            },
+            'headerOptions' => [
+                'colspan' => 2,
+                'style' => 'text-align: center;'
+            ],
+            'filterOptions' => [
+                'colspan' => 2,
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function gridAwayPlayer(): array
+    {
+        return [
+            'format' => 'raw',
+            'value' => function(Event $model) {
+                return $model->outputPlayer('awayPlayer');
+            },
+            'headerOptions' => [
+                'style' => 'display: none;',
+            ],
+            'filterOptions' => [
+                'style' => 'display: none;',
+            ]
+        ];
     }
 
 }

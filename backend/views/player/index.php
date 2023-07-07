@@ -54,10 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'name',
                 'format' => 'raw',
                 'value' => function(Player $model) {
-                    return Html::a($model->name, [
-                        "/event",
-                        "EventSearch[player]" => $model->name
-                    ], ['target'=>'_blank']);
+                    return Player::getEventsLink($model->name);
                 }
             ],
             //'plays',

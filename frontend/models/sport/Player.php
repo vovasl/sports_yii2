@@ -5,6 +5,7 @@ namespace frontend\models\sport;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "tn_player".
@@ -154,4 +155,21 @@ class Player extends ActiveRecord
     {
         return ($res = self::findBySofa($value)) ? $res->id : null;
     }
+
+    /**
+     * @param $name
+     * @param string $class
+     * @return string
+     */
+    public static function getEventsLink($name, string $class = ''): string
+    {
+        return Html::a($name, [
+            "/event",
+            "EventSearch[player]" => $name
+        ], [
+            'target'=>'_blank',
+            'class' => $class
+        ]);
+    }
+
 }

@@ -7,6 +7,7 @@ use frontend\models\sport\query\EventQuery;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "tn_event".
@@ -503,6 +504,17 @@ class Event extends \yii\db\ActiveRecord
             $this->home => $this->homePlayer->name,
             $this->away => $this->awayPlayer->name
         ];
+    }
+
+    /**
+     * @param $field
+     * @return string
+     */
+    public function outputPlayer($field): string
+    {
+        $player = $this->{$field};
+        $class = ($this->winner === $player->id) ? 'winner' : '';
+        return Player::getEventsLink($player->name, $class);
     }
 
     /**
