@@ -67,7 +67,7 @@ class OddHelper
      */
     public static function getStatsTitle($odd, $settings): string
     {
-        $oddKey = array_search ($odd, $settings);
+        $oddKey = array_search($odd, $settings);
 
         $prefix = '';
         if($oddKey == array_key_first($settings)) {

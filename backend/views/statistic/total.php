@@ -5,11 +5,10 @@ use common\helpers\EventHelper;
 use common\helpers\TournamentHelper;
 use frontend\models\sport\Odd;
 use yii\web\View;
-use common\helpers\OddHelper;
 
 /**
  * @var View $this
- * @var array $odds
+ * @var array $tournaments
  * @var string $tour
  * @var string $surface
  * @var int $qualifier
@@ -21,11 +20,18 @@ use common\helpers\OddHelper;
 <h2><?= TournamentHelper::getTourSurfaceTitle($tour, $surface) ?></h2>
 <h3 class="mb-5"><?= EventHelper::getQualifierText($qualifier) ?></h3>
 
-<?php foreach (Odd::ADD_TYPE as $type): ?>
+<?php foreach (Odd::ADD_TYPE as $type) : ?>
 
-    <?= $this->render('total/_outer', [
-        'type' => Odd::ADD_TYPE[$type],
-        'stats' => OddHelper::getStats($odds, Odd::ADD_TYPE[$type])
-    ]) ?>
+    <h3><?= ucfirst($type); ?></h3>
+
+    <table class="table table-striped table-bordered detail-view mb-0 mt-3 mb-5">
+
+        <?= $this->render('total/_outer', [
+            'type' => $type,
+            'tournaments' => $tournaments,
+            'qualifier' => $qualifier
+        ]) ?>
+
+    </table>
 
 <?php endforeach; ?>

@@ -43,18 +43,19 @@ class StatisticController extends Controller
      */
     public function actionTotal($tour = null, $surface = null, int $qualifier = 0): string
     {
-        $odds = Odd::find();
-        $odds->joinWith(['eventOdd', 'eventOdd.eventTournament']);
-        $odds->where(['type' => 2]);
-        $odds->andWhere(['IS NOT', 'profit', NULL]);
 
-        if(!is_null($tour)) $odds->andWhere([Tournament::tableName() . '.tour' => $tour]);
-        if(!is_null($surface)) $odds->andWhere([Tournament::tableName() . '.surface' => $surface]);
-        if($qualifier == -1) $odds->andWhere(['!=' , Event::tableName() . '.round', Round::QUALIFIER]);
-        else if($qualifier == 1) $odds->andWhere(['=' , Event::tableName() . '.round', Round::QUALIFIER]);
+        $tournaments = Tournament::find();
+        $tournaments->joinWith(['events', 'events.odds']);
+        if(!is_null($tour)) $tournaments->andWhere(['tour' => $tour]);
+        if(!is_null($surface)) $tournaments->andWhere(['surface' => $surface]);
+
+        if($qualifier == -1) $tournaments->andWhere(['!=' , Event::tableName() . '.round', Round::QUALIFIER]);
+        else if($qualifier == 1) $tournaments->andWhere(['=' , Event::tableName() . '.round', Round::QUALIFIER]);
+
+        $tournaments->orderBy(['name' => SORT_ASC]);
 
         return $this->render('total', [
-            'odds' => $odds->all(),
+            'tournaments' => $tournaments->all(),
             'tour' => $tour,
             'surface' => $surface,
             'qualifier' => $qualifier
