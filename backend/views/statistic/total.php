@@ -3,6 +3,7 @@
 
 use common\helpers\EventHelper;
 use common\helpers\TournamentHelper;
+use common\helpers\OddHelper;
 use frontend\models\sport\Odd;
 use yii\web\View;
 
@@ -26,12 +27,22 @@ use yii\web\View;
 
     <table class="table table-striped table-bordered detail-view mb-0 mt-3 mb-5">
 
+        <thead>
+        <tr>
+            <td></td>
+            <?php foreach (OddHelper::getStatsTitle(OddHelper::totalSettings()) as $title): ?>
+                <td class="text-center"><strong><?= $title ?></strong></td>
+            <?php endforeach; ?>
+        </tr>
+        </thead>
+        <tbody>
+
         <?= $this->render('total/_outer', [
             'type' => $type,
             'tournaments' => $tournaments,
-            'qualifier' => $qualifier
         ]) ?>
 
+        </tbody>
     </table>
 
 <?php endforeach; ?>

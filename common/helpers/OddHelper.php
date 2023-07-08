@@ -24,7 +24,7 @@ class OddHelper
             $key = self::_getStatsKey($odd, self::totalSettings());
             $stats[$key]['count']++;
             $stats[$key]['profit'] += (int)$odd->profit;
-            $stats[$key]['event'] = $odd->event;
+            $stats[$key]['events'][] = $odd->event . '||' . $odd->id;
         }
 
         ksort($stats);
@@ -61,33 +61,45 @@ class OddHelper
     }
 
     /**
-     * @param $odd
      * @param $settings
-     * @return string
+     * @return array
      */
-    public static function getStatsTitle($odd, $settings): string
+    public static function getStatsTitle($settings): array
     {
-        $oddKey = array_search($odd, $settings);
+        $odds = $settings;
+        sort($odds);
+        $data = [];
 
-        $prefix = '';
-        if($oddKey == array_key_first($settings)) {
-            $prefix = '>=';
-            $val[] = $odd;
-        }
-        else if($oddKey == array_key_last($settings)) {
-            $prefix = '<';
-            $val[] = $settings[$oddKey - 1];
-        }
-        else {
-            $val[] = $odd;
-            $val[] = $settings[$oddKey - 1];
+        foreach ($odds as $odd) {
+            $prefix = '';
+            $titles = [];
+            $key = array_search($odd, $settings);
+
+            /** last title */
+            if($key == array_key_first($settings)) {
+                $prefix = '>=';
+                $titles[] = $odd;
+            }
+            /** first title */
+            else if($key == array_key_last($settings)) {
+                $prefix = '<';
+                $titles[] = $settings[$key - 1];
+            }
+            /** middle title */
+            else {
+                $titles[] = $odd;
+                $titles[] = $settings[$key - 1];
+            }
+
+            /** prepare titles for odd view */
+            array_walk($titles, function (&$odd) {
+                $odd = round($odd / 100, 2);
+            });
+
+            $data[] = $prefix . implode("-", $titles);
         }
 
-        array_walk($val, function (&$val) {
-            $val = round($val / 100, 2);
-        });
-
-        return $prefix . implode("-", $val);
+        return $data;
     }
 
 }

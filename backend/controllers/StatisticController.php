@@ -3,9 +3,6 @@
 
 namespace backend\controllers;
 
-
-use frontend\models\sport\Event;
-use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
@@ -45,13 +42,21 @@ class StatisticController extends Controller
     {
 
         $tournaments = Tournament::find();
-        $tournaments->joinWith(['events', 'events.odds']);
+        $tournaments->joinWith([
+            'events' => function ($q) use($qualifier) {
+                if($qualifier == -1) $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
+                else if($qualifier == 1) $q->andOnCondition(['=', 'tn_event.round', Round::QUALIFIER]);
+                return $q;
+            },
+            'events.odds' => function($q) {
+                $q->andOnCondition(['type' => 2]);
+                $q->andOnCondition(['IS NOT', 'profit', NULL]);
+                return $q;
+            }
+        ]);
+
         if(!is_null($tour)) $tournaments->andWhere(['tour' => $tour]);
         if(!is_null($surface)) $tournaments->andWhere(['surface' => $surface]);
-
-        if($qualifier == -1) $tournaments->andWhere(['!=' , Event::tableName() . '.round', Round::QUALIFIER]);
-        else if($qualifier == 1) $tournaments->andWhere(['=' , Event::tableName() . '.round', Round::QUALIFIER]);
-
         $tournaments->orderBy(['name' => SORT_ASC]);
 
         return $this->render('total', [

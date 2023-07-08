@@ -502,7 +502,7 @@ class EventResultSave extends Component
         $this->removeOdds($event->id);
 
         $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result, five_sets');
-        $this->message .= Html::a('Edit', ['/event/edit', 'id' => $event->id], ['target'=>'_blank']);
+        $this->message .= "<br>" . Html::a('Edit', ['/event/update', 'id' => $event->id], ['target'=>'_blank']);
 
         return $event;
     }
