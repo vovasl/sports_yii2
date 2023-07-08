@@ -1,28 +1,39 @@
 <?php
 
 
+use common\helpers\TournamentHelper;
 use yii\web\View;
+use common\helpers\OddHelper;
 
 /**
  * @var View $this
- * @var array $stats
- * @var string $title
+ * @var string $type
+ * @var array $tournaments
+ * @var int $detail
  */
 
-?>
+$stats = [];
+$output = '';
 
-<tr>
-    <td colspan="7" class="text-center"><strong><?= $title ?></strong></td>
-</tr>
-<tr>
-    <td><strong>Odds</strong></td>
-    <?php foreach ($stats as $stat): ?>
-        <td class="text-center"><?= $stat['count'] ?></td>
-    <?php endforeach; ?>
-</tr>
-<tr>
-    <td><strong>Profit</strong></td>
-    <?php foreach ($stats as $stat): ?>
-        <td class="text-center"><?= $stat['profit'] ?></td>
-    <?php endforeach; ?>
-</tr>
+foreach ($tournaments as $tournament) {
+
+    $tournamentStats = OddHelper::getStats(TournamentHelper::getEventsOdds($tournament), $type);
+    $stats = OddHelper::generalStats($tournamentStats, $stats);
+
+    if($detail) {
+        $output .= $this->render('_row', [
+            'title' => $tournament->name,
+            'stats' => $tournamentStats
+        ]);
+    }
+
+}
+
+$output .=  $this->render('_row', [
+    'title' => 'General',
+    'stats' => $stats
+]);
+
+echo $output;
+
+?>
