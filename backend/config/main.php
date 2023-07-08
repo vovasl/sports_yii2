@@ -42,7 +42,7 @@ return [
             'showScriptName' => false,
             'rules' => [
 
-                '/tournament-statistic/total/<tour:\d+>/<surface:\d+>/<qualifier:.+>' => '/tournament-statistic/total',
+                '/tournament-statistic/total/<tour:\d+>/<surface:\d+>/<qualifier:\d+>' => '/tournament-statistic/total',
                 '/tournament-statistic/total/<tour:\d+>/<surface:\d+>' => '/tournament-statistic/total',
                 '/tournament-statistic/total/<tour:\d+>' => '/tournament-statistic/total',
 

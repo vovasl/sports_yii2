@@ -8,40 +8,28 @@ use common\helpers\OddHelper;
  * @var View $this
  * @var string $type
  * @var array $tournaments
+ * @var int $detail
  */
-
-$general = [];
-
-foreach ($tournaments as $tournament) {
-
-    $odds = [];
-    foreach ($tournament->events as $event) {
-        foreach ($event->odds as $odd) {
-            $odds[] = $odd;
-        }
-    }
-
-    $stats = OddHelper::getStats($odds, $type);
-    $general[] = $stats;
-
-    echo $this->render('_body', [
-        'title' => $tournament->name,
-        'stats' => $stats
-    ]);
-}
-
-$res = [];
-foreach ($general as $odds) {
-    foreach ($odds as $k => $odd) {
-        $res[$k]['count'] += $odd['count'];
-        $res[$k]['profit'] += $odd['profit'];
-    }
-}
-
-echo $this->render('_body', [
-    'title' => 'General',
-    'stats' => $res
-])
 
 ?>
 
+<h3><?= ucfirst($type); ?></h3>
+
+<table class="table table-striped table-bordered detail-view mb-0 mt-3 mb-5">
+    <thead>
+    <tr>
+        <td></td>
+        <?php foreach (OddHelper::getStatsTitle(OddHelper::totalSettings()) as $title): ?>
+            <td class="text-center"><strong><?= $title ?></strong></td>
+        <?php endforeach; ?>
+    </tr>
+    </thead>
+    <tbody>
+        <?= $this->render('_body', [
+            'tournaments' => $tournaments,
+            'type' => $type,
+            'detail' => $detail,
+        ]) ?>
+    </tbody>
+
+</table>

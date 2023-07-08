@@ -8,6 +8,7 @@ use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
+use frontend\models\sport\Tournament;
 
 class TournamentHelper
 {
@@ -176,5 +177,21 @@ class TournamentHelper
         }
 
         return $count;
+    }
+
+    /**
+     * @param Tournament $tournament
+     * @return array
+     */
+    public static function getEventsOdds(Tournament $tournament): array
+    {
+        $odds = [];
+        foreach ($tournament->events as $event) {
+            foreach ($event->odds as $odd) {
+                $odds[] = $odd;
+            }
+        }
+
+        return $odds;
     }
 }

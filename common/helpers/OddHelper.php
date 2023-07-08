@@ -102,4 +102,19 @@ class OddHelper
         return $data;
     }
 
+    /**
+     * @param array $localStats
+     * @param array $stats
+     * @return array
+     */
+    public static function generalStats(array $localStats, array $stats): array
+    {
+        foreach ($localStats as $k => $odd) {
+            $stats[$k]['count'] += $odd['count'];
+            $stats[$k]['profit'] += $odd['profit'];
+        }
+
+        return $stats;
+    }
+
 }

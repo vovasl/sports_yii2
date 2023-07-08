@@ -86,16 +86,15 @@ class EventHelper
      */
     public static function getQualifierText($val): string
     {
-        $text = "";
         switch ($val) {
-            case -1:
-                $text = "Main";
-                break;
             case 0:
-                $text = "ALL";
+                $text = "Main";
                 break;
             case 1:
                 $text = "Qualifiers";
+                break;
+            default:
+                $text = "ALL";
                 break;
         }
 

@@ -36,15 +36,16 @@ class StatisticController extends Controller
      * @param null $tour
      * @param null $surface
      * @param int $qualifier
+     * @param int $detail
      * @return string
      */
-    public function actionTotal($tour = null, $surface = null, int $qualifier = 0): string
+    public function actionTotal($tour = null, $surface = null, int $qualifier = -1, int $detail = 1): string
     {
 
         $tournaments = Tournament::find();
         $tournaments->joinWith([
             'events' => function ($q) use($qualifier) {
-                if($qualifier == -1) $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
+                if($qualifier == 0) $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
                 else if($qualifier == 1) $q->andOnCondition(['=', 'tn_event.round', Round::QUALIFIER]);
                 return $q;
             },
@@ -54,7 +55,6 @@ class StatisticController extends Controller
                 return $q;
             }
         ]);
-
         if(!is_null($tour)) $tournaments->andWhere(['tour' => $tour]);
         if(!is_null($surface)) $tournaments->andWhere(['surface' => $surface]);
         $tournaments->orderBy(['name' => SORT_ASC]);
@@ -63,7 +63,8 @@ class StatisticController extends Controller
             'tournaments' => $tournaments->all(),
             'tour' => $tour,
             'surface' => $surface,
-            'qualifier' => $qualifier
+            'qualifier' => $qualifier,
+            'detail' => $detail
         ]);
     }
 }
