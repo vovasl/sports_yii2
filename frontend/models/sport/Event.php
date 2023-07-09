@@ -428,6 +428,14 @@ class Event extends \yii\db\ActiveRecord
     /**
      * @return string
      */
+    public function getFullNameLink(): string
+    {
+        return "{$this->outputPlayer('homePlayer')} - {$this->outputPlayer('awayPlayer')}";
+    }
+
+    /**
+     * @return string
+     */
     public function getFullInfo(): string
     {
         return "{$this->id}. {$this->formatStartAt} {$this->eventTournament->name} {$this->tournamentRound->name} {$this->fullName}";

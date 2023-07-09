@@ -15,7 +15,7 @@ $this->render('_breadcrumbs', [
 
 ?>
 
-<h4><?= $event->formatStartAt . ' ' . $event->tournamentRound->name . ' ' . $event->fullName .' ' . $event->result ?></h4>
+<h4><?= $event->formatStartAt . ' ' . $event->tournamentRound->name . ' ' . $event->fullNameLink .' ' . $event->result ?></h4>
 
 <?php if(count($event->odds) > 0): ?>
     <?= $this->render('view/_games', ['event' => $event]) ?>
