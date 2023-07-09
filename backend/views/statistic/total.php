@@ -8,7 +8,7 @@ use yii\web\View;
 
 /**
  * @var View $this
- * @var array $tournaments
+ * @var array $stats
  * @var string $tour
  * @var string $surface
  * @var int $qualifier
@@ -25,7 +25,7 @@ use yii\web\View;
 
     <?= $this->render('total/_outer', [
         'type' => $type,
-        'tournaments' => $tournaments,
+        'stats' => $stats,
         'detail' => $detail,
     ]) ?>
 

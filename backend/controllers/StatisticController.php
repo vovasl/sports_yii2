@@ -3,6 +3,10 @@
 
 namespace backend\controllers;
 
+use common\helpers\OddHelper;
+use common\helpers\TournamentHelper;
+use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
@@ -39,7 +43,7 @@ class StatisticController extends Controller
      * @param int $detail
      * @return string
      */
-    public function actionTotal($tour = null, $surface = null, int $qualifier = -1, int $detail = 0): string
+    public function actionTotal($tour = null, $surface = null, int $qualifier = -1, int $detail = 1): string
     {
 
         $tournaments = Tournament::find();
@@ -60,7 +64,7 @@ class StatisticController extends Controller
         $tournaments->orderBy(['name' => SORT_ASC]);
 
         return $this->render('total', [
-            'tournaments' => $tournaments->all(),
+            'stats' => OddHelper::tournamentsStats($tournaments->all()),
             'tour' => $tour,
             'surface' => $surface,
             'qualifier' => $qualifier,

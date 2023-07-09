@@ -103,11 +103,37 @@ class OddHelper
     }
 
     /**
-     * @param array $localStats
-     * @param array $stats
+     * @param array $tournaments
      * @return array
      */
-    public static function generalStats(array $localStats, array $stats): array
+    public static function tournamentsStats(array $tournaments): array
+    {
+        $stats = [];
+        foreach (Odd::ADD_TYPE as $type) {
+            $all = [];
+            foreach ($tournaments as $tournament) {
+                $tournamentStats = self::getStats(TournamentHelper::getEventsOdds($tournament), $type);
+                $stats[$type][$tournament->id] = [
+                    'name' => $tournament->name,
+                    'stats' => $tournamentStats
+                ];
+                $all = self::generalStats($tournamentStats, $all);
+            }
+            $stats[$type]['all'] = [
+                'name' => 'ALL',
+                'stats' => $all
+            ];
+        }
+
+        return $stats;
+    }
+
+    /**
+     * @param array $localStats
+     * @param $stats
+     * @return array
+     */
+    public static function generalStats(array $localStats, $stats): array
     {
         foreach ($localStats as $k => $odd) {
             $stats[$k]['count'] += $odd['count'];

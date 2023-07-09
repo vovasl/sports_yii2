@@ -7,7 +7,7 @@ use common\helpers\OddHelper;
 /**
  * @var View $this
  * @var string $type
- * @var array $tournaments
+ * @var array $stats
  * @var int $detail
  */
 
@@ -25,11 +25,15 @@ use common\helpers\OddHelper;
     </tr>
     </thead>
     <tbody>
-        <?= $this->render('_body', [
-            'tournaments' => $tournaments,
-            'type' => $type,
-            'detail' => $detail,
-        ]) ?>
+
+    <?php foreach($stats[$type] as $key => $tournament): ?>
+        <?php if($detail == false && $key != 'all') continue; ?>
+        <?= $this->render('_row', [
+            'title' => $tournament['name'],
+            'stats' => $tournament['stats']
+        ]); ?>
+    <?php endforeach; ?>
+
     </tbody>
 
 </table>
