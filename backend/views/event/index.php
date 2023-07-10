@@ -111,12 +111,6 @@ $reset = "/event";
                 }
             ],
             [
-                'label' => 'Under',
-                'value' => function(Event $model) {
-                    return EventHelper::getOddStat($model->totalsUnder);
-                }
-            ],
-            [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
                 'value' => function($model) {
