@@ -379,6 +379,7 @@ class EventResultSave extends Component
         ) {
             /** add event */
             $event = $this->addEvent($data);
+            $this->message .= "<br>" . $this->getEditLink($event->id);
         }
 
         return $event;
@@ -502,7 +503,7 @@ class EventResultSave extends Component
         $this->removeOdds($event->id);
 
         $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result, five_sets');
-        $this->message .= "<br>" . Html::a('Edit', ['/event/update', 'id' => $event->id], ['target'=>'_blank']);
+        $this->message .= "<br>" . $this->getEditLink($event->id);
 
         return $event;
     }
@@ -540,6 +541,15 @@ class EventResultSave extends Component
     public static function getLink($id): string
     {
         return Html::a('Link', ['/event/view', 'id' => $id], ['target'=>'_blank']);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public function getEditLink($id): string
+    {
+        return Html::a('Edit', ['/event/update', 'id' => $id], ['target'=>'_blank']);
     }
 
 }
