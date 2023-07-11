@@ -55,9 +55,15 @@ class League
         $data = [];
         foreach ($leagues['leagues'] as $league) {
             if($league['eventCount'] == 0) continue;
+
+            /** check tour */
             if(!preg_match("#{$this->settings['base']['tour']}.*#i", $league['name'])) continue;
+
+            /** doubles and mixed events */
+            if(preg_match('#doubles|mixed#i', $league['name'])) continue;
+
+            /** parse tournament name */
             if(!$tournament = $this->parseTennisTournamentName($league['name'])) continue;
-            if(preg_match('#doubles#i', $tournament[1])) continue;
 
             $data[] = [
                 'sportid' => $this->settings['base']['sportid'],
@@ -67,7 +73,6 @@ class League
                 'tour' => $tournament[2],
             ];
         }
-        //BaseHelper::outputArray($data); die;
 
         return $data;
     }
