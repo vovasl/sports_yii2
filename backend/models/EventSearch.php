@@ -151,13 +151,17 @@ class EventSearch extends Event
 
         if(!is_null($this->count_odds)) {
             //$query->andFilterWhere(['IS', 'home_result', new Expression('null')]);
-            if($this->count_odds == 2) {
+            if($this->count_odds == 1) {
+                $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);
+                $query->having(['>', 'count_odds', 0]);
+            }
+            else if($this->count_odds == -1) {
                 $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);
                 $query->having(['count_odds' => 0]);
             }
-            else if($this->count_odds == 1) {
-                $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);
-                $query->having(['>', 'count_odds', 0]);
+            else if($this->count_odds == -2) {
+                $query->andWhere(['status' => 1]);
+                $query->having(['count_odds' => 0]);
             }
         }
 

@@ -116,7 +116,11 @@ $reset = "/event";
                 'value' => function($model) {
                     return count($model->odds);
                 },
-                'filter' => [1 => 'Yes', 2 => 'No']
+                'filter' => [
+                    1 => 'Yes',
+                    -1 => 'No',
+                    -2 => 'No(Finished)'
+                ]
             ],
             [
                 'class' => ActionColumn::class,
