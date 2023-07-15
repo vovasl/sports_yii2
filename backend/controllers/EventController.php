@@ -123,7 +123,10 @@ class EventController extends Controller
         ]);
     }
 
-    public function actionAddLine()
+    /**
+     * @return string
+     */
+    public function actionAddLine(): string
     {
         return $this->render('add-line');
     }
