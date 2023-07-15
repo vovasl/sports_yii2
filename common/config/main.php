@@ -4,6 +4,7 @@ use backend\components\pinnacle\Pinnacle;
 use backend\components\sofascore\Sofascore;
 use backend\services\EventResultSave;
 use backend\services\EventSave;
+use kartik\icons\Icon;
 
 return [
     'name' => 'Tennis Odds',
@@ -25,4 +26,7 @@ return [
         'event_save' => EventSave::class,
         'result_save' => EventResultSave::class
     ],
+    'params' => [
+        'icon-framework' => Icon::FAS,  // Font Awesome Icon framework
+    ]
 ];

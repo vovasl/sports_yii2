@@ -4,10 +4,8 @@ namespace frontend\models\sport;
 
 
 use frontend\models\sport\query\EventQuery;
-use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
-use yii\helpers\Html;
 
 /**
  * This is the model class for table "tn_event".
@@ -539,6 +537,14 @@ class Event extends \yii\db\ActiveRecord
     public function actionDelete(): bool
     {
         return ($this->winner === null && strtotime($this->start_at) < time() - 60 * 60 * 3);
+    }
+
+    /**
+     * @return bool
+     */
+    public function actionAddLine(): bool
+    {
+        return ($this->pin_id != null && count($this->odds) == 2);
     }
 
 }

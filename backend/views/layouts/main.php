@@ -1,7 +1,9 @@
 <?php
 
-/** @var \yii\web\View $this */
-/** @var string $content */
+/**
+ * @var View $this
+ * @var string $content
+ */
 
 use backend\assets\AppAsset;
 use common\widgets\Alert;
@@ -9,8 +11,12 @@ use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
+use kartik\icons\Icon;
+use yii\web\View;
 
 AppAsset::register($this);
+Icon::map($this);
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

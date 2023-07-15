@@ -123,13 +123,17 @@ class EventController extends Controller
         ]);
     }
 
+    public function actionAddLine()
+    {
+        return $this->render('add-line');
+    }
 
     /**
      * @param null $id
      * @param int $save
      * @return string
      */
-    public function actionAddLine($id, int $save = 0): string
+    public function actionAddLineLog($id, int $save = 0): string
     {
         $eventLog = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();
         $log = Json::decode($eventLog->message);
@@ -145,7 +149,7 @@ class EventController extends Controller
             ]);
         }
 
-        return $this->render('add-line', [
+        return $this->render('add-line-log', [
             'event' => Event::findOne($log['id']),
             'odds' => $odds,
             'log' => $log,

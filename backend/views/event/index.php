@@ -8,6 +8,7 @@ use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\web\View;
 use backend\models\TournamentEventSearch;
 use yii\data\ActiveDataProvider;
@@ -113,9 +114,6 @@ $reset = "/event";
             [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
-                'value' => function($model) {
-                    return count($model->odds);
-                },
                 'filter' => [
                     1 => 'Yes',
                     -1 => 'No',
@@ -124,6 +122,7 @@ $reset = "/event";
             ],
             [
                 'class' => ActionColumn::class,
+                'template' => '{view} {update} {delete} {add-line}',
                 'visibleButtons' => [
                     'delete' => function (Event $model, $key, $index) {
                         return $model->actionDelete();
@@ -131,7 +130,21 @@ $reset = "/event";
                     'update' => function (Event $model, $key, $index) {
                         return $model->actionUpdate();
                     },
-                ]
+                    'add-line' => function(Event $model, $key, $index) {
+                        return $model->actionAddLine();
+                    }
+                ],
+                'buttons' => [
+                    'add-line' => function ($url, $model) {
+                        $options = [
+                            'title' => 'Add Line',
+                            'target' => '_blank'
+                        ];
+                        $url = Url::to(['add-line-log', 'id' => $model->id]);
+                        return Html::a('<i class="fas fa-edit"></i>', $url, $options);
+                    },
+                ],
+
             ],
         ],
     ]); ?>
