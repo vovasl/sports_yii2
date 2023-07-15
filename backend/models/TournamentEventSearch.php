@@ -3,7 +3,6 @@
 namespace backend\models;
 
 
-;use frontend\models\sport\Tournament;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\sport\Event;

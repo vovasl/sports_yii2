@@ -1,7 +1,7 @@
 <?php
 
-
 namespace backend\models;
+
 
 use frontend\models\sport\Event;
 use yii\base\Model;

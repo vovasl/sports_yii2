@@ -5,13 +5,13 @@ namespace backend\controllers;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\pinnacle\helpers\OddHelper;
+use backend\models\AddLineForm;
 use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use Throwable;
 use Yii;
-use yii\base\BaseObject;
 use yii\db\StaleObjectException;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -128,7 +128,16 @@ class EventController extends Controller
      */
     public function actionAddLine(): string
     {
-        return $this->render('add-line');
+        $model = new AddLineForm();
+        /*
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->validate()) {
+                $model = new AddLineForm();
+                Yii::$app->session->setFlash('success', 'Line has been added');
+            }
+        }
+        */
+        return $this->render('add-line', ['model' => $model]);
     }
 
     /**
