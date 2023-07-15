@@ -80,7 +80,6 @@ class FixtureOdd
             foreach($fixture['odds'] as $type => $odds) {
                 if(!$odd = $this->getTennisPeriod($type, $odds)) continue;
                 $odd = $this->prepareTennisLine($type, $odd);
-                //$odd = $this->removeTennisOddsFields($odd, $type);
                 $fixture['odds'][$type] = $odd;
             }
             $fixtures[$id] = $fixture;

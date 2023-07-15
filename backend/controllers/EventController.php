@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
+use backend\components\pinnacle\helpers\OddHelper;
 use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use frontend\models\sport\Event;
@@ -124,61 +126,29 @@ class EventController extends Controller
 
     /**
      * @param null $id
+     * @param int $save
      * @return string
      */
-    public function actionAddLine($id = null): string
+    public function actionAddLine($id, int $save = 0): string
     {
-        $eventId = 2702;
-        $save = 0;
+        $eventLog = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();
+        $log = Json::decode($eventLog->message);
 
-        $id = (empty($id)) ? $eventId : $id;
-        $log = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();
-        $eventLog = Json::decode($log->message);
+        $odds = OddHelper::prepareLine($log['odds']);
 
-        $sets = $eventLog['odds']['sets'][0];
-        $games = $eventLog['odds']['games'][1];
-
-        $moneyline = [
-            'moneyline' => $sets['moneyline']
-        ];
-
-        $setsSpreads = [
-            'spreads' => $sets['spreads']
-        ];
-
-        $setsTotals = [
-            'totals' => $sets['totals']
-        ];
-
-        $spreads = [
-            'spreads' => $games['spreads']
-        ];
-
-        $totals = [
-            'totals' => $games['totals']
-        ];
-
-        $teamTotals = [
-            'teamTotal' => $games['teamTotal']
-        ];
-
-        $odds = [
-            //'sets' => array_merge($moneyline),
-            'games' => array_merge($spreads),
-        ];
-
-        $event = [
-            'id' => $eventLog['id'],
-            'home' => $eventLog['home'],
-            'away' => $eventLog['away'],
-            'odds' => $odds,
-        ];
-
-        if($save) Yii::$app->event_save->addOdds($event);
+        if($save == 1) {
+            Yii::$app->event_save->addOdds([
+                'id' => $log['id'],
+                'home' => $log['home'],
+                'away' => $log['away'],
+                'odds' => $odds,
+            ]);
+        }
 
         return $this->render('add-line', [
-            'log' => $eventLog,
-            'event' => $event,
+            'event' => Event::findOne($log['id']),
+            'odds' => $odds,
+            'log' => $log,
         ]);
     }
 
