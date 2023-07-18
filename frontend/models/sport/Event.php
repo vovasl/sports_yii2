@@ -544,7 +544,7 @@ class Event extends \yii\db\ActiveRecord
      */
     public function actionAddLine(): bool
     {
-        return ($this->pin_id != null && count($this->odds) == 2);
+        return ($this->pin_id != null && count($this->odds) == 0);
     }
 
 }
