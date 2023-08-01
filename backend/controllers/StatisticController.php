@@ -43,7 +43,7 @@ class StatisticController extends Controller
      * @param int $detail
      * @return string
      */
-    public function actionTotal($tour = null, $surface = null, int $qualifier = -1, int $detail = 0): string
+    public function actionTotal($tour = null, $surface = null, int $qualifier = 0, int $detail = 0): string
     {
 
         $tournaments = Tournament::find();
