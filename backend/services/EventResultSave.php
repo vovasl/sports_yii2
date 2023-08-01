@@ -9,6 +9,8 @@ use backend\models\AddResultForm;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
+use frontend\models\sport\PlayerAdd;
+use frontend\models\sport\PlayerAddEvent;
 use frontend\models\sport\ResultSet;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
@@ -34,8 +36,8 @@ class EventResultSave extends Component
     {
         foreach ($events as $event) {
 
-            /** event with result */
-            if($this->eventHasResult($event)) continue;
+            /** check event */
+            if($this->checkEvent($event)) continue;
 
             $this->message .= "<hr>" . TennisEvent::output($event);
 
@@ -337,9 +339,13 @@ class EventResultSave extends Component
      * @param array $event
      * @return bool
      */
-    private function eventHasResult(array $event): bool
+    private function checkEvent(array $event): bool
     {
         if(empty($event['id'])) return false;
+
+        /** player does not exists - event tracks  */
+        if(PlayerAddEvent::findOne(['sofa_id' => $event['id']])) return true;
+
         $event = Event::find()
             ->where(['sofa_id' => $event['id']])
             ->andWhere(['IS NOT', 'home_result', NULL])
@@ -459,8 +465,14 @@ class EventResultSave extends Component
 
             /** player not found or more than one result */
             if($q->count() != 1) {
-                $message = ($q->count() == 0) ? "Player {$event[$field]['name']} does not exist" : "Add player {$event[$field]['name']} sofa id";
-                $message .= "<br> Event Sofa Id: {$event['id']}";
+                if($q->count() > 1) {
+                    $message = "Add player {$event[$field]['name']} sofa id";
+                }
+                else {
+                    $this->addPlayerAddEvent($event, $field);
+                    $message = "Player {$event[$field]['name']} does not exist";
+                    $message .= "<br> Event Sofa Id: {$event['id']}";
+                }
                 $this->message .= $this->errorMsg($message);
                 return false;
             }
@@ -551,6 +563,27 @@ class EventResultSave extends Component
     public function getEditLink($id): string
     {
         return Html::a('Edit', ['/event/update', 'id' => $id], ['target'=>'_blank']);
+    }
+
+    /**
+     * @param array $data
+     * @param string $field
+     */
+    private function addPlayerAddEvent(array $data, string $field): void
+    {
+        /** get player */
+        $player = ($player = PlayerAdd::findOne(['name' => $data[$field]['name']])) ? $player : new PlayerAdd();
+        if($player->isNewRecord) {
+            $player->name = $data[$field]['name'];
+            $player->save();
+        }
+
+        /** save event */
+        $event = new PlayerAddEvent();
+        $event->player_id = $player->id;
+        $event->date = date('Y-m-d', $data['startTimestamp']);
+        $event->sofa_id = $data['id'];
+        $event->save();
     }
 
 }

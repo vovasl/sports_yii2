@@ -12,7 +12,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property string $name
  *
- * @property PlayerAddEvent[] $tnPlayerAddEvents
+ * @property PlayerAddEvent[] $playerAddEvents
  */
 class PlayerAdd extends ActiveRecord
 {
@@ -47,8 +47,6 @@ class PlayerAdd extends ActiveRecord
     }
 
     /**
-     * Gets query for [[TnPlayerAddEvents]].
-     *
      * @return ActiveQuery
      */
     public function getPlayerAddEvents(): ActiveQuery
