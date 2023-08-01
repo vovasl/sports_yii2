@@ -460,6 +460,7 @@ class EventResultSave extends Component
             /** player not found or more than one result */
             if($q->count() != 1) {
                 $message = ($q->count() == 0) ? "Player {$event[$field]['name']} does not exist" : "Add player {$event[$field]['name']} sofa id";
+                $message .= "<br> Event Sofa Id: {$event['id']}";
                 $this->message .= $this->errorMsg($message);
                 return false;
             }
