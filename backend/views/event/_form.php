@@ -21,7 +21,7 @@ use frontend\models\sport\Event;
 
     <?= $form->field($model, 'round')->dropDownList(Round::dropdown()) ?>
 
-    <?= $form->field($model, 'winner')->dropDownList($model->dropdownPlayers()) ?>
+    <?php //echo $form->field($model, 'winner')->dropDownList($model->dropdownPlayers()) ?>
 
     <?= $form->field($model, 'five_sets')->checkbox() ?>
 

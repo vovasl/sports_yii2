@@ -26,6 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?= $form->field($model, 'result') ?>
 
+<?= $form->field($model, 'winner')->dropdownList($model::dropdownWinner()) ?>
+
 <div class="form-group">
     <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
 </div>

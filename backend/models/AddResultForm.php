@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
 class AddResultForm extends Model
 {
     public $id;
+    public $winner;
     public $result;
     public $sofa_id;
     public $status;
@@ -21,7 +22,7 @@ class AddResultForm extends Model
     public function rules(): array
     {
         return [
-            [['id', 'result', 'sofa_id', 'status'], 'required'],
+            [['id', 'winner', 'result', 'sofa_id', 'status'], 'required'],
             ['result', 'validateResult'],
         ];
     }
@@ -33,6 +34,7 @@ class AddResultForm extends Model
     {
         return [
             'id' => 'Event',
+            'winner' => 'Winner',
             'result' => 'Result',
             'sofa_id' => 'Sofascore ID',
             'status' => 'Status'
@@ -69,6 +71,17 @@ class AddResultForm extends Model
             ->orderBy('start_at')
             ->all()
         , 'id', 'fullInfo');
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function dropdownWinner(): array
+    {
+        return [
+            1 => 'Home',
+            2 => 'Away'
+        ];
     }
 
     /**

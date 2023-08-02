@@ -55,6 +55,7 @@ class EventResultSave extends Component
             /** add result form model */
             $model = new AddResultForm();
             $model->id = $eventDB->id;
+            $model->winner = $event['winnerCode'];
             $model->status = $event['status']['code'];
             $model->result = $event['result'];
             $model->sofa_id = $event['id'];
@@ -83,7 +84,7 @@ class EventResultSave extends Component
         if($manual && !$model->result = $this->prepare($model->result)) return false;
         if(!$this->validate($model->result)) return false;
 
-        $result = $this->aggregate($model->result, $event);
+        $result = $this->aggregate($model->result, $event, $model->winner);
 
         /** save event result */
         $event->home_result = $result['sets'][0];
@@ -202,13 +203,14 @@ class EventResultSave extends Component
     /**
      * @param array $data
      * @param Event $event
+     * @param int $winner
      * @return array
      */
-    private function aggregate(array $data, Event $event): array
+    private function aggregate(array $data, Event $event, int $winner): array
     {
         $data['home_id'] = $event->home;
         $data['away_id'] = $event->away;
-        $data['winner'] = $data['sets'][0] > $data['sets'][1] ? 'home' : 'away';
+        $data['winner'] = $this->getWinner($winner, $data);
         $data['winner_id'] = $data['winner'] == 'home' ? $event->home : $event->away;
         $data['setsTotals'] = array_sum($data['sets']);
         $data['teamTotalHome'] = array_sum(array_column($data['games'], 0));
@@ -220,6 +222,32 @@ class EventResultSave extends Component
         $data['teamSetsSpreadAway'] = $data['sets'][0] - $data['sets'][1];
 
         return $data;
+    }
+
+    /**
+     * @param int $val
+     * @param array $data
+     * @return string
+     */
+    private function getWinner(int $val, array $data): string
+    {
+        switch ($val) {
+            case 1:
+                $winner = 'home';
+                break;
+            case 2:
+                $winner = 'away';
+                break;
+            default:
+                $winner = '';
+        }
+
+        if(empty($winner)) {
+            $winner = $data['sets'][0] > $data['sets'][1] ? 'home' : 'away';
+            $this->message .= $this->warningMsg('Check out winner field');
+        }
+
+        return $winner;
     }
 
     /**
@@ -515,7 +543,7 @@ class EventResultSave extends Component
         /** remove odds */
         $this->removeOdds($event->id);
 
-        $this->message .= $this->warningMsg('Event was not finished. Check out fields: winner, home_result, away_result, five_sets');
+        $this->message .= $this->warningMsg('Event was not finished. Check out fields: home_result, away_result, five_sets');
         $this->message .= "<br>" . $this->getEditLink($event->id);
 
         return $event;
