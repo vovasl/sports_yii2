@@ -574,7 +574,7 @@ class EventResultSave extends Component
         /** get player */
         $player = ($player = PlayerAdd::findOne(['name' => $data[$field]['name']])) ? $player : new PlayerAdd();
         if($player->isNewRecord) {
-            $player->name = $data[$field]['name'];
+            $player->name = trim($data[$field]['name']);
             $player->save();
         }
 

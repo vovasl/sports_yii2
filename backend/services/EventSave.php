@@ -14,7 +14,6 @@ use frontend\models\sport\Sport;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\base\Component;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
 class EventSave extends Component

@@ -42,6 +42,10 @@ Icon::map($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Check', 'items' => [
+            ['label' => 'Events', 'url' => ['check/event']],
+            ['label' => 'Player', 'url' => ['check/player']],
+        ]],
         ['label' => 'Events', 'items' => [
             ['label' => 'Events', 'url' => ['/event']],
             ['label' => 'Add Odds', 'url' => ['/event/add-odds']],
