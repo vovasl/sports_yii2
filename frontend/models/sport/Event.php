@@ -4,6 +4,7 @@ namespace frontend\models\sport;
 
 
 use frontend\models\sport\query\EventQuery;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 
@@ -25,6 +26,7 @@ use yii\db\Expression;
  * @property int $five_sets
  * @property int $pin_id
  * @property int $sofa_id
+ * @property string|null $created
  *
  * @property Player $homePlayer
  * @property Player $awayPlayer
@@ -54,6 +56,23 @@ class Event extends \yii\db\ActiveRecord
 {
 
     /**
+     * @return array[]
+     */
+
+    public function behaviors(): array
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created',
+                'updatedAtAttribute' => false,
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName(): string
@@ -67,8 +86,8 @@ class Event extends \yii\db\ActiveRecord
     public function rules(): array
     {
         return [
-            [['start_at'], 'safe'],
             [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id'], 'integer'],
+            [['start_at', 'created'], 'safe'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
@@ -98,6 +117,7 @@ class Event extends \yii\db\ActiveRecord
             'five_sets' => 'Five Sets',
             'pin_id' => 'Pinnacle ID',
             'sofa_id' => 'Sofascore ID',
+            'created' => 'Created',
         ];
     }
 
