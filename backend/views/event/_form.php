@@ -1,6 +1,7 @@
 <?php
 
 
+use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -18,6 +19,14 @@ use frontend\models\sport\Event;
 <div class="event-form">
 
     <?php $form = ActiveForm::begin(); ?>
+
+    <?php if(empty($model->sofa_id)): ?>
+
+        <?= $form->field($model, 'home')->dropDownList(Player::dropdownSimilar($model->homePlayer->name)) ?>
+
+        <?= $form->field($model, 'away')->dropDownList(Player::dropdownSimilar($model->awayPlayer->name)) ?>
+
+    <?php endif; ?>
 
     <?= $form->field($model, 'round')->dropDownList(Round::dropdown()) ?>
 

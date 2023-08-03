@@ -528,7 +528,7 @@ class Event extends \yii\db\ActiveRecord
      */
     public function actionUpdate(): bool
     {
-        return ($this->pin_id === null);
+        return ($this->pin_id === null || $this->sofa_id === null);
     }
 
     /**
@@ -545,6 +545,36 @@ class Event extends \yii\db\ActiveRecord
     public function actionAddLine(): bool
     {
         return ($this->pin_id != null && count($this->odds) == 0);
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        /** update event - change odd player */
+        if(!$insert) {
+            $this->updateOddPlayer($changedAttributes);
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @param array $oldData
+     */
+    private function updateOddPlayer(array $oldData)
+    {
+        $fields = ['home', 'away'];
+        foreach ($fields as $field) {
+            /** update field */
+            if ($oldData[$field] != null && $this->{$field} != $oldData[$field]) {
+                Odd::updateAll(
+                    ['player_id' => $this->{$field}],
+                    ['event' => $this->id, 'player_id' => $oldData[$field]]
+                );
+            }
+        }
     }
 
 }

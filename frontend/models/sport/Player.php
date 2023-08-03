@@ -172,4 +172,28 @@ class Player extends ActiveRecord
         ]);
     }
 
+    /**
+     * @return array
+     */
+    public static function dropdown(): array
+    {
+        return self::find()->select(['name', 'id'])->indexBy('id')->orderBy('name')->column();
+    }
+
+    /**
+     * @param $name
+     * @return array
+     */
+    public static function dropdownSimilar($name): array
+    {
+        $search = str_replace('.', '', explode(' ', $name));
+        return self::find()
+            ->select(['name', 'id'])
+            ->where(['like', 'name', $search[0]])
+            ->indexBy('id')
+            ->orderBy('name')
+            ->column()
+        ;
+    }
+
 }
