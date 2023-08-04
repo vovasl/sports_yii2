@@ -10,9 +10,12 @@ use frontend\models\sport\Odd;
 use yii\web\View;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
+use yii\web\JqueryAsset;
 
 $this->title = 'Add Line';
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerJsFile('/js/add-line.js', ['depends' => [JqueryAsset::class]]);
 
 ?>
 
