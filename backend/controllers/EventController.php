@@ -129,14 +129,14 @@ class EventController extends Controller
     public function actionAddLine(): string
     {
         $model = new AddLineForm();
-        /*
+
         if ($model->load(Yii::$app->request->post())) {
             if($model->validate()) {
+                //var_dump($model);
                 $model = new AddLineForm();
                 Yii::$app->session->setFlash('success', 'Line has been added');
             }
         }
-        */
         return $this->render('add-line', ['model' => $model]);
     }
 

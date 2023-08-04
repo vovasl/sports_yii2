@@ -24,6 +24,8 @@ class AddLineForm extends Model
     {
         return [
             [['event_id', 'type', 'odd'], 'required'],
+            [['event_id', 'type', 'player_id'], 'integer'],
+            [['add_type', 'value', 'odd'], 'string'],
         ];
     }
 
