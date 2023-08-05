@@ -10,12 +10,16 @@ use yii\helpers\ArrayHelper;
 
 class AddLineForm extends Model
 {
+
+    CONST PIN_ID = 1;
+
     public $event_id;
     public $type;
     public $add_type;
     public $player_id;
     public $value;
     public $odd;
+    public $close;
 
     /**
      * @return array[]
@@ -24,7 +28,7 @@ class AddLineForm extends Model
     {
         return [
             [['event_id', 'type', 'odd'], 'required'],
-            [['event_id', 'type', 'player_id'], 'integer'],
+            [['event_id', 'type', 'player_id', 'close'], 'integer'],
             [['add_type', 'value', 'odd'], 'string'],
         ];
     }
@@ -40,7 +44,8 @@ class AddLineForm extends Model
             'add_type' => 'Additional type',
             'player_id' => 'Player',
             'value' => 'Value',
-            'odd' => 'Odd'
+            'odd' => 'Odd',
+            'close' => 'Close'
         ];
     }
 
@@ -54,10 +59,13 @@ class AddLineForm extends Model
             ->from(['event' => Event::tableName()])
             ->with(['eventTournament', 'tournamentRound', 'homePlayer', 'awayPlayer'])
             ->leftJoin('sp_odd', 'sp_odd.event = event.id')
-            ->where(['event.status' => 1])
+            ->where([
+                'event.status' => 1,
+                'event.pin_id' => null
+            ])
             ->groupBy('event.id')
             ->orderBy(['event.start_at' => SORT_DESC])
-            ->having(['count_odds' => 0])
+            //->having(['count_odds' => 0])
             ->all()
         , 'id', 'fullInfo');
     }
@@ -70,6 +78,17 @@ class AddLineForm extends Model
         return array_map('ucfirst', ArrayHelper::map(OddType::find()
             ->all()
         , 'id','name'));
+    }
+
+    /**
+     * @return array
+     */
+    public function getPlayers(): array
+    {
+        if(empty($this->event_id)) return [];
+
+        $event = Event::findOne($this->event_id);
+        return $event->dropdownPlayers();
     }
 
 }

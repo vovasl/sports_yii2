@@ -10,6 +10,8 @@ use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
+use frontend\models\sport\Odd;
+use frontend\models\sport\ResultSet;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
@@ -125,6 +127,7 @@ class EventController extends Controller
 
     /**
      * @return string
+     * @throws NotFoundHttpException
      */
     public function actionAddLine(): string
     {
@@ -132,12 +135,57 @@ class EventController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if($model->validate()) {
-                //var_dump($model);
-                $model = new AddLineForm();
+
+                if(empty($model->player_id)) $model->player_id = null;
+                if($model->value == '') $model->value = null;
+                if(empty($model->add_type)) $model->add_type = null;
+
+                /** add odds */
+                if(!Odd::create($model->event_id, $model->type, $model->odd, $model->player_id, $model->value, $model->add_type)) {
+                    Yii::$app->session->setFlash('error', 'Error');
+                    return $this->render('add-line', ['model' => $model]);
+                }
+
+                /** get event */
+                $event = $this->findModel($model->event_id);
+
+                /** remove event result */
+                ResultSet::deleteAll(['event' => $event->id]);
+                $event->home_result = null;
+                $event->away_result = null;
+                $event->winner = null;
+                $event->total = null;
+                $event->total_games = null;
+                $event->sofa_id = null;
+
+                /** close event */
+                if($model->close == 1) {
+                    $event->pin_id = $model::PIN_ID;
+                    $model = new AddLineForm();
+                }
+                $event->save();
+
                 Yii::$app->session->setFlash('success', 'Line has been added');
+
+                $model->odd = null;
             }
         }
         return $this->render('add-line', ['model' => $model]);
+    }
+
+    /**
+     * @return array
+     * @throws NotFoundHttpException
+     */
+    public function actionPlayers(): array
+    {
+        $request = Yii::$app->request;
+        if($request->isAjax){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model = $this->findModel($request->post('id'));
+            return $model->dropdownPlayers();
+        }
+        return [];
     }
 
     /**

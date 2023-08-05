@@ -2,9 +2,41 @@ $(function() {
 
     hideFields();
 
+    if($('#addlineform-type').val() != '') {
+        actions(parseInt($('#addlineform-type').val()));
+    }
+
     $('#addlineform-type').on('change', function() {
         hideFields();
-        switch (parseInt($(this).val())) {
+        actions(parseInt($(this).val()));
+    });
+
+    $('#addlineform-event_id').on('change', function() {
+        $.ajax({
+            url: '/event/players',
+            type: 'POST',
+            data: {id: parseInt($(this).val())},
+            success: function(response) {
+                var playerDropDownList = document.getElementById("addlineform-player_id");
+                // remove player options
+                playerDropDownList.options.length = 0;
+                // add new options
+                $.each(response, function(index, value) {
+                    var option = document.createElement("option");
+                    option.text = value;
+                    option.value = index;
+                    playerDropDownList.options.add(option);
+                });
+            },
+            error: function(){
+                alert('error - players');
+            }
+        });
+
+    });
+
+    function actions(val) {
+        switch (val) {
             case 1:
                 spreads();
                 break;
@@ -26,7 +58,7 @@ $(function() {
             default:
                 break;
         }
-    });
+    }
 
     function hideFields() {
         $('.field-addlineform-add_type').hide();

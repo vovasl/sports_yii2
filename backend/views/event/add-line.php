@@ -29,11 +29,13 @@ $this->registerJsFile('/js/add-line.js', ['depends' => [JqueryAsset::class]]);
 
 <?= $form->field($model, 'add_type')->dropdownList(Odd::ADD_TYPE, ['prompt' => 'Select Additional type']) ?>
 
-<?= $form->field($model, 'player_id') ?>
+<?= $form->field($model, 'player_id')->dropdownList($model->getPlayers()) ?>
 
 <?= $form->field($model, 'value') ?>
 
 <?= $form->field($model, 'odd') ?>
+
+<?= $form->field($model, 'close')->checkbox() ?>
 
 <div class="form-group">
     <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
