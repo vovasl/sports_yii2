@@ -186,14 +186,17 @@ class Player extends ActiveRecord
      */
     public static function dropdownSimilar($name): array
     {
+        $player = self::find();
+        $player->select(['name', 'id']);
+
         $search = str_replace('.', '', explode(' ', $name));
-        return self::find()
-            ->select(['name', 'id'])
-            ->where(['like', 'name', $search[0]])
-            ->indexBy('id')
-            ->orderBy('name')
-            ->column()
-        ;
+        foreach ($search as $val) {
+            $player->orWhere(['like', 'name', $val]);
+        }
+
+        $player->indexBy('id');
+        $player->orderBy('name');
+        return $player->column();
     }
 
 }
