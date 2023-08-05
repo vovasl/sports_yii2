@@ -62,7 +62,7 @@ class EventResultSave extends Component
 
             /** save event result */
             if(!$this->run($model)) {
-               $this->message .= $event['id'];
+               //$this->message .= $event['id'];
                 continue;
             }
 
@@ -82,13 +82,13 @@ class EventResultSave extends Component
         /** @var Event $event */
         if(!$event = $this->getEvent($model->id)) return false;
         if($manual && !$model->result = $this->prepare($model->result)) return false;
-        if(!$this->validate($model->result)) return false;
+        if(!$this->validate($model)) return false;
 
         $result = $this->aggregate($model->result, $event, $model->winner);
 
         /** save event result */
-        $event->home_result = $result['sets'][0];
-        $event->away_result = $result['sets'][1];
+        $event->home_result = !empty($result['sets'][0]) ? $result['sets'][0] : 0;
+        $event->away_result = !empty($result['sets'][1]) ? $result['sets'][1] : 0;
         $event->winner = $event->{$result['winner']};
         $event->total = $result['setsTotals'];
         $event->total_games = $result['totals'];
@@ -103,13 +103,15 @@ class EventResultSave extends Component
         $event->save();
 
         /** save event sets result */
-        foreach ($result['games'] as $set => $games) {
-            $setRes = new ResultSet();
-            $setRes->event = $event->id;
-            $setRes->set = $set;
-            $setRes->home = $games[0];
-            $setRes->away = $games[1];
-            $setRes->save();
+        if(is_array($result['games'])) {
+            foreach ($result['games'] as $set => $games) {
+                $setRes = new ResultSet();
+                $setRes->event = $event->id;
+                $setRes->set = $set;
+                $setRes->home = $games[0];
+                $setRes->away = $games[1];
+                $setRes->save();
+            }
         }
 
         /** calculate odds profit */
@@ -181,17 +183,17 @@ class EventResultSave extends Component
     }
 
     /**
-     * @param $data
+     * @param AddResultForm $model
      * @return bool
      */
-    private function validate($data): bool
+    private function validate(AddResultForm $model): bool
     {
-        if(!is_array($data)) {
+        if(!is_array($model->result)) {
             // ::log $result should be an array
             return false;
         }
 
-        if(empty($data['sets']) || empty($data['games'])) {
+        if(in_array($model->status, self::FINISHED_STATUSES) && (empty($model->result['sets']) || empty($model->result['games']))) {
             // :: log print_r($data, 1) wrong format
             $this->message .= $this->errorMsg('Wrong result format');
             return false;
@@ -212,9 +214,9 @@ class EventResultSave extends Component
         $data['away_id'] = $event->away;
         $data['winner'] = $this->getWinner($winner, $data);
         $data['winner_id'] = $data['winner'] == 'home' ? $event->home : $event->away;
-        $data['setsTotals'] = array_sum($data['sets']);
-        $data['teamTotalHome'] = array_sum(array_column($data['games'], 0));
-        $data['teamTotalAway'] = array_sum(array_column($data['games'], 1));
+        $data['setsTotals'] = is_array($data['sets']) ? array_sum($data['sets']) : 0;
+        $data['teamTotalHome'] = is_array($data['games']) ? array_sum(array_column($data['games'], 0)) : 0;
+        $data['teamTotalAway'] = is_array($data['games']) ? array_sum(array_column($data['games'], 1)) : 0;
         $data['totals'] = $data['teamTotalHome'] + $data['teamTotalAway'];
         $data['teamSpreadHome'] = $data['teamTotalAway'] - $data['teamTotalHome'];
         $data['teamSpreadAway'] = $data['teamTotalHome'] - $data['teamTotalAway'];
