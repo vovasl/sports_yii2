@@ -44,6 +44,11 @@ class EventResultSave extends Component
             /** check players */
             if(!$this->issetPlayers($event)) continue;
 
+            if(empty($event['winnerCode'])) {
+                $this->message .= $this->errorMsg('Empty winnerCode');
+                continue;
+            }
+
             /** get event */
             $eventDB = $this->getEventData($event);
 
@@ -373,9 +378,6 @@ class EventResultSave extends Component
     {
         if(empty($event['id'])) return false;
 
-        /** player does not exists - event tracks  */
-        if(PlayerAddEvent::findOne(['sofa_id' => $event['id']])) return true;
-
         $event = Event::find()
             ->where(['sofa_id' => $event['id']])
             ->andWhere(['IS NOT', 'home_result', NULL])
@@ -499,7 +501,11 @@ class EventResultSave extends Component
                     $message = "Add player {$event[$field]['name']} sofa id";
                 }
                 else {
-                    $this->addPlayerAddEvent($event, $field);
+
+                    /** player does not exists - event tracks  */
+                    if(!PlayerAddEvent::findOne(['sofa_id' => $event['id']])) {
+                        $this->addPlayerAddEvent($event, $field);
+                    }
                     $message = "Player {$event[$field]['name']} does not exist";
                     $message .= "<br> Event Sofa Id: {$event['id']}";
                 }
@@ -536,6 +542,8 @@ class EventResultSave extends Component
      */
     private function eventNotFinished(Event $event): Event
     {
+        if(!empty($event->pin_id)) $this->message .= "<br>" . $this->getEditLink($event->id);
+
         $event->total = null;
         $event->status = 0;
         $event->total_games = null;
@@ -546,7 +554,6 @@ class EventResultSave extends Component
         $this->removeOdds($event->id);
 
         $this->message .= $this->warningMsg('Event was not finished. Check out fields: home_result, away_result, five_sets');
-        $this->message .= "<br>" . $this->getEditLink($event->id);
 
         return $event;
     }
