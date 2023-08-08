@@ -8,6 +8,7 @@ $(function() {
 
     $('#addlineform-type').on('change', function() {
         hideFields();
+        emptyValues();
         actions(parseInt($(this).val()));
     });
 
@@ -22,6 +23,7 @@ $(function() {
                 playerDropDownList.options.length = 0;
                 // add new options
                 $.each(response, function(index, value) {
+                    console.log(value);
                     var option = document.createElement("option");
                     option.text = value;
                     option.value = index;
@@ -64,6 +66,12 @@ $(function() {
         $('.field-addlineform-add_type').hide();
         $('.field-addlineform-player_id').hide();
         $('.field-addlineform-value').hide();
+    }
+
+    function emptyValues() {
+        $('#addlineform-add_type').val('');
+        $('#addlineform-player_id').val('');
+        $('#addlineform-value').val('');
     }
 
     function spreads() {

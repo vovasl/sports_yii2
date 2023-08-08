@@ -25,11 +25,11 @@ $this->registerJsFile('/js/add-line.js', ['depends' => [JqueryAsset::class]]);
 
 <?= $form->field($model, 'event_id')->dropDownList($model->getEvents(), ['prompt' => 'Select event']) ?>
 
-<?= $form->field($model, 'type')->dropDownList($model->getTypes(), ['prompt' => 'Select event']) ?>
+<?= $form->field($model, 'type')->dropDownList($model->getTypes(), ['prompt' => 'Select type']) ?>
 
 <?= $form->field($model, 'add_type')->dropdownList(Odd::ADD_TYPE, ['prompt' => 'Select Additional type']) ?>
 
-<?= $form->field($model, 'player_id')->dropdownList($model->getPlayers()) ?>
+<?= $form->field($model, 'player_id')->dropdownList($model->getPlayers(), ['prompt' => 'Select Player']) ?>
 
 <?= $form->field($model, 'value') ?>
 

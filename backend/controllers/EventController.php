@@ -183,7 +183,7 @@ class EventController extends Controller
         if($request->isAjax){
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model = $this->findModel($request->post('id'));
-            return $model->dropdownPlayers();
+            return array_merge($model->dropdownPlayers(), ['' => 'Select Player']);
         }
         return [];
     }
