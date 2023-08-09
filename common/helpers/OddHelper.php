@@ -57,7 +57,7 @@ class OddHelper
      */
     public static function totalSettings(): array
     {
-        return [210, 200, 190, 180, 170, 0];
+        return [215, 190, 170, 0];
     }
 
     /**
