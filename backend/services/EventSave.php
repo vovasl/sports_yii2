@@ -25,7 +25,7 @@ class EventSave extends Component
         'games' => ['spreads', 'totals', 'teamTotal'],
     ];
     CONST TENNIS_FIELDS_REQUIRED = ['tour', 'tournament', 'round', 'home', 'away'];
-    CONST MIN_ODDS = 10;
+    CONST MIN_ODDS = 20;
 
     private $message = '';
 
