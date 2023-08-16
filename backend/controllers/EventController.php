@@ -6,6 +6,7 @@ namespace backend\controllers;
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\pinnacle\helpers\OddHelper;
 use backend\models\AddLineForm;
+use backend\models\AddLineLogForm;
 use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use frontend\models\sport\Event;
@@ -194,26 +195,36 @@ class EventController extends Controller
      * @param int $save
      * @return string
      */
-    public function actionAddLineLog($id, int $save = 0): string
+    public function actionAddLineLog($id): string
     {
+
+        /** get odds from logs */
         $eventLog = EventLog::find()->where(['event_id' => $id])->orderBy(['id' => SORT_DESC])->one();
         $log = Json::decode($eventLog->message);
-
         $odds = OddHelper::prepareLine($log['odds']);
 
-        if($save == 1) {
+        /** get event */
+        $event = Event::findOne($log['id']);
+
+        /** save odds */
+        $save = (count($event->odds) < 1);
+        $form = new AddLineLogForm();
+        if($form->load(Yii::$app->request->post()) && $form->validate() && $save) {
             Yii::$app->event_save->addOdds([
                 'id' => $log['id'],
                 'home' => $log['home'],
                 'away' => $log['away'],
                 'odds' => $odds,
             ]);
+            Yii::$app->session->setFlash('success', 'Line has been added');
+            $save = 0;
         }
 
         return $this->render('add-line-log', [
-            'event' => Event::findOne($log['id']),
+            'event' => $event,
             'odds' => $odds,
             'log' => $log,
+            'save' => $save
         ]);
     }
 
