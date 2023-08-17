@@ -199,4 +199,12 @@ class Player extends ActiveRecord
         return $player->column();
     }
 
+    /**
+     * @return bool
+     */
+    public function actionDelete(): bool
+    {
+        return (count($this->events) < 1);
+    }
+
 }

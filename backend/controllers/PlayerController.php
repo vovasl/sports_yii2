@@ -5,6 +5,8 @@ namespace backend\controllers;
 
 use frontend\models\sport\Player;
 use backend\models\PlayerSearch;
+use Throwable;
+use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -80,6 +82,18 @@ class PlayerController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException|StaleObjectException|Throwable
+     */
+    public function actionDelete($id): Response
+    {
+        $model = $this->findModel($id);
+        $model->delete();
+        return $this->redirect(['index']);
     }
 
     /**
