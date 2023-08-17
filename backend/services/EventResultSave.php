@@ -5,11 +5,12 @@ namespace backend\services;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\sofascore\models\TennisEvent;
+use backend\helpers\EventResultSaveHelper;
 use backend\models\AddResultForm;
+use backend\models\odd\Calculate;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
-use frontend\models\sport\PlayerAdd;
 use frontend\models\sport\PlayerAddEvent;
 use frontend\models\sport\ResultSet;
 use frontend\models\sport\Round;
@@ -17,13 +18,12 @@ use frontend\models\sport\Tournament;
 use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
-use yii\helpers\Html;
+use yii\db\StaleObjectException;
 
 class EventResultSave extends Component
 {
 
-    CONST LOSS = -100;
-    const FINISHED_STATUSES = [100];
+    CONST FINISHED_STATUSES = [100];
 
     private $message = '';
 
@@ -45,14 +45,14 @@ class EventResultSave extends Component
             if(!$this->issetPlayers($event)) continue;
 
             if(empty($event['winnerCode'])) {
-                $this->message .= $this->errorMsg('Empty winnerCode');
+                $this->message .= EventResultSaveHelper::errorMsg('Empty winnerCode');
                 continue;
             }
 
             /** get event */
             $eventDB = $this->getEventData($event);
 
-            $this->message .= "<br>" . self::getLink($eventDB->id);
+            $this->message .= "<br>" . EventResultSaveHelper::getLink($eventDB->id);
 
             /** pinnacle odds has not added */
             if(!$this->issetOdds($eventDB)) continue;
@@ -86,9 +86,10 @@ class EventResultSave extends Component
     {
         /** @var Event $event */
         if(!$event = $this->getEvent($model->id)) return false;
-        if($manual && !$model->result = $this->prepare($model->result)) return false;
-        if(!$this->validate($model)) return false;
 
+        /** get result */
+        if($manual && !$model->result = $this->prepareResult($model->result)) return false;
+        if(!$this->validateResult($model)) return false;
         $result = $this->aggregate($model->result, $event, $model->winner);
 
         /** save event result */
@@ -120,16 +121,10 @@ class EventResultSave extends Component
         }
 
         /** calculate odds profit */
-        foreach ($event->odds as $odds) {
+        $calculate = new Calculate($event->odds, $result);
+        $calculate->run();
 
-            if(!empty($odds->profit)) continue;
-            $method = "{$odds->oddType->name}Odds";
-            if(!method_exists($this, $method)) {
-                // ::log add method {$method}
-                continue;
-            }
-            $this->{$method}($odds, $result);
-        }
+        $this->afterSave($event);
 
         return true;
     }
@@ -150,7 +145,7 @@ class EventResultSave extends Component
         }
 
         if(!empty($event->home_result) || !empty($event->away_result)) {
-            $this->message .= $this->warningMsg('Event has result');
+            $this->message .= EventResultSaveHelper::warningMsg('Event has result');
             return false;
         }
 
@@ -161,7 +156,7 @@ class EventResultSave extends Component
      * @param $result
      * @return array|false
      */
-    private function prepare($result)
+    private function prepareResult($result)
     {
         $pattern = '#(.+)\((.+?)\)#';
         preg_match_all($pattern, $result, $matches);
@@ -191,7 +186,7 @@ class EventResultSave extends Component
      * @param AddResultForm $model
      * @return bool
      */
-    private function validate(AddResultForm $model): bool
+    private function validateResult(AddResultForm $model): bool
     {
         if(!is_array($model->result)) {
             // ::log $result should be an array
@@ -200,7 +195,7 @@ class EventResultSave extends Component
 
         if(in_array($model->status, self::FINISHED_STATUSES) && (empty($model->result['sets']) || empty($model->result['games']))) {
             // :: log print_r($data, 1) wrong format
-            $this->message .= $this->errorMsg('Wrong result format');
+            $this->message .= EventResultSaveHelper::errorMsg('Wrong result format');
             return false;
         }
 
@@ -251,123 +246,10 @@ class EventResultSave extends Component
 
         if(empty($winner)) {
             $winner = $data['sets'][0] > $data['sets'][1] ? 'home' : 'away';
-            $this->message .= $this->warningMsg('Check out winner field');
+            $this->message .= EventResultSaveHelper::warningMsg('Check out winner field');
         }
 
         return $winner;
-    }
-
-    /**
-     * @param Odd $odds
-     * @param array $result
-     * @return bool
-     */
-    private function moneylineOdds(Odd $odds, array $result): bool
-    {
-        $odds->profit = ($odds->player_id == $result['winner_id']) ? $this->calcOdds($odds->odd) : self::LOSS;
-        $odds->save();
-
-        return true;
-    }
-
-    /**
-     * @param Odd $odds
-     * @param array $result
-     * @return bool
-     */
-    private function spreadsOdds(Odd $odds, array $result): bool
-    {
-        $val = ($odds->player_id == $result['home_id']) ? $result['teamSpreadHome'] : $result['teamSpreadAway'];
-        $odds->profit = ($odds->value > $val) ? $this->calcOdds($odds->odd) : self::LOSS;
-        $odds->save();
-
-        return true;
-    }
-
-    /**
-     * @param Odd $odds
-     * @param array $result
-     * @return bool
-     */
-    private function setsSpreadsOdds(Odd $odds, array $result): bool
-    {
-        $val = ($odds->player_id == $result['home_id']) ? $result['teamSetsSpreadHome'] : $result['teamSetsSpreadAway'];
-        $odds->profit = ($odds->value > $val) ? $this->calcOdds($odds->odd) : self::LOSS;
-        $odds->save();
-
-        return true;
-    }
-
-    /**
-     * @param Odd $odds
-     * @param array $result
-     * @return bool
-     */
-    private function totalsOdds(Odd $odds, array $result): bool
-    {
-        $odds->profit = $this->totals($odds, $result['totals']);
-        $odds->save();
-
-        return true;
-    }
-
-    /**
-     * @param Odd $odds
-     * @param array $result
-     * @return bool
-     */
-    private function setsTotalsOdds(Odd $odds, array $result): bool
-    {
-        $odds->profit = $this->totals($odds, $result['setsTotals']);
-        $odds->save();
-
-        return true;
-    }
-
-    /**
-     * @param Odd $odds
-     * @param array $result
-     * @return bool
-     */
-    private function teamTotalOdds(Odd $odds, array $result): bool
-    {
-        $val = ($odds->player_id == $result['home_id']) ? $result['teamTotalHome'] : $result['teamTotalAway'];
-        $odds->profit = $this->totals($odds, $val);
-        $odds->save();
-
-        return true;
-    }
-
-    /**
-     * @param Odd $odds
-     * @param int $val
-     * @return int
-     */
-    private function totals(Odd $odds, int $val): int
-    {
-        $profit = NULL;
-
-        /** total over */
-        if($odds->add_type == Odd::ADD_TYPE['over']) {
-            $profit = $val > $odds->value ? $this->calcOdds($odds->odd) : self::LOSS;
-        }
-        /** total under */
-        else if($odds->add_type == Odd::ADD_TYPE['under']) {
-            $profit = $val < $odds->value ? $this->calcOdds($odds->odd) : self::LOSS;
-        }
-        /** total equal */
-        if($odds->value == $val) $profit = 0;
-
-        return $profit;
-    }
-
-    /**
-     * @param int $odd
-     * @return int
-     */
-    private function calcOdds(int $odd): int
-    {
-        return $odd - 100;
     }
 
     /**
@@ -417,7 +299,7 @@ class EventResultSave extends Component
         ) {
             /** add event */
             $event = $this->addEvent($data);
-            $this->message .= "<br>" . $this->getEditLink($event->id);
+            $this->message .= "<br>" . EventResultSaveHelper::getEditLink($event->id);
         }
 
         return $event;
@@ -449,10 +331,10 @@ class EventResultSave extends Component
     {
         $val = null;
         if(empty($data['tournament']['uniqueTournament']['id'])) {
-            $this->message .= $this->warningMsg("Add information about the tournament. Empty [uniqueTournament]");
+            $this->message .= EventResultSaveHelper::warningMsg("Add information about the tournament. Empty [uniqueTournament]");
         }
         else if(!$val = Tournament::getIdBySofa($data['tournament']['uniqueTournament']['id'])) {
-            $this->message .= $this->warningMsg("Add information about the tournament. Unable to find {$data['tournament']['uniqueTournament']['id']}");
+            $this->message .= EventResultSaveHelper::warningMsg("Add information about the tournament. Unable to find {$data['tournament']['uniqueTournament']['id']}");
         }
 
         return $val;
@@ -466,11 +348,11 @@ class EventResultSave extends Component
     {
         $val = null;
         if(empty($data['roundInfo']['name'])) {
-            $this->message .= $this->warningMsg("Add information about the round to the event. Empty [roundInfo]");
+            $this->message .= EventResultSaveHelper::warningMsg("Add information about the round to the event. Empty [roundInfo]");
 
         }
         else if(!$val = Round::getIdBySofa($data['roundInfo']['name'])) {
-            $this->message .= $this->warningMsg("Add information about the round to the event. Unable to find {$data['roundInfo']['name']}");
+            $this->message .= EventResultSaveHelper::warningMsg("Add information about the round to the event. Unable to find {$data['roundInfo']['name']}");
         }
 
         return $val;
@@ -504,12 +386,12 @@ class EventResultSave extends Component
 
                     /** player does not exists - event tracks  */
                     if(!PlayerAddEvent::findOne(['sofa_id' => $event['id']])) {
-                        $this->addPlayerAddEvent($event, $field);
+                        PlayerAddEvent::add($event, $field);
                     }
                     $message = "Player {$event[$field]['name']} does not exist";
                     $message .= "<br> Event Sofa Id: {$event['id']}";
                 }
-                $this->message .= $this->errorMsg($message);
+                $this->message .= EventResultSaveHelper::errorMsg($message);
                 return false;
             }
 
@@ -529,7 +411,7 @@ class EventResultSave extends Component
     private function issetOdds(Event $event): bool
     {
         if(!empty($event->pin_id) && count($event->odds) == 0) {
-            $this->message .= $this->errorMsg("Event without odds");
+            $this->message .= EventResultSaveHelper::errorMsg("Event without odds");
             return false;
         }
 
@@ -542,7 +424,7 @@ class EventResultSave extends Component
      */
     private function eventNotFinished(Event $event): Event
     {
-        if(!empty($event->pin_id)) $this->message .= "<br>" . $this->getEditLink($event->id);
+        if(!empty($event->pin_id)) $this->message .= "<br>" . EventResultSaveHelper::getEditLink($event->id);
 
         $event->total = null;
         $event->status = 0;
@@ -551,76 +433,23 @@ class EventResultSave extends Component
         $event->save();
 
         /** remove odds */
-        $this->removeOdds($event->id);
+        Odd::deleteAll(['event' => $event->id]);
 
-        $this->message .= $this->warningMsg('Event was not finished. Check out fields: home_result, away_result, five_sets');
+        $this->message .= EventResultSaveHelper::warningMsg('Event was not finished. Check out fields: home_result, away_result, five_sets');
 
         return $event;
     }
 
     /**
-     * @param int $id
+     * @param Event $event
+     * @throws \Throwable
+     * @throws StaleObjectException
      */
-    private function removeOdds(int $id)
+    private function afterSave(Event $event)
     {
-        Odd::deleteAll(['event' => $id]);
-    }
+        /** delete player add event */
+        PlayerAddEvent::removeBySofa($event->sofa_id);
 
-    /**
-     * @param string $message
-     * @return string
-     */
-    private function errorMsg(string $message): string
-    {
-        return "<br><span style='color: red;'>{$message}</span>";
-    }
-
-    /**
-     * @param string $message
-     * @return string
-     */
-    private function warningMsg(string $message): string
-    {
-        return "<br><span style='color: coral;'>{$message}</span>";
-    }
-
-    /**
-     * @param $id
-     * @return string
-     */
-    public static function getLink($id): string
-    {
-        return Html::a('Link', ['/event/view', 'id' => $id], ['target'=>'_blank']);
-    }
-
-    /**
-     * @param $id
-     * @return string
-     */
-    public function getEditLink($id): string
-    {
-        return Html::a('Edit', ['/event/update', 'id' => $id], ['target'=>'_blank']);
-    }
-
-    /**
-     * @param array $data
-     * @param string $field
-     */
-    private function addPlayerAddEvent(array $data, string $field): void
-    {
-        /** get player */
-        $player = ($player = PlayerAdd::findOne(['name' => $data[$field]['name']])) ? $player : new PlayerAdd();
-        if($player->isNewRecord) {
-            $player->name = trim($data[$field]['name']);
-            $player->save();
-        }
-
-        /** save event */
-        $event = new PlayerAddEvent();
-        $event->player_id = $player->id;
-        $event->date = date('Y-m-d', $data['startTimestamp']);
-        $event->sofa_id = $data['id'];
-        $event->save();
     }
 
 }

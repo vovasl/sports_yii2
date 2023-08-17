@@ -5,6 +5,7 @@ namespace frontend\models\sport;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\StaleObjectException;
 
 /**
  * This is the model class for table "tn_player_add_event".
@@ -61,4 +62,50 @@ class PlayerAddEvent extends ActiveRecord
     {
         return $this->hasOne(PlayerAdd::class, ['id' => 'player_id']);
     }
+
+    /**
+     * @param array $data
+     * @param string $field
+     */
+    public static function add(array $data, string $field)
+    {
+        /** get player */
+        $player = ($player = PlayerAdd::findOne(['name' => $data[$field]['name']])) ? $player : new PlayerAdd();
+        if($player->isNewRecord) {
+            $player->name = trim($data[$field]['name']);
+            $player->save();
+        }
+
+        /** save event */
+        $event = new PlayerAddEvent();
+        $event->player_id = $player->id;
+        $event->date = date('Y-m-d', $data['startTimestamp']);
+        $event->sofa_id = $data['id'];
+        $event->save();
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws \Throwable
+     * @throws StaleObjectException
+     */
+    public static function removeBySofa($id): bool
+    {
+        /** get events */
+        $events = self::find()->where(['sofa_id' => $id])->all();
+        foreach ($events as $event) {
+
+            /** remove event */
+            $event->delete();
+
+            /** remove player without events */
+            if(self::find()->where(['player_id' => $event->player_id])->count() < 1) {
+                PlayerAdd::deleteAll(['id' => $event->player_id]);
+            }
+        }
+
+        return true;
+    }
+
 }
