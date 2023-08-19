@@ -93,7 +93,7 @@ class League
         }
 
         /** get tournament name and round */
-        $data = array_map('trim', explode('-', $name));
+        $data = array_map('trim', explode(' - ', $name));
 
         if(!empty($tour)) $data[] = $tour;
         if(count($data) != 3) {
