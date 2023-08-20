@@ -192,10 +192,8 @@ class EventController extends Controller
 
     /**
      * @param null $id
-     * @param int $save
-     * @return string
      */
-    public function actionAddLineLog($id): string
+    public function actionAddLineLog($id)
     {
 
         /** get odds from logs */
@@ -217,7 +215,7 @@ class EventController extends Controller
                 'odds' => $odds,
             ]);
             Yii::$app->session->setFlash('success', 'Line has been added');
-            $save = 0;
+            return $this->redirect(['view', 'id' => $event->id]);
         }
 
         return $this->render('add-line-log', [
