@@ -47,7 +47,7 @@ class TennisEvent
         /** tournament filter */
         $this->events = array_filter($this->events, function ($event) {
             return (in_array($event['tournament']['category']['id'], self::TOUR)
-                && !preg_match('#doubles|mixed#i', $event['tournament']['name']));
+                && !preg_match('#double|doubles|mixed|group#i', $event['tournament']['name']));
         });
 
         /** status code filter */
