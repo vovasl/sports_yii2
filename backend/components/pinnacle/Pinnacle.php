@@ -17,7 +17,7 @@ class Pinnacle extends Component
         'sets' => ['moneyline', 'spreads', 'totals'],
         'games' => ['spreads', 'totals', 'teamTotal'],
     ];
-    const ATP = ['ATP Challenger', 'ATP'];
+    const ATP = ['ATP Challenger', 'ATP', 'Davis Cup'];
 
     /**
      * @param array $settings
