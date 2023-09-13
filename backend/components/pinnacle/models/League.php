@@ -93,9 +93,14 @@ class League
         }
 
         /** get tournament name and round */
-        $data = array_map('trim', explode(' - ', $name));
+        $data = array_map('trim', explode('-', $name));
 
+        /** exception for Davis Cup - without tournament name */
+        if(empty($data[0]) && !empty($tour)) $data[0] = $tour;
+
+        /** add tour info */
         if(!empty($tour)) $data[] = $tour;
+
         if(count($data) != 3) {
             //::log can't parse tournament name
             return false;
