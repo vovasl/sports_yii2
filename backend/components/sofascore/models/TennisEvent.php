@@ -3,6 +3,8 @@
 namespace backend\components\sofascore\models;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
+
 class TennisEvent
 {
 
@@ -47,7 +49,7 @@ class TennisEvent
         /** tournament filter */
         $this->events = array_filter($this->events, function ($event) {
             return (in_array($event['tournament']['category']['id'], self::TOUR)
-                && !preg_match('#double|doubles|mixed|group#i', $event['tournament']['name']));
+                && !preg_match('#double|doubles|mixed|Finals, Group#i', $event['tournament']['name']));
         });
 
         /** status code filter */
