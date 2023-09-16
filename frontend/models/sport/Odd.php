@@ -3,6 +3,8 @@
 namespace frontend\models\sport;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
+use backend\models\AddLineForm;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -32,6 +34,15 @@ class Odd extends ActiveRecord
     CONST ADD_TYPE = [
         'over' => 'over',
         'under' => 'under'
+    ];
+
+    CONST TYPE = [
+        'spreads' => 1,
+        'totals' => 2,
+        'team_total' => 3,
+        'moneyline' => 4,
+        'sets_spreads' => 7,
+        'sets_totals' => 8
     ];
 
     /**
@@ -122,6 +133,91 @@ class Odd extends ActiveRecord
     }
 
     /**
+     * @param AddLineForm $model
+     * @return bool
+     */
+    public static function add(AddLineForm $model): bool
+    {
+        if(empty($model->player_id)) $model->player_id = null;
+        if($model->value == '') $model->value = null;
+        if(empty($model->add_type)) $model->add_type = null;
+
+        switch ($model->type) {
+            case self::TYPE['spreads']:
+                $status = self::createSpread($model, self::TYPE['spreads']);
+                break;
+            case self::TYPE['totals']:
+                $status = self::createTotal($model, self::TYPE['totals']);
+                break;
+            case self::TYPE['moneyline']:
+                $status = self::createMoneyline($model, self::TYPE['moneyline']);
+                break;
+            case self::TYPE['sets_spreads']:
+                $status = self::createSpread($model, self::TYPE['sets_spreads']);
+                break;
+            case self::TYPE['sets_totals']:
+                $status = self::createTotal($model, self::TYPE['sets_totals']);
+                break;
+            default:
+                $status = false;
+                break;
+        }
+
+        return $status;
+    }
+
+    /**
+     * @param AddLineForm $model
+     * @param $type
+     * @return bool
+     */
+    public static function createSpread(AddLineForm $model, $type): bool
+    {
+        $odds = self::getSpreadValues($model->event_id, $model->value, $model->odd_home, $model->odd_away);
+        foreach ($odds as $playerId => $odd) {
+            if(!self::create($model->event_id, $type, $odd['odd'], $playerId, $odd['value'])) return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param AddLineForm $model
+     * @param $type
+     * @return bool
+     */
+    public static function createTotal(AddLineForm $model, $type): bool
+    {
+        $odds = [
+            self::ADD_TYPE['over'] => $model->odd_over,
+            self::ADD_TYPE['under'] => $model->odd_under
+        ];
+        foreach ($odds as $addType => $odd) {
+            if(!self::create($model->event_id, $type, $odd, null, $model->value, $addType)) return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param AddLineForm $model
+     * @param $type
+     * @return bool
+     */
+    public static function createMoneyline(AddLineForm $model, $type): bool
+    {
+        $event = Event::findOne($model->event_id);
+        $odds = [
+            $event->home => $model->odd_home,
+            $event->away => $model->odd_away
+        ];
+        foreach ($odds as $playerId => $odd) {
+            if(!self::create($model->event_id, $type, $odd, $playerId)) return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param $eventId
      * @param $type
      * @param $oddVal
@@ -132,7 +228,7 @@ class Odd extends ActiveRecord
      */
     public static function create($eventId, $type, $oddVal, $playerId = null, $value = null, $addType = null): bool
     {
-        $odd = new static();;
+        $odd = new static();
         $odd->event = $eventId;
         $odd->type = $type;
         $odd->add_type = $addType;
@@ -140,6 +236,30 @@ class Odd extends ActiveRecord
         $odd->value = $value === null ? null : (string)$value;
         $odd->odd = self::setOdd($oddVal);
         return $odd->save();
+    }
+
+    /**
+     * @param $eventId
+     * @param $value
+     * @param $homeOdd
+     * @param $awayOdd
+     * @return array[]
+     */
+    public static function getSpreadValues($eventId, $value, $homeOdd, $awayOdd): array
+    {
+        $event = Event::findOne($eventId);
+        $values = [
+            $event->home => [
+                'value' => $value,
+                'odd' => $homeOdd
+            ],
+            $event->away => [
+                'value' => ($value == 0) ? 0 : -$value,
+                'odd' => $awayOdd
+            ]
+        ];
+
+        return $values;
     }
 
     /**

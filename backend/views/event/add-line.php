@@ -23,17 +23,23 @@ $this->registerJsFile('/js/add-line.js', ['depends' => [JqueryAsset::class]]);
 
 <?php $form = ActiveForm::begin(); ?>
 
-<?= $form->field($model, 'event_id')->dropDownList($model->getEvents(), ['prompt' => 'Select event']) ?>
+<?= $form->field($model, 'event_id')->dropDownList($model->getEvents(), ['prompt' => 'Select event']); ?>
 
-<?= $form->field($model, 'type')->dropDownList($model->getTypes(), ['prompt' => 'Select type']) ?>
+<?= $form->field($model, 'type')->dropDownList($model->getTypes(), ['prompt' => 'Select type']); ?>
 
-<?= $form->field($model, 'add_type')->dropdownList(Odd::ADD_TYPE, ['prompt' => 'Select Additional type']) ?>
+<?= $form->field($model, 'add_type')->dropdownList(Odd::ADD_TYPE, ['prompt' => 'Select Additional type']); ?>
 
-<?= $form->field($model, 'player_id')->dropdownList($model->getPlayers(), ['prompt' => 'Select Player']) ?>
+<?= $form->field($model, 'player_id')->dropdownList($model->getPlayers(), ['prompt' => 'Select Player']); ?>
 
-<?= $form->field($model, 'value') ?>
+<?= $form->field($model, 'value'); ?>
 
-<?= $form->field($model, 'odd') ?>
+<?= $form->field($model, 'odd_home'); ?>
+
+<?= $form->field($model, 'odd_away'); ?>
+
+<?= $form->field($model, 'odd_over'); ?>
+
+<?= $form->field($model, 'odd_under'); ?>
 
 <?= $form->field($model, 'close')->checkbox() ?>
 

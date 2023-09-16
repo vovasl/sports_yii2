@@ -1,13 +1,14 @@
 $(function() {
 
-    hideFields();
+    var fields = hideFields();
+    showAndHideFields(fields);
 
     if($('#addlineform-type').val() != '') {
         actions(parseInt($('#addlineform-type').val()));
     }
 
     $('#addlineform-type').on('change', function() {
-        hideFields();
+        showAndHideFields(fields);
         emptyValues();
         actions(parseInt($(this).val()));
     });
@@ -38,70 +39,131 @@ $(function() {
     });
 
     function actions(val) {
+        var fields = {};
         switch (val) {
             case 1:
-                spreads();
+                fields = spreads();
                 break;
             case 2:
-                totals();
-                break;
-            case 3:
-                teamTotals();
+                fields = totals();
                 break;
             case 4:
-                moneyline();
+                fields = moneyline();
                 break;
             case 7:
-                setsSpreads();
+                fields = setsSpreads();
                 break;
             case 8:
-                setsTotals();
+                fields = setsTotals();
                 break;
             default:
                 break;
         }
-    }
-
-    function hideFields() {
-        $('.field-addlineform-add_type').hide();
-        $('.field-addlineform-player_id').hide();
-        $('.field-addlineform-value').hide();
-    }
-
-    function emptyValues() {
-        $('#addlineform-add_type').val('');
-        $('#addlineform-player_id').val('');
-        $('#addlineform-value').val('');
+        showAndHideFields(fields);
     }
 
     function spreads() {
-        $('.field-addlineform-player_id').show();
-        $('.field-addlineform-value').show();
+        return {
+            show: [
+                '.field-addlineform-value',
+                '.field-addlineform-odd_home',
+                '.field-addlineform-odd_away'
+            ],
+            hide: [
+            ]
+        };
     }
 
     function totals() {
-        $('.field-addlineform-add_type').show();
-        $('.field-addlineform-value').show();
-    }
-
-    function teamTotals() {
-        $('.field-addlineform-add_type').show();
-        $('.field-addlineform-player_id').show();
-        $('.field-addlineform-value').show();
+        return {
+            show: [
+                '.field-addlineform-value',
+                '.field-addlineform-odd_over',
+                '.field-addlineform-odd_under'
+            ],
+            hide: [
+            ]
+        };
     }
 
     function moneyline() {
-        $('.field-addlineform-player_id').show();
+        return {
+            show: [
+                '.field-addlineform-odd_home',
+                '.field-addlineform-odd_away'
+            ],
+            hide: [
+            ]
+        };
     }
 
     function setsSpreads() {
-        $('.field-addlineform-player_id').show();
-        $('.field-addlineform-value').show();
+        return {
+            show: [
+                '.field-addlineform-value',
+                '.field-addlineform-odd_home',
+                '.field-addlineform-odd_away'
+            ],
+            hide: [
+            ]
+        };
     }
 
     function setsTotals() {
-        $('.field-addlineform-add_type').show();
-        $('.field-addlineform-value').show();
+        return {
+            show: [
+                '.field-addlineform-value',
+                '.field-addlineform-odd_over',
+                '.field-addlineform-odd_under'
+            ],
+            hide: [
+            ]
+        };
+    }
+
+    function hideFields() {
+        return {
+            show: [
+
+            ],
+            hide: [
+                '.field-addlineform-add_type',
+                '.field-addlineform-player_id',
+                '.field-addlineform-value',
+                '.field-addlineform-odd_home',
+                '.field-addlineform-odd_away',
+                '.field-addlineform-odd_over',
+                '.field-addlineform-odd_under'
+            ]
+        };
+    }
+
+    function emptyValues() {
+        var selectors = [
+            '#addlineform-add_type',
+            '#addlineform-player_id',
+            '#addlineform-value',
+            '#addlineform-odd_home',
+            '#addlineform-odd_away',
+            '#addlineform-odd_over',
+            '#addlineform-odd_under'
+        ];
+
+        selectors.forEach(function (item) {
+            $(item).val('');
+        })
+    }
+
+    function showAndHideFields(fields) {
+        // show fields
+        fields.show.forEach( function (field) {
+            $(field).show();
+        });
+
+        // hide fields
+        fields.hide.forEach( function (field) {
+            $(field).hide();
+        });
     }
 
 });

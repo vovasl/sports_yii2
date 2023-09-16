@@ -134,23 +134,18 @@ class EventController extends Controller
     {
         $model = new AddLineForm();
 
-        if ($model->load(Yii::$app->request->post())) {
-            if($model->validate()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            /** add odds */
+            if(!Odd::add($model)) {
+                Yii::$app->session->setFlash('error', 'Error');
+                return $this->render('add-line', ['model' => $model]);
+            }
 
-                if(empty($model->player_id)) $model->player_id = null;
-                if($model->value == '') $model->value = null;
-                if(empty($model->add_type)) $model->add_type = null;
+            /** get event */
+            $event = $this->findModel($model->event_id);
 
-                /** add odds */
-                if(!Odd::create($model->event_id, $model->type, $model->odd, $model->player_id, $model->value, $model->add_type)) {
-                    Yii::$app->session->setFlash('error', 'Error');
-                    return $this->render('add-line', ['model' => $model]);
-                }
-
-                /** get event */
-                $event = $this->findModel($model->event_id);
-
-                /** remove event result */
+            /** remove event result */
+            if(!is_null($event->sofa_id)) {
                 ResultSet::deleteAll(['event' => $event->id]);
                 $event->home_result = null;
                 $event->away_result = null;
@@ -158,18 +153,19 @@ class EventController extends Controller
                 $event->total = null;
                 $event->total_games = null;
                 $event->sofa_id = null;
-
-                /** close event */
-                if($model->close == 1) {
-                    $event->pin_id = $model::PIN_ID;
-                    $model = new AddLineForm();
-                }
-                $event->save();
-
-                Yii::$app->session->setFlash('success', 'Line has been added');
-
-                $model->odd = null;
             }
+
+            /** close event */
+            if($model->close == 1) {
+                $event->pin_id = $model::PIN_ID;
+                $model = new AddLineForm();
+            }
+            $event->save();
+
+            /** prepare new form */
+            $model->prepare();
+
+            Yii::$app->session->setFlash('success', 'Line has been added');
         }
         return $this->render('add-line', ['model' => $model]);
     }
