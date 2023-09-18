@@ -9,7 +9,7 @@ class TennisEvent
 {
 
     /** allowed tournament categories */
-    CONST TOUR = [3, 76, 72];
+    CONST TOUR = [3, 72];
 
     /** allowed status codes */
     CONST STATUS_CODES = [100, 98, 92, 91];
