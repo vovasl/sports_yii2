@@ -74,6 +74,8 @@ class League
             ];
         }
 
+        //die;
+
         return $data;
     }
 
@@ -93,7 +95,8 @@ class League
         }
 
         /** get tournament name and round */
-        $data = array_map('trim', explode('-', $name));
+        //$data = array_map('trim', explode('-', $name));
+        $data = array_map('trim', explode(' - ', $name));
 
         /** exception for Davis Cup - without tournament name */
         if(empty($data[0]) && !empty($tour)) $data[0] = $tour;
