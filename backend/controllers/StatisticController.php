@@ -51,12 +51,13 @@ class StatisticController extends Controller
             'events' => function ($q) use($qualifier) {
                 if($qualifier == 0) $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
                 else if($qualifier == 1) $q->andOnCondition(['=', 'tn_event.round', Round::QUALIFIER]);
+                $q->andOnCondition(['five_sets' => 0]);
                 return $q;
             },
             'events.odds' => function($q) {
                 $q->andOnCondition(['type' => 2]);
                 $q->andOnCondition(['IS NOT', 'profit', NULL]);
-                //$q->andOnCondition(['value' => 21.5]);
+                //$q->andOnCondition(['<=', 'value', 21]);
                 return $q;
             }
         ]);
