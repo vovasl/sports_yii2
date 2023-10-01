@@ -56,6 +56,7 @@ class StatisticController extends Controller
             'events.odds' => function($q) {
                 $q->andOnCondition(['type' => 2]);
                 $q->andOnCondition(['IS NOT', 'profit', NULL]);
+                //$q->andOnCondition(['value' => 21.5]);
                 return $q;
             }
         ]);
