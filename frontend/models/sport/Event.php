@@ -266,6 +266,19 @@ class Event extends \yii\db\ActiveRecord
     /**
      * @return ActiveQuery
      */
+    public function getTotalss(): ActiveQuery
+    {
+        return $this
+            ->getOdds()
+            ->where([
+                'sp_odd_type.name' => OddType::TOTALS,
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getTotalsOver(): ActiveQuery
     {
         return $this

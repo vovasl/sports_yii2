@@ -38,6 +38,9 @@ class League
 
         $data = json_decode($this->client->getLeagues($this->settings['base']),1);
 
+        var_dump($data);
+        die;
+
         switch ($this->settings['base']['sportid']) {
             case Pinnacle::TENNIS:
                 return $this->getTennis($data);
@@ -53,6 +56,7 @@ class League
     private function getTennis($leagues): array
     {
         $data = [];
+        if(empty($leagues['leagues'])) return $data;
         foreach ($leagues['leagues'] as $league) {
             if($league['eventCount'] == 0) continue;
 

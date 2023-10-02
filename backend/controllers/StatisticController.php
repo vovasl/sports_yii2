@@ -7,6 +7,7 @@ use common\helpers\OddHelper;
 use common\helpers\TournamentHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use frontend\models\sport\OddType;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
@@ -52,6 +53,7 @@ class StatisticController extends Controller
                 if($qualifier == 0) $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
                 else if($qualifier == 1) $q->andOnCondition(['=', 'tn_event.round', Round::QUALIFIER]);
                 $q->andOnCondition(['five_sets' => 0]);
+                //$q->andOnCondition(['=', 'tn_event.round', 4]);
                 return $q;
             },
             'events.odds' => function($q) {
@@ -71,6 +73,42 @@ class StatisticController extends Controller
             'surface' => $surface,
             'qualifier' => $qualifier,
             'detail' => $detail
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionTestTotal()
+    {
+        $rounds = [4];
+        $values = [20, 20.5];
+
+        $events = Event::find();
+        $events->withData();
+        $events->joinWith(['odds' => function($q) {
+            $q->andOnCondition([
+                'type' => 2,
+                'add_type' => 'over',
+            ]);
+            $q->andOnCondition(['<', 'odd', 175]);
+            //$q->andOnCondition(['IS NOT', 'profit', NULL]);
+            return $q;
+        }]);
+        $events->where([
+            'tour' => 2,
+            'surface' => 1,
+        ]);
+        $events->andWhere(['!=', 'round', 5]);
+        $events->andWhere(['IN', 'value', $values]);
+        $events->andWhere(['IN', 'round', $rounds]);
+        //$events->andWhere(['LIKE', 'start_at', '2023-09-']);
+        $events->orderBy([
+            'id' => SORT_DESC
+        ]);
+
+        return $this->render('test-total', [
+            'models' => $events,
         ]);
     }
 }
