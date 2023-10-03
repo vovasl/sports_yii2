@@ -4,6 +4,7 @@ namespace console\controllers;
 
 
 use backend\components\pinnacle\Pinnacle;
+use backend\components\ps3838\PS3838;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -13,10 +14,10 @@ class EventController extends Controller
     public function actionAdd()
     {
         $settings = [
-            'sportid' => Pinnacle::TENNIS,
-            'tour' => Pinnacle::ATP
+            'sportid' => PS3838::TENNIS,
+            'tour' => PS3838::ATP
         ];
-        $events = Yii::$app->pinnacle->run($settings);
+        $events = \Yii::$app->ps3838->run($settings);
 
         $i = 0;
         $output = "";

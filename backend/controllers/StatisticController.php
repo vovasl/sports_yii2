@@ -89,7 +89,7 @@ class StatisticController extends Controller
                 'add_type' => 'over',
             ]);
             $q->andOnCondition(['<', 'odd', 175]);
-            //$q->andOnCondition(['IS NOT', 'profit', NULL]);
+            //$q->andOnCondition(['IS', 'profit', NULL]);
             return $q;
         }]);
         $events->where([
@@ -99,7 +99,7 @@ class StatisticController extends Controller
         $events->andWhere(['!=', 'round', 5]);
         $events->andWhere(['IN', 'value', $values]);
         $events->andWhere(['IN', 'round', $rounds]);
-        //$events->andWhere(['LIKE', 'start_at', '2023-09-']);
+        $events->andWhere(['LIKE', 'start_at', '2023-10-']);
         $events->orderBy([
             'id' => SORT_DESC
         ]);
