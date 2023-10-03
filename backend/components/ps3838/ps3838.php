@@ -1,15 +1,14 @@
 <?php
 
-namespace backend\components\pinnacle;
+namespace backend\components\ps3838;
 
 
-use yii\base\Component;
+use backend\components\ps3838\models\Fixture;
 use backend\models\Setting;
-use backend\components\pinnacle\models\League;
-use backend\components\pinnacle\models\Fixture;
-use backend\components\pinnacle\helpers\BaseHelper;
+use backend\components\ps3838\models\League;
+use yii\base\Component;
 
-class Pinnacle extends Component
+class PS3838 extends Component
 {
 
     const TENNIS = 33;
@@ -46,7 +45,7 @@ class Pinnacle extends Component
     {
         /** get league config */
         $config = Setting::getSettings();
-        if(isset($settings['tour']) && is_array($settings['tour'])) $settings['tour'] = implode('|', Pinnacle::ATP);
+        if(isset($settings['tour']) && is_array($settings['tour'])) $settings['tour'] = implode('|', self::ATP);
         $config['base'] = $settings;
 
         /** get leagues */
@@ -55,7 +54,7 @@ class Pinnacle extends Component
     }
 
     /**
-     * Get fixtures with odds
+     * Get events with odds
      * @param array $settings
      * @return array
      */

@@ -4,10 +4,7 @@
 namespace backend\controllers;
 
 use common\helpers\OddHelper;
-use common\helpers\TournamentHelper;
 use frontend\models\sport\Event;
-use frontend\models\sport\Odd;
-use frontend\models\sport\OddType;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
@@ -79,7 +76,7 @@ class StatisticController extends Controller
     /**
      * @return string
      */
-    public function actionTestTotal()
+    public function actionTestTotal(): string
     {
         $rounds = [4];
         $values = [20, 20.5];

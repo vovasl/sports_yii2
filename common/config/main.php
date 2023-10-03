@@ -1,6 +1,7 @@
 <?php
 
 use backend\components\pinnacle\Pinnacle;
+use backend\components\ps3838\PS3838;
 use backend\components\sofascore\Sofascore;
 use backend\services\EventResultSave;
 use backend\services\EventSave;
@@ -23,6 +24,7 @@ return [
         ],
         'pinnacle' => Pinnacle::class,
         'sofascore' => Sofascore::class,
+        'ps3838' => PS3838::class,
         'event_save' => EventSave::class,
         'result_save' => EventResultSave::class
     ],

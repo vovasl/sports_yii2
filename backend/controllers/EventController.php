@@ -5,6 +5,7 @@ namespace backend\controllers;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\pinnacle\helpers\OddHelper;
+use backend\components\ps3838\PS3838;
 use backend\models\AddLineForm;
 use backend\models\AddLineLogForm;
 use backend\models\AddResultForm;
@@ -117,10 +118,10 @@ class EventController extends Controller
     public function actionAddOdds(): string
     {
         $settings = [
-            'sportid' => Pinnacle::TENNIS,
-            'tour' => Pinnacle::ATP
+            'sportid' => PS3838::TENNIS,
+            'tour' => PS3838::ATP
         ];
-        $events = Yii::$app->pinnacle->run($settings);
+        $events = \Yii::$app->ps3838->run($settings);
         return $this->render('add', [
             'output' => Yii::$app->event_save->events($events)
         ]);

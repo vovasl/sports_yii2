@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\components\pinnacle\models;
+namespace backend\models;
 
 
 use Yii;
