@@ -126,7 +126,7 @@ class StatisticController extends Controller
                 'add_type' => 'over',
             ]);
             $q->andOnCondition(['<', 'odd', 175]);
-            $q->andOnCondition(['IS NOT', 'profit', NULL]);
+            //$q->andOnCondition(['IS NOT', 'profit', NULL]);
             return $q;
         }]);
         $events->where([

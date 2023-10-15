@@ -23,7 +23,7 @@ class OddHelper
             if(!is_null($type) && $odd->add_type != $type) continue;
 
             /** filter by value */
-            if(!is_null($filterValue) && $odd->value != $filterValue) continue;
+            if(!empty($filterValue) && $odd->value != $filterValue) continue;
 
             $key = self::_getStatsKey($odd, self::totalSettings());
             $stats[$key]['count']++;
