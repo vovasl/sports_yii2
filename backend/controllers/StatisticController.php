@@ -3,6 +3,7 @@
 
 namespace backend\controllers;
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
@@ -38,10 +39,46 @@ class StatisticController extends Controller
      * @param null $tour
      * @param null $surface
      * @param int $qualifier
+     * @return string
+     */
+    public function actionTotal($tour = null, $surface = null, int $qualifier = 0): string
+    {
+        $events = Event::find();
+        $events->withData();
+        $events->joinWith(['odds' => function($q) {
+            $q->andOnCondition(['type' => 2]);
+            $q->andOnCondition(['IS NOT', 'profit', NULL]);
+            return $q;
+        }]);
+
+        $events->andWhere(['five_sets' => 0]);
+
+        if(!is_null($tour)) $events->andWhere(['tn_tour.id' => $tour]);
+        if(!is_null($surface)) $events->andWhere(['tn_tournament.surface' => $surface]);
+
+        if($qualifier == 0) $events->andWhere(['!=', 'tn_event.round', Round::QUALIFIER]);
+        else if($qualifier == 1) $events->andWhere(['=', 'tn_event.round', Round::QUALIFIER]);
+
+        $stats = OddHelper::eventsStats($events->all());
+
+        //BaseHelper::outputArray($stats);die;
+
+        return $this->render('total', [
+            'stats' => $stats,
+            'tour' => $tour,
+            'surface' => $surface,
+            'qualifier' => $qualifier,
+        ]);
+    }
+
+    /**
+     * @param null $tour
+     * @param null $surface
+     * @param int $qualifier
      * @param int $detail
      * @return string
      */
-    public function actionTotal($tour = null, $surface = null, int $qualifier = 0, int $detail = 0): string
+    public function actionTotalTournaments($tour = null, $surface = null, int $qualifier = 0, int $detail = 1): string
     {
 
         $tournaments = Tournament::find();
@@ -50,7 +87,8 @@ class StatisticController extends Controller
                 if($qualifier == 0) $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
                 else if($qualifier == 1) $q->andOnCondition(['=', 'tn_event.round', Round::QUALIFIER]);
                 $q->andOnCondition(['five_sets' => 0]);
-                //$q->andOnCondition(['=', 'tn_event.round', 4]);
+                //$q->andOnCondition(['=', 'tn_event.round', 7]);
+                //$q->andOnCondition(['tn_event.tournament' => 148]);
                 return $q;
             },
             'events.odds' => function($q) {
@@ -64,8 +102,11 @@ class StatisticController extends Controller
         if(!is_null($surface)) $tournaments->andWhere(['surface' => $surface]);
         $tournaments->orderBy(['name' => SORT_ASC]);
 
-        return $this->render('total', [
-            'stats' => OddHelper::tournamentsStats($tournaments->all()),
+        $stats = OddHelper::tournamentsStats($tournaments->all());
+        //BaseHelper::outputArray($stats);die;
+
+        return $this->render('total-tournaments', [
+            'stats' => $stats,
             'tour' => $tour,
             'surface' => $surface,
             'qualifier' => $qualifier,

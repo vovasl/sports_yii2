@@ -50,6 +50,10 @@ return [
                 '/statistic/total/<tour:\d+>/<surface:\d+>' => '/statistic/total',
                 '/statistic/total/<tour:\d+>' => '/statistic/total',
 
+                '/statistic/total-tournaments/<tour:\d+>/<surface:\d+>/<qualifier:.+>' => '/statistic/total-tournaments',
+                '/statistic/total-tournaments/<tour:\d+>/<surface:\d+>' => '/statistic/total-tournaments',
+                '/statistic/total-tournaments/<tour:\d+>' => '/statistic/total-tournaments',
+
                 '/tournament/<id:\d+>' => '/tournament/view',
                 '/tournament/<id:\d+>/event' => '/tournament/event',
                 '/event/<id:\d+>' => '/event/view',
