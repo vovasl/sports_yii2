@@ -1,7 +1,7 @@
 <?php
 
-
 namespace common\helpers;
+
 
 use frontend\models\sport\Odd;
 
@@ -119,6 +119,7 @@ class OddHelper
                 ];
                 $all = self::generalStats($tournamentStats, $all);
             }
+            ksort($all);
             $stats[$type]['all'] = [
                 'name' => 'ALL',
                 'stats' => $all

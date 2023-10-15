@@ -1,9 +1,10 @@
 <?php
 
-
 namespace backend\controllers;
 
+
 use backend\components\pinnacle\helpers\BaseHelper;
+use backend\models\statistic\FilterModel;
 use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
@@ -36,13 +37,12 @@ class StatisticController extends Controller
     }
 
     /**
-     * @param null $tour
-     * @param null $surface
-     * @param int $qualifier
      * @return string
      */
-    public function actionTotal($tour = null, $surface = null, int $qualifier = 0): string
+    public function actionTotal(): string
     {
+        $filter = new FilterModel(\Yii::$app->request->post());
+
         $events = Event::find();
         $events->withData();
         $events->joinWith(['odds' => function($q) {
@@ -51,23 +51,14 @@ class StatisticController extends Controller
             return $q;
         }]);
 
-        $events->andWhere(['five_sets' => 0]);
-
-        if(!is_null($tour)) $events->andWhere(['tn_tour.id' => $tour]);
-        if(!is_null($surface)) $events->andWhere(['tn_tournament.surface' => $surface]);
-
-        if($qualifier == 0) $events->andWhere(['!=', 'tn_event.round', Round::QUALIFIER]);
-        else if($qualifier == 1) $events->andWhere(['=', 'tn_event.round', Round::QUALIFIER]);
-
+        $events = $filter->searchEvents($events);
         $stats = OddHelper::eventsStats($events->all());
 
         //BaseHelper::outputArray($stats);die;
 
         return $this->render('total', [
             'stats' => $stats,
-            'tour' => $tour,
-            'surface' => $surface,
-            'qualifier' => $qualifier,
+            'filter' => $filter,
         ]);
     }
 
@@ -78,16 +69,20 @@ class StatisticController extends Controller
      * @param int $detail
      * @return string
      */
-    public function actionTotalTournaments($tour = null, $surface = null, int $qualifier = 0, int $detail = 1): string
+    public function actionTotalTournaments($tour = null, $surface = null, int $qualifier = 0, int $detail = 0): string
     {
 
         $tournaments = Tournament::find();
         $tournaments->joinWith([
             'events' => function ($q) use($qualifier) {
-                if($qualifier == 0) $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
-                else if($qualifier == 1) $q->andOnCondition(['=', 'tn_event.round', Round::QUALIFIER]);
+                if($qualifier) {
+                    if ($qualifier == Round::QUALIFIER_FILTER) {
+                        $q->andOnCondition(['!=', 'tn_event.round', Round::QUALIFIER]);
+                    } else {
+                        $q->andOnCondition(['tn_event.round' => $qualifier]);
+                    }
+                }
                 $q->andOnCondition(['five_sets' => 0]);
-                //$q->andOnCondition(['=', 'tn_event.round', 7]);
                 //$q->andOnCondition(['tn_event.tournament' => 148]);
                 return $q;
             },

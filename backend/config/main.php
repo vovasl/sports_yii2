@@ -46,10 +46,6 @@ return [
                 '/tournament-statistic/total/<tour:\d+>/<surface:\d+>' => '/tournament-statistic/total',
                 '/tournament-statistic/total/<tour:\d+>' => '/tournament-statistic/total',
 
-                '/statistic/total/<tour:\d+>/<surface:\d+>/<qualifier:.+>' => '/statistic/total',
-                '/statistic/total/<tour:\d+>/<surface:\d+>' => '/statistic/total',
-                '/statistic/total/<tour:\d+>' => '/statistic/total',
-
                 '/statistic/total-tournaments/<tour:\d+>/<surface:\d+>/<qualifier:.+>' => '/statistic/total-tournaments',
                 '/statistic/total-tournaments/<tour:\d+>/<surface:\d+>' => '/statistic/total-tournaments',
                 '/statistic/total-tournaments/<tour:\d+>' => '/statistic/total-tournaments',

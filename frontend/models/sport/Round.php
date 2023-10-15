@@ -2,7 +2,7 @@
 
 namespace frontend\models\sport;
 
-use Yii;
+
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -80,8 +80,28 @@ class Round extends ActiveRecord
     public static function dropdownFilter(): array
     {
         $rounds = self::dropdown();
-        $rounds[self::QUALIFIER_FILTER] = 'No Qualifiers';
+        $rounds[self::QUALIFIER_FILTER] = 'Main';
         return $rounds;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function dropdownFilterWithAll(): array
+    {
+        $rounds = self::dropdownFilter();
+        $rounds[0] = 'ALL';
+        return $rounds;
+    }
+
+    /**
+     * @param $val
+     * @return string
+     */
+    public static function getDropdownValue($val): string
+    {
+        $rounds = self::dropdownFilterWithAll();
+        return $rounds[$val];
     }
 
     /**

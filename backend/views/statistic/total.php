@@ -1,8 +1,7 @@
 <?php
 
 
-use common\helpers\EventHelper;
-use common\helpers\TournamentHelper;
+use backend\models\statistic\FilterModel;
 use frontend\models\sport\Odd;
 use yii\helpers\Html;
 use yii\web\View;
@@ -10,29 +9,27 @@ use yii\web\View;
 /**
  * @var View $this
  * @var array $stats
- * @var string $tour
- * @var string $surface
- * @var int $qualifier
- * @var int $detail
+ * @var FilterModel $filter
  */
 
 ?>
 
-<h1>Totals</h1>
-<h2><?= TournamentHelper::getTourSurfaceTitle($tour, $surface) ?></h2>
-<h3 class="mb-5"><?= EventHelper::getQualifierText($qualifier) ?></h3>
+<h1 class="mb-5">Totals</h1>
+
+<?= $this->render('total/_filter', ['filter' => $filter]); ?>
 
 <?= Html::a('Tournaments',
-    ['/statistic/total-tournaments', 'tour' => $tour, 'surface' => $surface, 'qualifier' => $qualifier],
-    ['target'=>'_blank', 'class' => 'btn btn-primary mb-3']
+    ['/statistic/total-tournaments', 'tour' => $filter->tour, 'surface' => $filter->surface, 'qualifier' => $filter->round],
+    ['target'=>'_blank', 'class' => 'btn btn-primary mb-4']
 )?>
+
 
 <?php foreach (Odd::ADD_TYPE as $type) : ?>
 
     <?= $this->render('total/_outer', [
         'type' => $type,
         'stats' => $stats,
-        'detail' => $detail,
+        'detail' => 0,
     ]) ?>
 
 <?php endforeach; ?>
