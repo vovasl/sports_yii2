@@ -44,6 +44,7 @@ class StatisticController extends Controller
         $filter = new FilterModel(\Yii::$app->request->post());
 
         $events = Event::find();
+        $events->select(['tn_event.*']);
         $events->withData();
         $events->joinWith(['odds' => function($q) {
             $q->andOnCondition(['type' => 2]);
@@ -52,7 +53,7 @@ class StatisticController extends Controller
         }]);
 
         $events = $filter->searchEvents($events);
-        $stats = OddHelper::eventsStats($events->all());
+        $stats = OddHelper::eventsStats($events->all(), $filter->value);
 
         //BaseHelper::outputArray($stats);die;
 
@@ -115,7 +116,7 @@ class StatisticController extends Controller
     public function actionTestTotal(): string
     {
         $rounds = [4];
-        $values = [20, 20.5];
+        $values = [20.5];
 
         $events = Event::find();
         $events->withData();
@@ -125,17 +126,16 @@ class StatisticController extends Controller
                 'add_type' => 'over',
             ]);
             $q->andOnCondition(['<', 'odd', 175]);
-            //$q->andOnCondition(['IS', 'profit', NULL]);
+            $q->andOnCondition(['IS NOT', 'profit', NULL]);
             return $q;
         }]);
         $events->where([
             'tour' => 2,
             'surface' => 1,
         ]);
-        $events->andWhere(['!=', 'round', 5]);
         $events->andWhere(['IN', 'value', $values]);
         $events->andWhere(['IN', 'round', $rounds]);
-        $events->andWhere(['LIKE', 'start_at', '2023-10-']);
+        //$events->andWhere(['LIKE', 'start_at', '2023-10-']);
         $events->orderBy([
             'id' => SORT_DESC
         ]);

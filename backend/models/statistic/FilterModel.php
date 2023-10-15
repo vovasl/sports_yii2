@@ -3,6 +3,7 @@
 namespace backend\models\statistic;
 
 
+use frontend\models\sport\Odd;
 use frontend\models\sport\query\EventQuery;
 use frontend\models\sport\Round;
 use yii\base\Model;
@@ -14,6 +15,7 @@ class FilterModel extends Model
     public $surface;
     public $round = 0;
     public $five_sets = 0;
+    public $value;
 
     /**
      * FilterModel constructor.
@@ -28,6 +30,7 @@ class FilterModel extends Model
             $this->surface = !empty($filter['surface']) ? $filter['surface'] : null;
             $this->round = $filter['round'];
             $this->five_sets = $filter['five_sets'];
+            $this->value = $filter['value'];
         }
         parent::__construct($config);
     }
@@ -39,6 +42,7 @@ class FilterModel extends Model
     {
         return [
             [['tour', 'surface', 'round', 'five_sets'], 'integer'],
+            [['value'], 'string'],
         ];
     }
 
@@ -52,6 +56,7 @@ class FilterModel extends Model
             'surface' => 'Surface',
             'round' => 'Round',
             'five_sets' => 'Five Sets',
+            'value' => 'Value',
         ];
     }
 
@@ -62,6 +67,8 @@ class FilterModel extends Model
      */
     public function searchEvents(EventQuery $q): EventQuery
     {
+
+        $q->andWhere(['IS NOT', 'sp_odd.profit', null]);
 
         /** tour filter */
         if(!empty($this->tour)) $q->andWhere(['tn_tour.id' => $this->tour]);
@@ -81,6 +88,9 @@ class FilterModel extends Model
 
         /** five sets filter */
         $q->andWhere(['five_sets' => $this->five_sets]);
+
+        /** value filter */
+        if(!empty($this->value)) $q->andWhere(['sp_odd.value' => $this->value]);
 
         return $q;
     }

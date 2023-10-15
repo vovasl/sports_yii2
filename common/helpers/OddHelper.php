@@ -11,15 +11,19 @@ class OddHelper
     /**
      * @param array $odds
      * @param string|null $type
+     * @param $filterValue
      * @return array
      */
-    public static function getStats(array $odds, string $type = null): array
+    public static function getStats(array $odds, string $type = null, $filterValue = null): array
     {
         $stats = [];
         foreach ($odds as $odd) {
 
             /** @var Odd $odd */
             if(!is_null($type) && $odd->add_type != $type) continue;
+
+            /** filter by value */
+            if(!is_null($filterValue) && $odd->value != $filterValue) continue;
 
             $key = self::_getStatsKey($odd, self::totalSettings());
             $stats[$key]['count']++;
@@ -131,15 +135,16 @@ class OddHelper
 
     /**
      * @param array $events
+     * @param null $filterValue
      * @return array
      */
-    public static function eventsStats(array $events): array
+    public static function eventsStats(array $events, $filterValue = null): array
     {
         $stats = [];
         foreach (Odd::ADD_TYPE as $type) {
             $all = [];
             foreach ($events as $event) {
-                $eventStats = self::getStats(EventHelper::getOdds($event), $type);
+                $eventStats = self::getStats(EventHelper::getOdds($event), $type, $filterValue);
                 if(empty($eventStats)) continue;
 
                 $stats[$type][$event->id] = [

@@ -39,8 +39,14 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="col-auto">
+        <?= $form->field($filter, 'value')
+            ->textInput(['style' => 'width: 60px;'])
+        ; ?>
+    </div>
+
+    <div class="col-auto">
         <?= $form->field($filter, 'five_sets')
-            ->checkbox(['class' => 'ml-3 mt-5'])
+            ->checkbox(['class' => 'ml-2 mt-5'])
         ; ?>
     </div>
 
