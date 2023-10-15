@@ -142,4 +142,18 @@ class EventHelper
         ];
     }
 
+    /**
+     * @param Event $event
+     * @return array
+     */
+    public static function getOdds(Event $event): array
+    {
+        $odds = [];
+        foreach ($event->odds as $odd) {
+            $odds[] = $odd;
+        }
+
+        return $odds;
+    }
+
 }

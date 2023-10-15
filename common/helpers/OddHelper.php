@@ -129,6 +129,34 @@ class OddHelper
     }
 
     /**
+     * @param array $events
+     * @return array
+     */
+    public static function eventsStats(array $events): array
+    {
+        $stats = [];
+        foreach (Odd::ADD_TYPE as $type) {
+            $all = [];
+            foreach ($events as $event) {
+                $eventStats = self::getStats(EventHelper::getOdds($event), $type);
+                if(empty($eventStats)) continue;
+
+                $stats[$type][$event->id] = [
+                    'stats' => $eventStats
+                ];
+                $all = self::generalStats($eventStats, $all);
+            }
+            ksort($all);
+            $stats[$type]['all'] = [
+                'name' => 'ALL',
+                'stats' => $all
+            ];
+        }
+
+        return $stats;
+    }
+
+    /**
      * @param array $localStats
      * @param $stats
      * @return array

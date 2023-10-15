@@ -187,9 +187,7 @@ class TournamentHelper
     {
         $odds = [];
         foreach ($tournament->events as $event) {
-            foreach ($event->odds as $odd) {
-                $odds[] = $odd;
-            }
+            $odds = array_merge($odds, EventHelper::getOdds($event));
         }
 
         return $odds;
