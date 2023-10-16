@@ -116,23 +116,51 @@ class StatisticController extends Controller
      */
     public function actionTestTotal(): string
     {
+        /** Challenger Clay R1 */
+        $tour = 2;
+        $surface = 1;
         $rounds = [4];
-        $values = [20.5];
+        $values = [21];
+        $odds = [
+            'min' => 175,
+            'max' => 185
+        ];
+        $moneyline = [
+            'more' => 1,
+            'limit' => 140
+        ];
+
+        /** ATP Hard R1-R16 */
+
+        $tour = 1;
+        $surface = 2;
+        $rounds = [1, 2, 4, 6];
+        $values = [21.5];
+        $odds = [
+            'min' => 175,
+            'max' => 185
+        ];
+        $moneyline = [
+            'more' => 1,
+            'limit' => 140
+        ];
+
 
         $events = Event::find();
         $events->withData();
-        $events->joinWith(['odds' => function($q) {
+        $events->joinWith(['odds' => function($q) use($odds) {
             $q->andOnCondition([
                 'type' => 2,
                 'add_type' => 'over',
             ]);
-            $q->andOnCondition(['<', 'odd', 175]);
+            $q->andOnCondition(['>=', 'odd', $odds['min']]);
+            $q->andOnCondition(['<', 'odd', $odds['max']]);
             //$q->andOnCondition(['IS NOT', 'profit', NULL]);
             return $q;
         }]);
         $events->where([
-            'tour' => 2,
-            'surface' => 1,
+            'tour' => $tour,
+            'surface' => $surface,
         ]);
         $events->andWhere(['IN', 'value', $values]);
         $events->andWhere(['IN', 'round', $rounds]);
@@ -143,6 +171,7 @@ class StatisticController extends Controller
 
         return $this->render('test-total', [
             'models' => $events,
+            'moneyline' => $moneyline,
         ]);
     }
 }

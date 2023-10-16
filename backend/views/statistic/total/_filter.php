@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin([]); ?>
 
-<div class="form-row align-items-center mb-4">
+<div class="form-row align-items-top mb-4">
 
     <div class="col-auto">
         <?= $form->field($filter, 'tour')
@@ -34,13 +34,13 @@ use yii\widgets\ActiveForm;
 
     <div class="col-auto">
         <?= $form->field($filter, 'round')
-            ->dropDownList(Round::dropdownFilterWithAll())
+            ->dropDownList(Round::dropdownFilterWithAll(),['multiple' => 'multiple'])
         ; ?>
     </div>
 
     <div class="col-auto">
         <?= $form->field($filter, 'value')
-            ->textInput(['style' => 'width: 60px;'])
+            ->textInput(['style' => 'width: 70px;'])
         ; ?>
     </div>
 
@@ -51,7 +51,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="col-auto">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary ml-3 mt-3']) ?>
+        <?= Html::submitButton('Search', ['class' => 'btn btn-primary ml-3 mt-4']) ?>
     </div>
 
 </div>

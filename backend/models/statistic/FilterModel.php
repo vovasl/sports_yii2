@@ -3,7 +3,6 @@
 namespace backend\models\statistic;
 
 
-use frontend\models\sport\Odd;
 use frontend\models\sport\query\EventQuery;
 use frontend\models\sport\Round;
 use yii\base\Model;
@@ -13,7 +12,7 @@ class FilterModel extends Model
 
     public $tour;
     public $surface;
-    public $round = 0;
+    public $round = [0];
     public $five_sets = 0;
     public $value;
 
@@ -77,12 +76,12 @@ class FilterModel extends Model
         if(!empty($this->surface)) $q->andWhere(['tn_tournament.surface' => $this->surface]);
 
         /** round filter */
-        if($this->round) {
-            if($this->round == Round::QUALIFIER_FILTER) {
-                $q->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
+        if(!in_array(0, $this->round)) {
+            if(in_array(Round::QUALIFIER_FILTER, $this->round)) {
+                $q->andFilterWhere(['NOT IN', 'round', Round::QUALIFIER]);
             }
             else {
-                $q->andFilterWhere([Round::tableName() . '.id' => $this->round]);
+                $q->andWhere(['IN', 'round', $this->round]);
             }
         }
 

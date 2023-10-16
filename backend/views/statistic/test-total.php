@@ -8,21 +8,19 @@ use yii\web\View;
 /**
  * @var View $this
  * @var Event[] $models
+ * @var array $moneyline
  */
-
-$limitOdd = 140;
-$more = 0;
 
 $profit = 0;
 $count = 0;
 $output = "";
 foreach ($models->all() as $model) {
 
-    if($more == 1) {
-        if($model->homeMoneyline[0]->odd <= $limitOdd || $model->awayMoneyline[0]->odd <= $limitOdd) continue;
+    if($moneyline['more'] == 1) {
+        if($model->homeMoneyline[0]->odd <= $moneyline['limit'] || $model->awayMoneyline[0]->odd <= $moneyline['limit']) continue;
     }
-    else if($more == -1){
-        if ($model->homeMoneyline[0]->odd > $limitOdd && $model->awayMoneyline[0]->odd > $limitOdd) continue;
+    else if($moneyline['more'] == -1){
+        if ($model->homeMoneyline[0]->odd > $moneyline['limit'] && $model->awayMoneyline[0]->odd > $moneyline['limit']) continue;
     }
 
     $link = Html::a('Link', ['/event/view', 'id' => $model->id], ['target'=>'_blank']);
