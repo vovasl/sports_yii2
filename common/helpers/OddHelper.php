@@ -3,6 +3,8 @@
 namespace common\helpers;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
+use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 
 class OddHelper
@@ -25,7 +27,7 @@ class OddHelper
             /** filter by value */
             if(!empty($filterValue) && $odd->value != $filterValue) continue;
 
-            $key = self::_getStatsKey($odd, self::totalSettings());
+            $key = self::_getStatsKey($odd->odd, self::totalSettings());
             $stats[$key]['count']++;
             $stats[$key]['profit'] += (int)$odd->profit;
             $stats[$key]['events'][] = $odd->event . '||' . $odd->id;
@@ -37,20 +39,39 @@ class OddHelper
     }
 
     /**
-     * @param Odd $odd
+     * @param int $id
+     * @param int $oddId
+     * @param int $odd
+     * @param int $profit
+     * @return array
+     */
+    public static function getStatsEvent(int $id, int $oddId, int $odd, int $profit): array
+    {
+        $stats = [];
+
+        $key = self::_getStatsKey($odd, self::totalSettings());
+        $stats[$key]['count']++;
+        $stats[$key]['profit'] += (int)$profit;
+        $stats[$key]['events'][] = $id . '||' . $oddId;
+
+        return $stats;
+    }
+
+    /**
+     * @param int $odd
      * @param array $settings
      * @return int
      */
-    public static function _getStatsKey(Odd $odd, array $settings): int
+    public static function _getStatsKey(int $odd, array $settings): int
     {
         $val = 999;
         foreach ($settings as $k => $setting) {
             $val = $setting;
 
             /** for first element **/
-            if($k == 0 && $odd->odd >= $setting) break;
+            if($k == 0 && $odd >= $setting) break;
 
-            if($odd->odd < $settings[$k - 1] && $odd->odd >= $setting) break;
+            if($odd < $settings[$k - 1] && $odd >= $setting) break;
         }
 
         return $val;
@@ -135,18 +156,18 @@ class OddHelper
 
     /**
      * @param array $events
-     * @param null $filterValue
      * @return array
      */
-    public static function eventsStats(array $events, $filterValue = null): array
+    public static function eventsStats(array $events): array
     {
         $stats = [];
         foreach (Odd::ADD_TYPE as $type) {
             $all = [];
             foreach ($events as $event) {
-                $eventStats = self::getStats(EventHelper::getOdds($event), $type, $filterValue);
-                if(empty($eventStats)) continue;
 
+                if($event->o_add_type != $type) continue;
+
+                $eventStats = self::getStatsEvent($event->id, $event->o_id, $event->o_odd, $event->o_profit);
                 $stats[$type][$event->id] = [
                     'stats' => $eventStats
                 ];

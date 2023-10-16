@@ -44,16 +44,17 @@ class StatisticController extends Controller
         $filter = new FilterModel(\Yii::$app->request->post());
 
         $events = Event::find();
-        $events->select(['tn_event.*']);
+        $events->select(['tn_event.*', 'sp_odd.id o_id', 'sp_odd.add_type o_add_type', 'sp_odd.profit o_profit', 'sp_odd.odd o_odd']);
         $events->withData();
         $events->joinWith(['odds' => function($q) {
             $q->andOnCondition(['type' => 2]);
             $q->andOnCondition(['IS NOT', 'profit', NULL]);
             return $q;
         }]);
+        $events->indexBy('o_id');
 
         $events = $filter->searchEvents($events);
-        $stats = OddHelper::eventsStats($events->all(), $filter->value);
+        $stats = OddHelper::eventsStats($events->all());
 
         //BaseHelper::outputArray($stats);die;
 

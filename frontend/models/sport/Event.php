@@ -27,6 +27,10 @@ use yii\db\Expression;
  * @property int $pin_id
  * @property int $sofa_id
  * @property string|null $created
+ * @property int $o_id
+ * @property string $o_add_type
+ * @property int $o_odd
+ * @property int $o_profit
  *
  * @property Player $homePlayer
  * @property Player $awayPlayer
@@ -54,6 +58,11 @@ use yii\db\Expression;
  */
 class Event extends \yii\db\ActiveRecord
 {
+
+    public $o_id;
+    public $o_add_type;
+    public $o_profit;
+    public $o_odd;
 
     /**
      * @return array[]
@@ -86,7 +95,8 @@ class Event extends \yii\db\ActiveRecord
     public function rules(): array
     {
         return [
-            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id'], 'integer'],
+            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit'], 'integer'],
+            [['o_add_type'], 'string'],
             [['start_at', 'created'], 'safe'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
