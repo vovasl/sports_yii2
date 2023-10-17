@@ -57,6 +57,7 @@ Icon::map($this);
         ['label' => 'Players', 'url' => ['/player']],
         ['label' => 'Stats', 'items' => [
             ['label' => 'Totals', 'url' => ['statistic/total']],
+            ['label' => 'Strategies', 'url' => ['statistic/strategies']],
         ]],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];

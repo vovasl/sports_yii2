@@ -116,13 +116,14 @@ class StatisticController extends Controller
     }
 
     /**
+     * @param int $futures
      * @return string
      */
-    public function actionTestTotal(): string
+    public function actionStrategies(int $futures = 0): string
     {
 
         $config = [
-            'futures' => 0
+            'futures' => $futures
         ];
 
         $strategies = [
@@ -133,7 +134,7 @@ class StatisticController extends Controller
         ];
 
         $data = EventFilterHelper::totalOverData($config, $strategies);
-        return $this->render('test-total', $data);
+        return $this->render('strategies', $data);
 
     }
 }
