@@ -4,7 +4,6 @@ namespace common\helpers;
 
 
 use backend\components\pinnacle\helpers\BaseHelper;
-use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 
 class OddHelper

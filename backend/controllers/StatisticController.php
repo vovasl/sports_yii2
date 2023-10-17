@@ -5,11 +5,15 @@ namespace backend\controllers;
 
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\models\statistic\FilterModel;
+use backend\strategies\Total;
+use common\helpers\EventFilterHelper;
+use common\helpers\EventOutputHelper;
 use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
+use yii\helpers\Html;
 use yii\web\Controller;
 
 class StatisticController extends Controller
@@ -116,62 +120,20 @@ class StatisticController extends Controller
      */
     public function actionTestTotal(): string
     {
-        /** Challenger Clay R1 */
-        $tour = 2;
-        $surface = 1;
-        $rounds = [4];
-        $values = [21];
-        $odds = [
-            'min' => 175,
-            'max' => 185
-        ];
-        $moneyline = [
-            'more' => 1,
-            'limit' => 140
+
+        $config = [
+            'futures' => 0
         ];
 
-        /** ATP Hard R1-R16 */
-
-        $tour = 1;
-        $surface = 2;
-        $rounds = [1, 2, 4, 6];
-        $values = [21.5];
-        $odds = [
-            'min' => 175,
-            'max' => 185
-        ];
-        $moneyline = [
-            'more' => 1,
-            'limit' => 140
+        $strategies = [
+            Total::ATPHardOver(),
+            Total::challengerClayOver(),
+            //Total::ATPHardOverTest(),
+            //Total::challengerClayOverTest()
         ];
 
+        $data = EventFilterHelper::totalOverData($config, $strategies);
+        return $this->render('test-total', $data);
 
-        $events = Event::find();
-        $events->withData();
-        $events->joinWith(['odds' => function($q) use($odds) {
-            $q->andOnCondition([
-                'type' => 2,
-                'add_type' => 'over',
-            ]);
-            $q->andOnCondition(['>=', 'odd', $odds['min']]);
-            $q->andOnCondition(['<', 'odd', $odds['max']]);
-            //$q->andOnCondition(['IS NOT', 'profit', NULL]);
-            return $q;
-        }]);
-        $events->where([
-            'tour' => $tour,
-            'surface' => $surface,
-        ]);
-        $events->andWhere(['IN', 'value', $values]);
-        $events->andWhere(['IN', 'round', $rounds]);
-        //$events->andWhere(['LIKE', 'start_at', '2023-10-']);
-        $events->orderBy([
-            'id' => SORT_DESC
-        ]);
-
-        return $this->render('test-total', [
-            'models' => $events,
-            'moneyline' => $moneyline,
-        ]);
     }
 }

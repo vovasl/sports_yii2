@@ -6,6 +6,7 @@ namespace frontend\models\sport;
 use frontend\models\sport\query\EventQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
@@ -56,7 +57,7 @@ use yii\db\Expression;
  * @property Odd[] $homeSetsSpreads
  * @property Odd[] $awaySetsSpreads
  */
-class Event extends \yii\db\ActiveRecord
+class Event extends ActiveRecord
 {
 
     public $o_id;
