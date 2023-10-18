@@ -17,7 +17,7 @@ class Total
             'tour' => 2,
             'surface' => 1,
             'rounds' => [4],
-            'values' => [21],
+            'value' => 21,
             'odds' => [
                 'min' => 175,
                 'max' => 185
@@ -39,7 +39,7 @@ class Total
             'tour' => 1,
             'surface' => 2,
             'rounds' => [1, 2, 4, 6],
-            'values' => [21.5],
+            'value' => 21.5,
             'odds' => [
                 'min' => 175,
                 'max' => 185
@@ -61,7 +61,7 @@ class Total
             'tour' => 1,
             'surface' => 2,
             'rounds' => [1, 2, 4, 6],
-            'values' => [22.5],
+            'value' => 22.5,
             'odds' => [
                 'min' => 195,
                 'max' => 210
@@ -83,7 +83,7 @@ class Total
             'tour' => 2,
             'surface' => 1,
             'rounds' => [4],
-            'values' => [21],
+            'value' => 21,
             'odds' => [
                 'min' => 175,
                 'max' => 185

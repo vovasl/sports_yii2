@@ -29,7 +29,7 @@ class EventFilterHelper
 
                 /** get profit */
                 foreach ($model->odds as $odd) {
-                    if(in_array($odd->value, $strategy['values'])) {
+                    if($odd->value == $strategy['value']) {
                         $eventValue = $odd->value;
                         $eventProfit = $odd->profit;
                         break;
@@ -37,10 +37,7 @@ class EventFilterHelper
                 }
 
                 /** players stats */
-                $players[$model->homePlayer->name]['count']++;
-                $players[$model->homePlayer->name]['profit'] += $eventProfit;
-                $players[$model->awayPlayer->name]['count']++;
-                $players[$model->awayPlayer->name]['profit'] += $eventProfit;
+                $players = self::getPlayersStats($model, $players, $eventProfit);
 
                 $profit += $eventProfit;
                 $count++;
@@ -90,7 +87,7 @@ class EventFilterHelper
             'tour' => $settings['tour'],
             'surface' => $settings['surface'],
         ]);
-        $events->andWhere(['IN', 'value', $settings['values']]);
+        $events->andWhere(['value' => $settings['value']]);
 
         /** round filter */
         $events->andWhere(['IN', 'round', $settings['rounds']]);
@@ -116,6 +113,25 @@ class EventFilterHelper
         }
 
         return $models;
+    }
+
+    /**
+     * @param Event $model
+     * @param array $players
+     * @param $profit
+     * @return array
+     */
+    public static function getPlayersStats(Event $model, array $players, $profit): array
+    {
+        $fields = ['homePlayer', 'awayPlayer'];
+
+        foreach ($fields as $field) {
+            $player = $model->{$field}->name;
+            $players[$player]['count']++;
+            $players[$player]['profit'] += $profit;
+        }
+
+        return $players;
     }
 
 }

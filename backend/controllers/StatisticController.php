@@ -128,7 +128,7 @@ class StatisticController extends Controller
 
         $strategies = [
             Total::ATPHardOver(),
-            Total::challengerClayOver(),
+            //Total::challengerClayOver(),
             //Total::ATPHardOverTest(),
             //Total::challengerClayOverTest()
         ];
