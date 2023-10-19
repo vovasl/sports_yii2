@@ -12,58 +12,6 @@ class EventFilterHelper
 {
 
     /**
-     * @param array $config
-     * @param array $strategies
-     * @return array
-     */
-    public static function totalOverData(array $config, array $strategies): array
-    {
-        $eventOutput = "";
-        $profit = $count = 0;
-        $players = [];
-        foreach ($strategies as $strategy) {
-
-            $eventOutput .= "<h2>{$strategy['title']}</h2>";
-            $models = self::getTotalOver($config, $strategy);
-            foreach ($models as $model) {
-
-                /** get profit */
-                foreach ($model->odds as $odd) {
-                    if($odd->value == $strategy['value']) {
-                        $eventValue = $odd->value;
-                        $eventProfit = $odd->profit;
-                        break;
-                    }
-                }
-
-                /** players stats */
-                $players = self::getPlayersStats($model, $players, $eventProfit);
-
-                $profit += $eventProfit;
-                $count++;
-
-                /** event output */
-                $eventOutput .= EventOutputHelper::total($model, $eventValue, $eventProfit);
-            }
-        }
-
-        $output = "Events: {$count}<br>";
-        $output .= "Profit: {$profit}<hr>";
-        $output .= "{$eventOutput}";
-
-        uasort($players, function ($a, $b) {
-            return ($a['profit'] > $b['profit'])  ? -1 : 1;
-        });
-
-        $data = [
-            'output' => $output,
-            'players' => $players
-        ];
-
-        return $data;
-    }
-
-    /**
      * @param array $settings
      * @param array $config
      * @return array
@@ -113,25 +61,6 @@ class EventFilterHelper
         }
 
         return $models;
-    }
-
-    /**
-     * @param Event $model
-     * @param array $players
-     * @param $profit
-     * @return array
-     */
-    public static function getPlayersStats(Event $model, array $players, $profit): array
-    {
-        $fields = ['homePlayer', 'awayPlayer'];
-
-        foreach ($fields as $field) {
-            $player = $model->{$field}->name;
-            $players[$player]['count']++;
-            $players[$player]['profit'] += $profit;
-        }
-
-        return $players;
     }
 
 }

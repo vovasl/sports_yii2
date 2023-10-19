@@ -4,7 +4,9 @@ namespace common\helpers;
 
 
 use backend\components\pinnacle\helpers\BaseHelper;
+use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use yii\base\BaseObject;
 
 class OddHelper
 {
@@ -195,6 +197,22 @@ class OddHelper
         }
 
         return $stats;
+    }
+
+    /**
+     * @param Event $model
+     * @param $val
+     * @return Odd
+     */
+    public static function getOddByVal(Event $model, $val): Odd
+    {
+        foreach ($model->odds as $odd) {
+            if($val == $odd->value) {
+                return $odd;
+            }
+        }
+
+        return new Odd();
     }
 
 }

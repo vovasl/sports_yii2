@@ -133,8 +133,10 @@ class StatisticController extends Controller
             //Total::challengerClayOverTest()
         ];
 
-        $data = EventFilterHelper::totalOverData($config, $strategies);
-        return $this->render('strategies', $data);
+        return $this->render('strategies', [
+            'config' => $config,
+            'strategies' => $strategies,
+        ]);
 
     }
 }
