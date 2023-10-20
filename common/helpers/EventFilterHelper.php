@@ -19,6 +19,14 @@ class EventFilterHelper
     public static function getTotalOver(array $config, array $settings): array
     {
         $events = Event::find();
+        $events->select([
+            'tn_event.*',
+            'sp_odd.id o_id',
+            'sp_odd.add_type o_add_type',
+            'sp_odd.value o_value',
+            'sp_odd.odd o_odd',
+            'sp_odd.profit o_profit',
+        ]);
         $events->withData();
         $events->joinWith(['odds' => function($q) use($settings, $config) {
             $q->andOnCondition([

@@ -32,6 +32,7 @@ use yii\db\Expression;
  * @property string $o_add_type
  * @property int $o_odd
  * @property int $o_profit
+ * @property int $o_value
  *
  * @property Player $homePlayer
  * @property Player $awayPlayer
@@ -64,6 +65,7 @@ class Event extends ActiveRecord
     public $o_add_type;
     public $o_profit;
     public $o_odd;
+    public $o_value;
 
     /**
      * @return array[]
@@ -97,7 +99,7 @@ class Event extends ActiveRecord
     {
         return [
             [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit'], 'integer'],
-            [['o_add_type'], 'string'],
+            [['o_add_type', 'o_value'], 'string'],
             [['start_at', 'created'], 'safe'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
@@ -619,6 +621,14 @@ class Event extends ActiveRecord
                 );
             }
         }
+    }
+
+    /**
+     * @return float
+     */
+    public function getOddVal(): float
+    {
+        return $this->o_odd/100;
     }
 
 }

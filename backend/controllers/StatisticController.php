@@ -6,14 +6,11 @@ namespace backend\controllers;
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\models\statistic\FilterModel;
 use backend\strategies\Total;
-use common\helpers\EventFilterHelper;
-use common\helpers\EventOutputHelper;
 use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
-use yii\helpers\Html;
 use yii\web\Controller;
 
 class StatisticController extends Controller
@@ -127,8 +124,8 @@ class StatisticController extends Controller
         ];
 
         $strategies = [
-            Total::ATPHardOver(),
-            //Total::challengerClayOver(),
+            //Total::ATPHardOver(),
+            Total::challengerClayOver(),
             //Total::ATPHardOverTest(),
             //Total::challengerClayOverTest()
         ];
