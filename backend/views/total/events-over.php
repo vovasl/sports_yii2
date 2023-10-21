@@ -17,7 +17,8 @@ use yii\web\View;
 <hr>
 
 <?php foreach ($strategies as $strategy): ?>
-    <?php $models = EventFilterHelper::getTotalOver($config, $strategy); ?>
+    <?php $settings = array_merge($config, $strategy); ?>
+    <?php $models = EventFilterHelper::Total($settings); ?>
     <?php foreach ($models as $model): ?>
         <?= $model->fullInfo; ?> <br>
         <?= Html::a('Link', ['/event/view', 'id' => $model->id], ['target'=>'_blank']); ?><br>

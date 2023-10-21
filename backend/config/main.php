@@ -50,7 +50,7 @@ return [
                 '/statistic/total-tournaments/<tour:\d+>/<surface:\d+>' => '/statistic/total-tournaments',
                 '/statistic/total-tournaments/<tour:\d+>' => '/statistic/total-tournaments',
 
-                '/statistic/strategies/<futures:\d+>' => '/statistic/strategies',
+                '/statistic/strategies/<status:\d+>' => '/statistic/strategies',
 
                 '/tournament/<id:\d+>' => '/tournament/view',
                 '/tournament/<id:\d+>/event' => '/tournament/event',

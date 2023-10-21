@@ -11,12 +11,21 @@ use frontend\models\sport\Event;
 class EventFilterHelper
 {
 
+    CONST MONEYLINE_FILTER = [
+        'more' => 'more',
+        'less' => 'less'
+    ];
+
+    CONST EVENTS_STATUS = [
+        'FINISHED' => 1,
+        'SCHEDULED' => 2
+    ];
+
     /**
      * @param array $settings
-     * @param array $config
      * @return array
      */
-    public static function getTotalOver(array $config, array $settings): array
+    public static function Total(array $settings): array
     {
         $events = Event::find();
         $events->select([
@@ -28,39 +37,66 @@ class EventFilterHelper
             'sp_odd.profit o_profit',
         ]);
         $events->withData();
-        $events->joinWith(['odds' => function($q) use($settings, $config) {
+        $events->joinWith(['odds' => function($q) use($settings) {
             $q->andOnCondition([
                 'type' => 2,
-                'add_type' => 'over',
+                'add_type' => $settings['add_type'],
             ]);
-            $q->andOnCondition(['>=', 'odd', $settings['odds']['min']]);
-            $q->andOnCondition(['<', 'odd', $settings['odds']['max']]);
-            if($config['futures']) $q->andOnCondition(['IS', 'profit', NULL]);
-            else $q->andOnCondition(['IS NOT', 'profit', NULL]);
             return $q;
         }]);
-        $events->where([
-            'tour' => $settings['tour'],
-            'surface' => $settings['surface'],
-        ]);
-        $events->andWhere(['value' => $settings['value']]);
+
+        /** tour filter */
+        $events->where(['tour' => $settings['tour']]);
+
+        /** surface filter */
+        $events->andWhere(['surface' => $settings['surface']]);
 
         /** round filter */
         $events->andWhere(['IN', 'round', $settings['rounds']]);
 
-        //$events->andWhere(['LIKE', 'start_at', '2023-10-']);
-        $events->orderBy([
-            'id' => SORT_DESC
-        ]);
+        /** events status filter */
+        if($settings['status'] == self::EVENTS_STATUS['FINISHED']) {
+            $events->andWhere(['IS NOT', 'tn_event.sofa_id', NULL]);
+        }
+        else if($settings['status'] == self::EVENTS_STATUS['SCHEDULED']) {
+            $events->andWhere(['tn_event.sofa_id' => NULL]);
+        }
 
+        /** month filter */
+        if($settings['month']) $events->andWhere(['LIKE', 'start_at', $settings['month']]);
+
+        /** value filter */
+        $events->andWhere(['sp_odd.value' => $settings['value']]);
+
+        /** odds filter */
+        $events->andWhere(['>=', 'sp_odd.odd', $settings['odds']['min']]);
+        $events->andWhere(['<', 'sp_odd.odd', $settings['odds']['max']]);
+
+        /** sort */
+        $sort = ($settings['sort']) ?: ['start_at' => SORT_DESC];
+        $events->orderBy($sort);
+
+        /** events additional filter */
+        $models = self::addFilter($events->all(), $settings);
+
+        return $models;
+    }
+
+    /**
+     * @param array $events
+     * @param array $settings
+     * @return array
+     */
+    public static function addFilter(array $events, array $settings): array
+    {
         $models = [];
-        foreach ($events->all() as $model) {
+        foreach ($events as $model) {
 
             /** moneyline filter */
             if(!empty($settings['moneyline']['limit'])) {
-                if ($settings['moneyline']['filter'] == FilterModel::FILTER['more']) {
+                if ($settings['moneyline']['filter'] == self::MONEYLINE_FILTER['more']) {
                     if ($model->homeMoneyline[0]->odd <= $settings['moneyline']['limit'] || $model->awayMoneyline[0]->odd <= $settings['moneyline']['limit']) continue;
-                } else if ($settings['moneyline']['filter'] == FilterModel::FILTER['less']) {
+                } else if ($settings['moneyline']['filter'] == self::MONEYLINE_FILTER['less']) {
                     if ($model->homeMoneyline[0]->odd > $settings['moneyline']['limit'] && $model->awayMoneyline[0]->odd > $settings['moneyline']['limit']) continue;
                 }
             }

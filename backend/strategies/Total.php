@@ -3,6 +3,7 @@
 namespace backend\strategies;
 
 use backend\models\statistic\FilterModel;
+use common\helpers\EventFilterHelper;
 
 class Total
 {
@@ -23,7 +24,7 @@ class Total
                 'max' => 185
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 140
             ]
         ];
@@ -45,7 +46,7 @@ class Total
                 'max' => 185
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 140
             ]
         ];
@@ -67,7 +68,7 @@ class Total
                 'max' => 210
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 140
             ]
         ];
@@ -89,7 +90,7 @@ class Total
                 'max' => 185
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 140
             ]
         ];

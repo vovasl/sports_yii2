@@ -4,6 +4,7 @@
 namespace backend\helpers\total;
 
 use backend\models\statistic\FilterModel;
+use common\helpers\EventFilterHelper;
 
 class OverHelper
 {
@@ -16,14 +17,14 @@ class OverHelper
         return [
             'tour' => 1,
             'surface' => 2,
-            'rounds' => [1, 2, 3, 4, 6, 7, 8, 9, 11],
+            'rounds' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 11],
             'value' => 21.5,
             'odds' => [
                 'min' => 165,
                 'max' => 300
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 150
             ]
         ];
@@ -37,14 +38,14 @@ class OverHelper
         return [
             'tour' => 1,
             'surface' => 4,
-            'rounds' => [1, 2, 3, 4, 6, 7, 8, 9, 11],
+            'rounds' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 11],
             'value' => 21.5,
             'odds' => [
                 'min' => 165,
                 'max' => 300
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 150
             ]
         ];
@@ -65,7 +66,7 @@ class OverHelper
                 'max' => 300
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 150
             ]
         ];
@@ -86,7 +87,7 @@ class OverHelper
                 'max' => 300
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 150
             ]
         ];
@@ -107,7 +108,7 @@ class OverHelper
                 'max' => 300
             ],
             'moneyline' => [
-                'filter' => FilterModel::FILTER['more'],
+                'filter' => EventFilterHelper::MONEYLINE_FILTER['more'],
                 'limit' => 150
             ]
         ];

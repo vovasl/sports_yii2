@@ -14,8 +14,12 @@ use yii\web\View;
 
 $stats = [];
 foreach ($strategies as $strategy) {
+
+    /** get settings */
+    $settings = array_merge($config, $strategy);
+
     /** get events */
-    $models = EventFilterHelper::getTotalOver($config, $strategy);
+    $models = EventFilterHelper::Total($settings);
 
     $output .= "<h2>{$strategy['title']}</h2>";
     foreach ($models as $model) {

@@ -6,8 +6,10 @@ namespace backend\controllers;
 use backend\components\pinnacle\helpers\BaseHelper;
 use backend\models\statistic\FilterModel;
 use backend\strategies\Total;
+use common\helpers\EventFilterHelper;
 use common\helpers\OddHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use yii\filters\AccessControl;
@@ -113,14 +115,15 @@ class StatisticController extends Controller
     }
 
     /**
-     * @param int $futures
+     * @param int|null $status
      * @return string
      */
-    public function actionStrategies(int $futures = 0): string
+    public function actionStrategies(int $status = null): string
     {
-
         $config = [
-            'futures' => $futures
+            'status' => ($status) ?: EventFilterHelper::EVENTS_STATUS['FINISHED'],
+            'add_type' => Odd::ADD_TYPE['over'],
+            //'month' => '2023-10-',
         ];
 
         $strategies = [

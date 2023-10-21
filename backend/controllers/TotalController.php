@@ -7,6 +7,7 @@ namespace backend\controllers;
 use backend\helpers\total\OverHelper;
 use backend\models\statistic\FilterModel;
 use common\helpers\EventFilterHelper;
+use frontend\models\sport\Odd;
 use yii\web\Controller;
 
 class TotalController extends Controller
@@ -18,7 +19,9 @@ class TotalController extends Controller
     public function actionEventsOver(): string
     {
         $config = [
-            'futures' => 1
+            'status' => EventFilterHelper::EVENTS_STATUS['SCHEDULED'],
+            'add_type' => Odd::ADD_TYPE['over'],
+            'sort' => ['start_at' => SORT_ASC]
         ];
 
         $strategies = [

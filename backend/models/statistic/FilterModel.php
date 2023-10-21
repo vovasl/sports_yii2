@@ -10,11 +10,6 @@ use yii\base\Model;
 class FilterModel extends Model
 {
 
-    CONST FILTER = [
-        'more' => 'more',
-        'less' => 'less'
-    ];
-
     public $tour;
     public $surface;
     public $round = [0];
