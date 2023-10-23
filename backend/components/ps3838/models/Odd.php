@@ -55,7 +55,11 @@ class Odd
     private function prepareFields($data): array
     {
         $odds = [];
-        if(!is_array($data)) return $odds;
+        if(!is_array($data['leagues'][0]['events'])) {
+            echo 'ODDs error';
+            BaseHelper::outputArray($data);
+            die;
+        }
         foreach ($data['leagues'][0]['events'] as $event) {
             foreach ($event['periods'] as $period) {
                 $period = $this->prepareDateFields($period);
