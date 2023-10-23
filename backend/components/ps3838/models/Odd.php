@@ -41,10 +41,25 @@ class Odd
 
         $data = json_decode($this->client->getOdds($options), 1);
 
+        /** validate data */
+        $this->validate($data);
+
         /** prepare odd fields */
         $data = $this->prepareFields($data);
 
         return $data;
+    }
+
+    /**
+     * @param $data
+     */
+    private function validate($data)
+    {
+        if(!is_array($data['leagues'])) {
+            echo 'Odds error';
+            BaseHelper::outputArray($data);
+            die;
+        }
     }
 
     /**
@@ -55,11 +70,6 @@ class Odd
     private function prepareFields($data): array
     {
         $odds = [];
-        if(!is_array($data['leagues'][0]['events'])) {
-            echo 'ODDs error';
-            BaseHelper::outputArray($data);
-            die;
-        }
         foreach ($data['leagues'][0]['events'] as $event) {
             foreach ($event['periods'] as $period) {
                 $period = $this->prepareDateFields($period);

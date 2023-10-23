@@ -50,6 +50,9 @@ class Fixture
     {
         $data = json_decode($this->client->getFixtures($this->settings['fixture']), 1);
 
+        /** validate data */
+        $this->validate($data);
+
         /** prepare fixture fields */
         $this->prepareFields($data);
 
@@ -67,6 +70,18 @@ class Fixture
         $this->sort($sort);
 
         return $this->fixtures;
+    }
+
+    /**
+     * @param $data
+     */
+    private function validate($data)
+    {
+        if(!is_array($data['league'])) {
+            echo 'Fixtures error';
+            BaseHelper::outputArray($data);
+            die;
+        }
     }
 
     /**

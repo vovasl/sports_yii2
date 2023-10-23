@@ -37,11 +37,27 @@ class League
     {
 
         $data = json_decode($this->client->getLeagues($this->settings['base']),1);
+
+        /** validate data */
+        $this->validate($data);
+
         switch ($this->settings['base']['sportid']) {
             case PS3838::TENNIS:
                 return $this->getTennis($data);
             default:
                 return $data;
+        }
+    }
+
+    /**
+     * @param $data
+     */
+    private function validate($data)
+    {
+        if(!is_array($data['leagues'])) {
+            echo 'Leagues error';
+            BaseHelper::outputArray($data);
+            die;
         }
     }
 
@@ -52,7 +68,6 @@ class League
     private function getTennis($leagues): array
     {
         $data = [];
-        if(empty($leagues['leagues'])) return $data;
         foreach ($leagues['leagues'] as $league) {
             if($league['eventCount'] == 0) continue;
 
