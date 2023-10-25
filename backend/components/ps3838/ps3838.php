@@ -24,7 +24,7 @@ class PS3838 extends Component
      */
     public function run(array $settings): array
     {
-        die;
+        //die;
         /** get leagues */
         $leagues = $this->getLeagues($settings);
 
