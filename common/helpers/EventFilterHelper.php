@@ -95,9 +95,9 @@ class EventFilterHelper
             /** moneyline filter */
             if(!empty($settings['moneyline']['limit'])) {
                 if ($settings['moneyline']['filter'] == self::MONEYLINE_FILTER['more']) {
-                    if ($model->homeMoneyline[0]->odd <= $settings['moneyline']['limit'] || $model->awayMoneyline[0]->odd <= $settings['moneyline']['limit']) continue;
+                    if ($model->homeMoneyline[0]->odd < $settings['moneyline']['limit'] || $model->awayMoneyline[0]->odd < $settings['moneyline']['limit']) continue;
                 } else if ($settings['moneyline']['filter'] == self::MONEYLINE_FILTER['less']) {
-                    if ($model->homeMoneyline[0]->odd > $settings['moneyline']['limit'] && $model->awayMoneyline[0]->odd > $settings['moneyline']['limit']) continue;
+                    if ($model->homeMoneyline[0]->odd >= $settings['moneyline']['limit'] && $model->awayMoneyline[0]->odd >= $settings['moneyline']['limit']) continue;
                 }
             }
 
