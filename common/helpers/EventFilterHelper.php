@@ -4,8 +4,6 @@
 namespace common\helpers;
 
 
-use backend\components\pinnacle\helpers\BaseHelper;
-use backend\models\statistic\FilterModel;
 use frontend\models\sport\Event;
 
 class EventFilterHelper

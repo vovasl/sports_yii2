@@ -20,7 +20,7 @@ class OverHelper
             'rounds' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 11],
             'value' => 21.5,
             'odds' => [
-                'min' => 165,
+                'min' => 167,
                 'max' => 300
             ],
             'moneyline' => [
@@ -41,7 +41,7 @@ class OverHelper
             'rounds' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 11],
             'value' => 21.5,
             'odds' => [
-                'min' => 165,
+                'min' => 167,
                 'max' => 300
             ],
             'moneyline' => [
