@@ -3,6 +3,10 @@
 
 namespace backend\controllers\players;
 
+use backend\components\pinnacle\helpers\BaseHelper;
+use backend\models\players\StatisticSearch;
+use frontend\models\sport\Event;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 
@@ -28,6 +32,13 @@ class StatisticController extends Controller
 
     public function actionIndex(): string
     {
-        return $this->render('index');
+        $searchParams = $this->request->queryParams;
+        $searchModel = new StatisticSearch();
+        $dataProvider = $searchModel->search($searchParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

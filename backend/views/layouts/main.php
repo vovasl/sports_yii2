@@ -55,8 +55,8 @@ Icon::map($this);
         ]],
         ['label' => 'Tournaments', 'url' => ['/tournament']],
         ['label' => 'Players', 'items' => [
-            ['label' => 'Players', 'url' => ['players/player']],
-            ['label' => 'Statistic', 'url' => ['players/statistic']],
+            ['label' => 'Players', 'url' => ['players/player/index']],
+            ['label' => 'Statistic', 'url' => ['players/statistic/index']],
         ]
         ],
         ['label' => 'Stats', 'items' => [
