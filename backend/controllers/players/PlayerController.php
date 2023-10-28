@@ -1,10 +1,10 @@
 <?php
 
 
-namespace backend\controllers;
+namespace backend\controllers\players;
 
 use frontend\models\sport\Player;
-use backend\models\PlayerSearch;
+use backend\models\players\PlayerSearch;
 use Throwable;
 use yii\db\StaleObjectException;
 use yii\web\Controller;

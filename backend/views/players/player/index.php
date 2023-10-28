@@ -9,7 +9,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\LinkPager;
 use yii\web\View;
-use backend\models\PlayerSearch;
+use backend\models\players\PlayerSearch;
 use yii\data\ActiveDataProvider;
 
 /**

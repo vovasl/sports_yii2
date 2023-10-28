@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\players;
 
 
 use frontend\models\sport\Event;

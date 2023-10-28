@@ -54,11 +54,15 @@ Icon::map($this);
             ['label' => 'Add Results', 'url' => ['/event/add-results']],
         ]],
         ['label' => 'Tournaments', 'url' => ['/tournament']],
-        ['label' => 'Players', 'url' => ['/player']],
+        ['label' => 'Players', 'items' => [
+            ['label' => 'Players', 'url' => ['players/player']],
+            ['label' => 'Statistic', 'url' => ['players/statistic']],
+        ]
+        ],
         ['label' => 'Stats', 'items' => [
             ['label' => 'Totals', 'url' => ['statistic/total']],
-            ['label' => 'Strategies', 'url' => ['statistic/strategies']],
         ]],
+        ['label' => 'Strategies', 'url' => ['statistic/strategies']],
         ['label' => 'Events Over', 'url' => ['total/events-over']],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];
