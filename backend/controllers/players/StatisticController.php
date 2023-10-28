@@ -32,9 +32,8 @@ class StatisticController extends Controller
 
     public function actionIndex(): string
     {
-        $searchParams = $this->request->queryParams;
         $searchModel = new StatisticSearch();
-        $dataProvider = $searchModel->search($searchParams);
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
