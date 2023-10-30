@@ -33,7 +33,6 @@ class PS3838 extends Component
         $fixtures = [];
         foreach ($leagues as $league) {
             $fixtures = array_merge($fixtures, $this->getFixtures($league));
-            sleep(2);
         }
 
         return $fixtures;
