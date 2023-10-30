@@ -3,6 +3,7 @@
 namespace backend\components\ps3838;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\ps3838\models\Fixture;
 use backend\models\Setting;
 use backend\components\ps3838\models\League;
@@ -32,6 +33,7 @@ class PS3838 extends Component
         $fixtures = [];
         foreach ($leagues as $league) {
             $fixtures = array_merge($fixtures, $this->getFixtures($league));
+            sleep(2);
         }
 
         return $fixtures;
