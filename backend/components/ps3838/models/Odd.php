@@ -39,10 +39,11 @@ class Odd
         $options = $this->settings['fixture'];
         $options['oddsFormat'] = $this->settings['odds_format'];
 
-        $data = json_decode($this->client->getOdds($options), 1);
+        $odds = $this->client->getOdds($options);
+        $data = json_decode($odds, 1);
 
         /** validate data */
-        $this->validate($data);
+        if(!$this->validate($data)) return [];
 
         /** prepare odd fields */
         $data = $this->prepareFields($data);
@@ -52,14 +53,15 @@ class Odd
 
     /**
      * @param $data
+     * @return bool
      */
-    private function validate($data)
+    private function validate($data): bool
     {
-        if(!is_array($data['leagues'])) {
-            echo 'Odds error';
-            BaseHelper::outputArray($data);
-            die;
+        if(!isset($data['leagues'][0]['events'])) {
+            return false;
         }
+
+        return true;
     }
 
     /**

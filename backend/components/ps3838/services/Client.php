@@ -123,7 +123,14 @@ class Client
 
         $response = $this->exec($curlOptions);
 
-        return empty($response['error']) ? $response['body'] : $response;
+        $data = empty($response['error']) ? $response['body'] : $response;
+
+        if($response['http_code'] != 200) {
+            echo "<br><br><br>";
+            var_dump($response);
+        }
+
+        return $data;
     }
 
     /**
