@@ -130,7 +130,7 @@ class Client
             var_dump($response);
         }
 
-        sleep(5);
+        sleep(10);
 
         return $data;
     }
