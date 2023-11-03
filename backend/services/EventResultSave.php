@@ -435,7 +435,7 @@ class EventResultSave extends Component
         /** remove odds */
         Odd::deleteAll(['event' => $event->id]);
 
-        $this->message .= EventResultSaveHelper::warningMsg('Event was not finished. Check out fields: home_result, away_result, five_sets');
+        //$this->message .= EventResultSaveHelper::warningMsg('Event was not finished. Check out fields: home_result, away_result, five_sets');
 
         return $event;
     }
