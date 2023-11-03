@@ -84,7 +84,9 @@ class EventSearch extends Event
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
-                'defaultOrder' => ['start_at' => SORT_DESC],
+                'defaultOrder' => [
+                    'start_at' => empty($params) ? SORT_ASC : SORT_DESC
+                ],
                 'attributes' => [
                     'start_at',
                     'round_id' => [
@@ -171,6 +173,12 @@ class EventSearch extends Event
 
         if(!is_null($this->tour_id)) {
             $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
+        }
+
+        /** empty search params */
+        if(empty($params)) {
+            $query->andFilterWhere(['IS', 'event.sofa_id', new Expression('null')]);
+            $query->orderBy(['start_at' => SORT_ASC]);
         }
 
         return $dataProvider;
