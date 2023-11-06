@@ -156,4 +156,14 @@ class EventHelper
         return $odds;
     }
 
+    /**
+     * @param array $odds
+     * @return string
+     */
+    public static function getTotal(array $odds): string
+    {
+        $key = round(count($odds)/2);
+        return (isset($odds[$key])) ? $odds[$key]->value : '';
+    }
+
 }

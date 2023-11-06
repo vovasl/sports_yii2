@@ -20,7 +20,6 @@ use yii\db\StaleObjectException;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\AccessControl;
-use backend\components\pinnacle\Pinnacle;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 

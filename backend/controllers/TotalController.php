@@ -3,15 +3,47 @@
 
 namespace backend\controllers;
 
-
 use backend\helpers\total\OverHelper;
-use backend\models\statistic\FilterModel;
+use backend\models\total\EventTotalSearch;
 use common\helpers\EventFilterHelper;
 use frontend\models\sport\Odd;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class TotalController extends Controller
 {
+
+    /**
+     * @return array[]
+     */
+    public function behaviors(): array
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function actionEvents(): string
+    {
+        $searchModel = new EventTotalSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('events', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
 
     /**
      * @return string
