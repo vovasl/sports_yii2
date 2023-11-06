@@ -14,6 +14,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\PlayerAddEvent;
 use frontend\models\sport\ResultSet;
 use frontend\models\sport\Round;
+use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\base\Component;
 use yii\db\ActiveRecord;
@@ -346,13 +347,17 @@ class EventResultSave extends Component
      */
     private function getRound($data): ?int
     {
-        $val = null;
-        if(empty($data['roundInfo']['name'])) {
-            $this->message .= EventResultSaveHelper::warningMsg("Add information about the round to the event. Empty [roundInfo]");
-
-        }
-        else if(!$val = Round::getIdBySofa($data['roundInfo']['name'])) {
+        $round = (empty($data['roundInfo']['name'])) ? $data['tournament']['name'] : $data['roundInfo']['name'];
+        if(!$val = Round::getIdBySofa($round, $data['tournament']['category']['id'])) {
             $this->message .= EventResultSaveHelper::warningMsg("Add information about the round to the event. Unable to find {$data['roundInfo']['name']}");
+        }
+
+        /** remove after debug */
+        if(empty($data['roundInfo']['name'])) {
+            $this->message .= EventResultSaveHelper::warningMsg("Check information about the round");
+        }
+        if($data['roundInfo']['name'] == 'Round of 32' && $data['tournament']['category']['id'] == Tour::SOFA_CHALLENGER) {
+            $this->message .= EventResultSaveHelper::warningMsg("Check information about the round");
         }
 
         return $val;
@@ -434,8 +439,6 @@ class EventResultSave extends Component
 
         /** remove odds */
         Odd::deleteAll(['event' => $event->id]);
-
-        //$this->message .= EventResultSaveHelper::warningMsg('Event was not finished. Check out fields: home_result, away_result, five_sets');
 
         return $event;
     }

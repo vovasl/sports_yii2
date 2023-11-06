@@ -21,7 +21,6 @@ class Round extends ActiveRecord
 
     const QUALIFIER = 5;
     const QUALIFIER_FILTER = 100;
-    const SOFA_FIELD_QUALIFIER = 'Qualification';
 
     /**
      * {@inheritdoc}
@@ -115,11 +114,17 @@ class Round extends ActiveRecord
 
     /**
      * @param $value
+     * @param int $tour
      * @return int|null
      */
-    public static function getIdBySofa($value): ?int
+    public static function getIdBySofa($value, int $tour): ?int
     {
-        if(preg_match('#qualification#i', $value)) $value = self::SOFA_FIELD_QUALIFIER;
+        /** qualifier */
+        if(preg_match('#qualification|qualifying#i', $value)) $value = 'Qualification';
+
+        /** R1 for challenger */
+        if($value == 'Round of 32' && $tour == Tour::SOFA_CHALLENGER) $value = 'Round of 128';
+
         return ($res = self::findBySofa($value)) ? $res->id : null;
     }
 

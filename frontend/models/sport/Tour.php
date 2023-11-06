@@ -18,6 +18,7 @@ class Tour extends \yii\db\ActiveRecord
 
     const ATP = 1;
     const CHALLENGER = 2;
+    const SOFA_CHALLENGER = 72;
 
     /**
      * {@inheritdoc}
