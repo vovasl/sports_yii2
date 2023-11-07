@@ -3,6 +3,7 @@
 
 use backend\models\total\EventTotalSearch;
 use common\helpers\EventHelper;
+use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
@@ -97,7 +98,7 @@ $reset = "/total/events";
                 'attribute' => 'totalsOver',
                 'label' => 'Total',
                 'value' => function(Event $model) {
-                    return EventHelper::getAverageTotal($model->totalsOver);
+                    return OddHelper::getAverageTotal($model->odds);
                 }
             ],
             [

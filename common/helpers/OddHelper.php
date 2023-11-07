@@ -215,4 +215,45 @@ class OddHelper
         return new Odd();
     }
 
+    /**
+     * @param Odd[] $odds
+     * @param int|null $player
+     * @return string
+     */
+    public static function getMoneyline(array $odds, int $player = null): string
+    {
+        foreach ($odds as $odd) {
+            if($odd->type == 4 && $odd->player_id == $player) return $odd->oddVal;
+        }
+        return '';
+    }
+
+    /**
+     * @param Odd[] $odds
+     * @param string|null $type
+     */
+    public static function getTotal(array $odds, $type = null)
+    {
+        $models = [];
+        foreach ($odds as $odd) {
+            if($odd->type == 2) {
+                if(empty($type)) $models[] = $odd;
+                else if($odd->add_type == $type) $models[] = $odd;
+            }
+        }
+
+        return $models;
+    }
+
+    /**
+     * @param array $odds
+     * @return string
+     */
+    public static function getAverageTotal(array $odds): string
+    {
+        $odds = self::getTotal($odds, Odd::ADD_TYPE['over']);
+        $key = round(count($odds)/2);
+        return (isset($odds[$key])) ? $odds[$key]->value : '';
+    }
+
 }

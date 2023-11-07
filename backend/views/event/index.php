@@ -2,6 +2,7 @@
 
 
 use common\helpers\EventHelper;
+use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
@@ -97,21 +98,21 @@ $reset = "/event";
                 'attribute' => 'homeMoneyline',
                 'label' => 'Home',
                 'value' => function(Event $model) {
-                    return EventHelper::getMoneyline($model->odds, $model->home);
+                    return OddHelper::getMoneyline($model->odds, $model->home);
                 }
             ],
             [
                 'attribute' => 'awayMoneyline',
                 'label' => 'Away',
                 'value' => function(Event $model) {
-                    return EventHelper::getMoneyline($model->odds, $model->away);
+                    return OddHelper::getMoneyline($model->odds, $model->away);
                 }
             ],
             [
                 'attribute' => 'totalsOver',
                 'label' => 'Total',
                 'value' => function(Event $model) {
-                    return EventHelper::getAverageTotal($model->totalsOver);
+                    return OddHelper::getAverageTotal($model->odds);
                 }
             ],
             [

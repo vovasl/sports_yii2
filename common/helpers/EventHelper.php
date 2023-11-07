@@ -158,29 +158,4 @@ class EventHelper
         return $odds;
     }
 
-    /**
-     * @param array $odds
-     * @return string
-     */
-    public static function getAverageTotal(array $odds): string
-    {
-        $key = round(count($odds)/2);
-        return (isset($odds[$key])) ? $odds[$key]->value : '';
-    }
-
-    /**
-     * @param Odd[] $odds
-     * @param int $player
-     * @return string
-     */
-    public static function getMoneyline(array $odds, int $player): string
-    {
-        foreach ($odds as $odd) {
-            if($odd->type == 4 && $odd->player_id == $player) {
-                return $odd->oddVal;
-            }
-        }
-        return '';
-    }
-
 }
