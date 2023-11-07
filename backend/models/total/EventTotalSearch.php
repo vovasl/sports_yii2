@@ -92,7 +92,8 @@ class EventTotalSearch extends Event
                         'desc' => [Round::tableName() . '.rank' => SORT_DESC, 'event.start_at' => SORT_ASC],
                     ],
                     'total',
-                    'total_games'
+                    'total_games',
+                    'total_over_value',
                 ]
             ],
             'pagination' => [
