@@ -250,8 +250,8 @@ class OddHelper
      */
     public static function getAverageTotal(array $odds): string
     {
-        $key = round(count($odds)/2) - 1;
-        return (isset($odds[$key])) ? $odds[$key]->value : '';
+        //$key = round(count($odds)/2) - 1;
+        return (isset($odds[0])) ? $odds[0]->value : '';
     }
 
 }

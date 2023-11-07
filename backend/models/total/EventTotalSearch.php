@@ -60,7 +60,7 @@ class EventTotalSearch extends Event
     public function search(array $params): ActiveDataProvider
     {
         $query = Event::find()
-            ->select(['event.*', 'count(sp_odd.id) count_odds', 'sp_odd.value total_over_value'])
+            ->select(['event.*', 'count(sp_odd.id) count_odds', 'min(sp_odd.value) total_over_value'])
             ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
@@ -166,9 +166,14 @@ class EventTotalSearch extends Event
             $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
         }
 
-/*        if(!is_null($this->total_over_value)) {
-            $query->andFilterWhere(['=', 'sp_odd.value', $this->total_over_value]);
-        }*/
+        if(!empty($this->total_over_value)) {
+            if($this->total_over_value <= 20.5) {
+                $query->andHaving(['<=', 'total_over_value', $this->total_over_value]);
+            }
+            else {
+                $query->andHaving(['>=', 'total_over_value', $this->total_over_value]);
+            }
+        }
 
         /** empty search params */
         if(empty($params)) {
