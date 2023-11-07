@@ -6,7 +6,6 @@ namespace common\helpers;
 use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
-use yii\base\BaseObject;
 
 class OddHelper
 {
@@ -251,8 +250,7 @@ class OddHelper
      */
     public static function getAverageTotal(array $odds): string
     {
-        $odds = self::getTotal($odds, Odd::ADD_TYPE['over']);
-        $key = round(count($odds)/2);
+        $key = round(count($odds)/2) - 1;
         return (isset($odds[$key])) ? $odds[$key]->value : '';
     }
 

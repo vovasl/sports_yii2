@@ -66,6 +66,8 @@ class Event extends ActiveRecord
     public $o_profit;
     public $o_odd;
     public $o_value;
+    public $count_odds;
+    public $total_over_value;
 
     /**
      * @return array[]
@@ -99,7 +101,7 @@ class Event extends ActiveRecord
     {
         return [
             [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit'], 'integer'],
-            [['o_add_type', 'o_value'], 'string'],
+            [['o_add_type', 'o_value', 'count_odds', 'total_over_value'], 'string'],
             [['start_at', 'created'], 'safe'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
@@ -283,8 +285,8 @@ class Event extends ActiveRecord
     {
         return $this
             ->getOdds()
-            ->where([
-                'sp_odd_type.name' => OddType::TOTALS,
+            ->onCondition([
+                'sp_odd.type' => Odd::TYPE['totals'],
                 'sp_odd.add_type' => Odd::ADD_TYPE['over']
             ])
         ;
@@ -297,8 +299,8 @@ class Event extends ActiveRecord
     {
         return $this
             ->getOdds()
-            ->where([
-                'sp_odd_type.name' => OddType::TOTALS,
+            ->onCondition([
+                'sp_odd.type' => Odd::TYPE['totals'],
                 'sp_odd.add_type' => Odd::ADD_TYPE['under']
             ])
         ;
@@ -547,13 +549,15 @@ class Event extends ActiveRecord
 
     /**
      * @param $field
+     * @param $action
+     * @param $searchModel
      * @return string
      */
-    public function outputPlayer($field): string
+    public function outputPlayer($field, $action = null, $searchModel = null): string
     {
         $player = $this->{$field};
         $class = ($this->winner === $player->id) ? 'winner' : '';
-        return Player::getEventsLink($player->name, $class);
+        return Player::getEventsLink($player->name, $class, $action, $searchModel);
     }
 
     /**

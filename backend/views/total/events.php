@@ -86,8 +86,8 @@ $reset = "/total/events";
                 'value' => 'tournamentRound.name',
                 'filter' => Round::dropdownFilter(),
             ],
-            EventHelper::gridHomePlayer(),
-            EventHelper::gridAwayPlayer(),
+            EventHelper::gridHomePlayer('total/events', 'EventTotalSearch'),
+            EventHelper::gridAwayPlayer('total/events', 'EventTotalSearch'),
             [
                 'attribute' => 'result',
                 'label' => 'Result',
@@ -95,11 +95,9 @@ $reset = "/total/events";
                 'filter' => EventHelper::resultDropdown(),
             ],
             [
-                'attribute' => 'totalsOver',
+                'attribute' => 'total_over_value',
                 'label' => 'Total',
-                'value' => function(Event $model) {
-                    return OddHelper::getAverageTotal($model->odds);
-                }
+                'value' => 'total_over_value'
             ],
             [
                 'attribute' => 'total',
@@ -122,9 +120,7 @@ $reset = "/total/events";
             [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
-                'value' => function($model) {
-                    return (count($model->totalsOver) > 0) ? 'Yes' : 'No';
-                },
+                'value' => 'count_odds',
                 'filter' => [
                     1 => 'Yes',
                     -1 => 'No',

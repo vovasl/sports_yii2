@@ -28,8 +28,6 @@ class EventTotalSearch extends Event
 
     public $result;
 
-    public $count_odds;
-
     /**
      * {@inheritdoc}
      */
@@ -38,7 +36,7 @@ class EventTotalSearch extends Event
         return [
             [['start_at'], 'safe'],
             [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id'], 'integer'],
-            [['player', 'tournament_name'], 'string'],
+            [['player', 'tournament_name', 'total_over_value'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
@@ -62,11 +60,11 @@ class EventTotalSearch extends Event
     public function search(array $params): ActiveDataProvider
     {
         $query = Event::find()
-            ->select(['event.*', 'count(sp_odd.id) count_odds'])
+            ->select(['event.*', 'count(sp_odd.id) count_odds', 'sp_odd.value total_over_value'])
             ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
-                'odds',
+                'totalsOver',
                 'tournamentRound',
                 'eventTournament',
                 'eventTournament.tournamentTour',
@@ -153,16 +151,9 @@ class EventTotalSearch extends Event
 
         if(!is_null($this->count_odds)) {
             if($this->count_odds == 1) {
-                $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);
                 $query->having(['>', 'count_odds', 0]);
             }
             else if($this->count_odds == -1) {
-                $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);
-                $query->having(['count_odds' => 0]);
-            }
-            else if($this->count_odds == -2) { // finished
-                $query->andFilterWhere(['status' => 1]);
-                $query->andFilterWhere(['IS NOT', 'event.sofa_id', new Expression('null')]);
                 $query->having(['count_odds' => 0]);
             }
         }
@@ -174,6 +165,10 @@ class EventTotalSearch extends Event
         if(!is_null($this->tour_id)) {
             $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
         }
+
+/*        if(!is_null($this->total_over_value)) {
+            $query->andFilterWhere(['=', 'sp_odd.value', $this->total_over_value]);
+        }*/
 
         /** empty search params */
         if(empty($params)) {

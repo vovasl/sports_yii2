@@ -159,13 +159,15 @@ class Player extends ActiveRecord
     /**
      * @param $name
      * @param string $class
+     * @param string $action
+     * @param string $searchModel
      * @return string
      */
-    public static function getEventsLink($name, string $class = ''): string
+    public static function getEventsLink($name, string $class = '', $action = '/event', $searchModel = 'EventSearch'): string
     {
         return Html::a($name, [
-            "/event",
-            "EventSearch[player]" => $name
+            $action,
+            "{$searchModel}[player]" => $name
         ], [
             'target'=>'_blank',
             'class' => $class

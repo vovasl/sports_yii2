@@ -4,6 +4,7 @@
 use common\helpers\EventHelper;
 use common\helpers\OddHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
@@ -112,7 +113,7 @@ $reset = "/event";
                 'attribute' => 'totalsOver',
                 'label' => 'Total',
                 'value' => function(Event $model) {
-                    return OddHelper::getAverageTotal($model->odds);
+                    return OddHelper::getAverageTotal(OddHelper::getTotal($model->odds, Odd::ADD_TYPE['over']));
                 }
             ],
             [
