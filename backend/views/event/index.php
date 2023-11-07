@@ -94,21 +94,24 @@ $reset = "/event";
                 'filter' => EventHelper::resultDropdown(),
             ],
             [
-                'attribute' => 'total',
-                'label' => 'Sets',
-                'value' => 'total',
-                'filter' => EventHelper::setsDropdown(),
-            ],
-            [
-                'attribute' => 'total_games',
-                'label' => 'Games',
-                'value' => 'total_games',
-                'filter' => '',
-            ],
-            [
-                'label' => 'Over',
+                'attribute' => 'homeMoneyline',
+                'label' => 'Home',
                 'value' => function(Event $model) {
-                    return EventHelper::getOddStat($model->totalsOver);
+                    return EventHelper::getMoneyline($model->odds, $model->home);
+                }
+            ],
+            [
+                'attribute' => 'awayMoneyline',
+                'label' => 'Away',
+                'value' => function(Event $model) {
+                    return EventHelper::getMoneyline($model->odds, $model->away);
+                }
+            ],
+            [
+                'attribute' => 'totalsOver',
+                'label' => 'Total',
+                'value' => function(Event $model) {
+                    return EventHelper::getAverageTotal($model->totalsOver);
                 }
             ],
             [

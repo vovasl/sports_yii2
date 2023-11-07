@@ -3,7 +3,9 @@
 
 namespace common\helpers;
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 
 class EventHelper
@@ -160,10 +162,25 @@ class EventHelper
      * @param array $odds
      * @return string
      */
-    public static function getTotal(array $odds): string
+    public static function getAverageTotal(array $odds): string
     {
         $key = round(count($odds)/2);
         return (isset($odds[$key])) ? $odds[$key]->value : '';
+    }
+
+    /**
+     * @param Odd[] $odds
+     * @param int $player
+     * @return string
+     */
+    public static function getMoneyline(array $odds, int $player): string
+    {
+        foreach ($odds as $odd) {
+            if($odd->type == 4 && $odd->player_id == $player) {
+                return $odd->oddVal;
+            }
+        }
+        return '';
     }
 
 }

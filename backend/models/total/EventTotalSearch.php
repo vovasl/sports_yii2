@@ -71,7 +71,6 @@ class EventTotalSearch extends Event
                 'eventTournament',
                 'eventTournament.tournamentTour',
                 'eventTournament.tournamentSurface',
-                'totalsOver',
                 'homePlayer' => function($q) {
                     $q->from(Player::tableName() . ' home');
                 },

@@ -97,7 +97,7 @@ $reset = "/total/events";
                 'attribute' => 'totalsOver',
                 'label' => 'Total',
                 'value' => function(Event $model) {
-                    return EventHelper::getTotal($model->totalsOver);
+                    return EventHelper::getAverageTotal($model->totalsOver);
                 }
             ],
             [
@@ -122,12 +122,12 @@ $reset = "/total/events";
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
                 'value' => function($model) {
-                    return (count($model->odds) > 0) ? 'Yes' : 'No';
+                    return (count($model->totalsOver) > 0) ? 'Yes' : 'No';
                 },
-/*                'filter' => [
+                'filter' => [
                     1 => 'Yes',
                     -1 => 'No',
-                ]*/
+                ]
             ],
             [
                 'class' => ActionColumn::class,

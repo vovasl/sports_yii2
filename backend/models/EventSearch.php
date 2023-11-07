@@ -76,7 +76,7 @@ class EventSearch extends Event
                 },
                 'awayPlayer' => function($q) {
                     $q->from(Player::tableName() . ' away');
-                }
+                },
             ])
             ->groupBy('event.id')
         ;
