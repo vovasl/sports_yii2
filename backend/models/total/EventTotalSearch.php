@@ -167,11 +167,12 @@ class EventTotalSearch extends Event
         }
 
         if(!empty($this->total_over_value)) {
-            if($this->total_over_value <= 20.5) {
-                $query->andHaving(['<=', 'total_over_value', $this->total_over_value]);
+            preg_match('#(\d+)(<.*|>.*)#', $this->total_over_value, $tovalOver);
+            if(!empty($tovalOver)) {
+                $query->andHaving([$tovalOver[2], 'total_over_value', (int)$tovalOver[1]]);
             }
             else {
-                $query->andHaving(['>=', 'total_over_value', $this->total_over_value]);
+                $query->andHaving(['=', 'total_over_value', $this->total_over_value]);
             }
         }
 
