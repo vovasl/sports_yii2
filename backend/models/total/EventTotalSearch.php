@@ -60,7 +60,7 @@ class EventTotalSearch extends Event
     public function search(array $params): ActiveDataProvider
     {
         $query = Event::find()
-            ->select(['event.*', 'count(sp_odd.id) count_odds', 'min(sp_odd.value) total_over_value'])
+            ->select(['event.*', 'count(sp_odd.id) count_odds', 'avg(sp_odd.value) total_over_value'])
             ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
