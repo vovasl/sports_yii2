@@ -104,18 +104,17 @@ class EventHelper
     }
 
     /**
-     * @param string|null $action
-     * @param null $searchModel
+     * @param array $uri
      * @return array
      */
-    public static function gridHomePlayer($action = null, $searchModel = null): array
+    public static function gridHomePlayer(array $uri = []): array
     {
         return [
             'label' => 'Event',
             'attribute' => 'player',
             'format' => 'raw',
-            'value' => function(Event $model) use($action, $searchModel)  {
-                return $model->outputPlayer('homePlayer', $action, $searchModel);
+            'value' => function(Event $model) use($uri)  {
+                return $model->outputPlayer('homePlayer', $uri);
             },
             'headerOptions' => [
                 'colspan' => 2,
@@ -128,16 +127,15 @@ class EventHelper
     }
 
     /**
-     * @param null $action
-     * @param null $searchModel
+     * @param array $uri
      * @return array
      */
-    public static function gridAwayPlayer($action = null, $searchModel = null): array
+    public static function gridAwayPlayer(array $uri = []): array
     {
         return [
             'format' => 'raw',
-            'value' => function(Event $model) use($action, $searchModel) {
-                return $model->outputPlayer('awayPlayer', $action, $searchModel);
+            'value' => function(Event $model) use($uri) {
+                return $model->outputPlayer('awayPlayer', $uri);
             },
             'headerOptions' => [
                 'style' => 'display: none;',

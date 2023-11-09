@@ -549,15 +549,14 @@ class Event extends ActiveRecord
 
     /**
      * @param $field
-     * @param $action
-     * @param $searchModel
+     * @param array $uri
      * @return string
      */
-    public function outputPlayer($field, $action = null, $searchModel = null): string
+    public function outputPlayer($field, array $uri = []): string
     {
         $player = $this->{$field};
         $class = ($this->winner === $player->id) ? 'winner' : '';
-        return Player::getEventsLink($player->name, $class, $action, $searchModel);
+        return Player::getEventsLink($player->name, $uri, $class);
     }
 
     /**

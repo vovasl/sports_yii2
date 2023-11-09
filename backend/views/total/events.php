@@ -86,8 +86,8 @@ $reset = "/total/events";
                 'value' => 'tournamentRound.name',
                 'filter' => Round::dropdownFilter(),
             ],
-            EventHelper::gridHomePlayer('total/events', 'EventTotalSearch'),
-            EventHelper::gridAwayPlayer('total/events', 'EventTotalSearch'),
+            EventHelper::gridHomePlayer(['model' => 'EventTotalSearch']),
+            EventHelper::gridAwayPlayer(['model' => 'EventTotalSearch']),
             [
                 'attribute' => 'result',
                 'label' => 'Result',
