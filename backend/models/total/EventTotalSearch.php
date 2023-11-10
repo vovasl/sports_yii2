@@ -60,10 +60,18 @@ class EventTotalSearch extends Event
     public function search(array $params): ActiveDataProvider
     {
         $query = Event::find()
-            ->select(['event.*', 'count(sp_odd.id) count_odds', 'avg(sp_odd.value) total_over_value'])
+            ->select([
+                'event.*',
+                'count(total_over.id) count_odds',
+                'avg(total_over.value) total_over_value',
+                'home_moneyline.odd home_moneyline_odd',
+                'away_moneyline.odd away_moneyline_odd'
+            ])
             ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
+                'homeMoneyline',
+                'awayMoneyline',
                 'totalsOver',
                 'tournamentRound',
                 'eventTournament',
@@ -91,9 +99,11 @@ class EventTotalSearch extends Event
                         'asc' => [Round::tableName() . '.rank' => SORT_ASC, 'event.start_at' => SORT_DESC],
                         'desc' => [Round::tableName() . '.rank' => SORT_DESC, 'event.start_at' => SORT_ASC],
                     ],
+                    'home_moneyline_odd',
+                    'away_moneyline_odd',
+                    'total_over_value',
                     'total',
                     'total_games',
-                    'total_over_value',
                 ]
             ],
             'pagination' => [

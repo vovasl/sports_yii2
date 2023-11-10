@@ -95,6 +95,16 @@ $reset = "/total/events";
                 'filter' => EventHelper::resultDropdown(),
             ],
             [
+                'attribute' => 'home_moneyline_odd',
+                'label' => 'Home',
+                'value' => 'homeMoneylineOddVal'
+            ],
+            [
+                'attribute' => 'away_moneyline_odd',
+                'label' => 'Away',
+                'value' =>'awayMoneylineOddVal',
+            ],
+            [
                 'attribute' => 'total_over_value',
                 'label' => 'Total',
                 'value' => 'total_over_value'

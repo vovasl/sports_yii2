@@ -67,12 +67,13 @@ class Event extends ActiveRecord
     public $o_odd;
     public $o_value;
     public $count_odds;
+    public $home_moneyline_odd;
+    public $away_moneyline_odd;
     public $total_over_value;
 
     /**
      * @return array[]
      */
-
     public function behaviors(): array
     {
         return [
@@ -100,7 +101,7 @@ class Event extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit'], 'integer'],
+            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit', 'home_moneyline_odd', 'away_moneyline_odd'], 'integer'],
             [['o_add_type', 'o_value', 'count_odds', 'total_over_value'], 'string'],
             [['start_at', 'created'], 'safe'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
@@ -228,6 +229,86 @@ class Event extends ActiveRecord
     /**
      * @return ActiveQuery
      */
+    public function getHomeMoneyline(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Odd::class, [
+                'event' => 'id',
+                'player_id' =>  'home',
+            ])
+            ->from(['home_moneyline' => Odd::tableName()])
+            ->onCondition([
+                'home_moneyline.type' => Odd::TYPE['moneyline'],
+            ])
+            ->orderBy([
+                'home_moneyline.value' => SORT_ASC
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getAwayMoneyline(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Odd::class, [
+                'event' => 'id',
+                'player_id' =>  'away',
+            ])
+            ->from(['away_moneyline' => Odd::tableName()])
+            ->onCondition([
+                'away_moneyline.type' => Odd::TYPE['moneyline'],
+            ])
+            ->orderBy([
+                'away_moneyline.value' => SORT_ASC
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTotalsOver(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Odd::class, [
+                'event' => 'id',
+            ])
+            ->from(['total_over' => Odd::tableName()])
+            ->onCondition([
+                'total_over.type' => Odd::TYPE['totals'],
+                'total_over.add_type' => Odd::ADD_TYPE['over']
+            ])
+            ->orderBy([
+                'total_over.value' => SORT_ASC
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTotalsUnder(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Odd::class, [
+                'event' => 'id',
+            ])
+            ->from(['total_under' => Odd::tableName()])
+            ->onCondition([
+                'total_under.type' => Odd::TYPE['totals'],
+                'total_under.add_type' => Odd::ADD_TYPE['under']
+            ])
+            ->orderBy([
+                'total_under.value' => SORT_ASC
+            ])
+            ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getHomeOdds(): ActiveQuery
     {
         return $this
@@ -249,60 +330,6 @@ class Event extends ActiveRecord
             ->joinWith('oddType', false)
             //->orderBy(['sp_odd.value' => SORT_ASC])
             ->orderBy(new Expression('sp_odd.value * 1 ASC'))
-        ;
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getHomeMoneyline(): ActiveQuery
-    {
-        return $this
-            ->getHomeOdds()
-            ->where([
-                'sp_odd_type.name' => OddType::MONEYLINE
-            ])
-        ;
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getAwayMoneyline(): ActiveQuery
-    {
-        return $this
-            ->getAwayOdds()
-            ->where([
-                'sp_odd_type.name' => OddType::MONEYLINE
-            ])
-        ;
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getTotalsOver(): ActiveQuery
-    {
-        return $this
-            ->getOdds()
-            ->onCondition([
-                'sp_odd.type' => Odd::TYPE['totals'],
-                'sp_odd.add_type' => Odd::ADD_TYPE['over']
-            ])
-        ;
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getTotalsUnder(): ActiveQuery
-    {
-        return $this
-            ->getOdds()
-            ->onCondition([
-                'sp_odd.type' => Odd::TYPE['totals'],
-                'sp_odd.add_type' => Odd::ADD_TYPE['under']
-            ])
         ;
     }
 
@@ -619,6 +646,22 @@ class Event extends ActiveRecord
     public function getOddVal(): float
     {
         return $this->o_odd/100;
+    }
+
+    /**
+     * @return float
+     */
+    public function getHomeMoneylineOddVal(): float
+    {
+        return $this->home_moneyline_odd/100;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAwayMoneylineOddVal(): float
+    {
+        return $this->away_moneyline_odd/100;
     }
 
 }

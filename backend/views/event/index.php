@@ -96,27 +96,6 @@ $reset = "/event";
                 'filter' => EventHelper::resultDropdown(),
             ],
             [
-                'attribute' => 'homeMoneyline',
-                'label' => 'Home',
-                'value' => function(Event $model) {
-                    return OddHelper::getMoneyline($model->odds, $model->home);
-                }
-            ],
-            [
-                'attribute' => 'awayMoneyline',
-                'label' => 'Away',
-                'value' => function(Event $model) {
-                    return OddHelper::getMoneyline($model->odds, $model->away);
-                }
-            ],
-            [
-                'attribute' => 'totalsOver',
-                'label' => 'Total',
-                'value' => function(Event $model) {
-                    return OddHelper::getAverageTotal(OddHelper::getTotal($model->odds, Odd::ADD_TYPE['over']));
-                }
-            ],
-            [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
                 'value' => function($model) {
