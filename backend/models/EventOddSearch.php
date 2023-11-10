@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models\total;
+namespace backend\models;
 
 
 use frontend\models\sport\Surface;
@@ -13,7 +13,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use yii\db\Expression;
 
-class EventTotalSearch extends Event
+class EventOddSearch extends Event
 {
 
     public $tournament_name;

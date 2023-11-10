@@ -9,6 +9,7 @@ use backend\components\ps3838\PS3838;
 use backend\models\AddLineForm;
 use backend\models\AddLineLogForm;
 use backend\models\AddResultForm;
+use backend\models\EventOddSearch;
 use backend\models\EventSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
@@ -250,6 +251,20 @@ class EventController extends Controller
 
         return $this->render('add-results', [
             'output' => Yii::$app->result_save->events($events, 1)
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionEvents(): string
+    {
+        $searchModel = new EventOddSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('events', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
