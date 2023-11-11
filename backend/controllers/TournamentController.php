@@ -125,25 +125,6 @@ class TournamentController extends Controller
     }
 
     /**
-     * @param int $id
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    public function actionEvent(int $id): string
-    {
-
-        $searchModel = new TournamentEventSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams, $id);
-
-        return $this->render('event', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'model' => $this->findModel($id),
-        ]);
-
-    }
-
-    /**
      * Finds the Tournament model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID

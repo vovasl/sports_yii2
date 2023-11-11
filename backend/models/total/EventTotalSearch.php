@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace backend\models\total;
 
 
 use frontend\models\sport\Surface;
@@ -13,7 +13,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use yii\db\Expression;
 
-class EventOddSearch extends Event
+class EventTotalSearch extends Event
 {
 
     public $tournament_name;
@@ -107,7 +107,7 @@ class EventOddSearch extends Event
                 ]
             ],
             'pagination' => [
-                'pageSize' => 100,
+                'pageSize' => 10000,
             ],
             //'pagination' => false
         ]);
@@ -186,6 +186,11 @@ class EventOddSearch extends Event
                 $query->andHaving(['=', 'total_over_value', $this->total_over_value]);
             }
         }
+
+/*        $query->andFilterWhere(['five_sets' => 0]);
+        $minMoneyline = 140;
+        $query->andHaving(['>=', 'home_moneyline_odd', $minMoneyline]);
+        $query->andHaving(['>=', 'away_moneyline_odd', $minMoneyline]);*/
 
         /** empty search params */
         if(empty($params)) {

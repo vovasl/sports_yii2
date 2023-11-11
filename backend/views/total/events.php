@@ -1,7 +1,7 @@
 <?php
 
 
-use backend\models\EventOddSearch;
+use backend\models\total\EventTotalSearch;
 use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
@@ -17,7 +17,7 @@ use yii\grid\ActionColumn;
 
 /**
  * @var View $this
- * @var EventOddSearch $searchModel
+ * @var EventTotalSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 
@@ -85,8 +85,8 @@ $reset = "/total/events";
                 'value' => 'tournamentRound.name',
                 'filter' => Round::dropdownFilter(),
             ],
-            EventHelper::gridHomePlayer(['model' => 'EventOddSearch']),
-            EventHelper::gridAwayPlayer(['model' => 'EventOddSearch']),
+            EventHelper::gridHomePlayer(['model' => 'EventTotalSearch']),
+            EventHelper::gridAwayPlayer(['model' => 'EventTotalSearch']),
             [
                 'attribute' => 'result',
                 'label' => 'Result',

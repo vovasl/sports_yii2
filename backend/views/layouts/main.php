@@ -43,8 +43,8 @@ Icon::map($this);
     $menuItems = [
         ['label' => 'Tournaments', 'url' => ['/tournament']],
         ['label' => 'Events', 'items' => [
-            ['label' => 'Admin', 'url' => ['/event']],
-            ['label' => 'Events', 'url' => ['event/events']],
+            ['label' => 'Events', 'url' => ['/event']],
+            ['label' => 'Total', 'url' => ['/total/events']],
         ]],
         ['label' => 'Actions', 'items' => [
             ['label' => 'Add Odds', 'url' => ['/event/add-odds']],
