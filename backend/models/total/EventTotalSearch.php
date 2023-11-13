@@ -37,6 +37,7 @@ class EventTotalSearch extends Event
             [['start_at'], 'safe'],
             [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id'], 'integer'],
             [['player', 'tournament_name', 'total_over_value'], 'string'],
+            [['home_moneyline_odd'], 'double'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
@@ -187,10 +188,13 @@ class EventTotalSearch extends Event
             }
         }
 
-/*        $query->andFilterWhere(['five_sets' => 0]);
-        $minMoneyline = 140;
-        $query->andHaving(['>=', 'home_moneyline_odd', $minMoneyline]);
-        $query->andHaving(['>=', 'away_moneyline_odd', $minMoneyline]);*/
+        //$query->andFilterWhere(['five_sets' => 0]);
+
+        if(!empty($this->home_moneyline_odd)) {
+            $homeMoneylineOdd = $this->home_moneyline_odd * 100;
+            $query->andHaving(['>=', 'home_moneyline_odd', $homeMoneylineOdd]);
+            $query->andHaving(['>=', 'away_moneyline_odd', $homeMoneylineOdd]);
+        }
 
         /** empty search params */
         if(empty($params)) {
