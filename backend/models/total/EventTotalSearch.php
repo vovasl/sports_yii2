@@ -107,10 +107,7 @@ class EventTotalSearch extends Event
                     'total_games',
                 ]
             ],
-            'pagination' => [
-                'pageSize' => 10000,
-            ],
-            //'pagination' => false
+            'pagination' => false
         ]);
 
         $this->load($params);

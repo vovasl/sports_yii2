@@ -53,13 +53,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             [
                 'label' => 'Tour',
-                'attribute' => 'tour_id',
+                'attribute' => 'tour',
                 'value' => 'tournamentTour.name',
                 'filter' => Tour::dropdown(),
             ],
             [
                 'label' => 'Surface',
-                'attribute' => 'surface_id',
+                'attribute' => 'surface',
                 'value' => 'tournamentSurface.name',
                 'filter' => Surface::dropdown(),
             ],

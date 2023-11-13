@@ -3,10 +3,9 @@
 namespace backend\models;
 
 
+use frontend\models\sport\Event;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\sport\Surface;
-use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 
 /**
@@ -15,17 +14,13 @@ use frontend\models\sport\Tournament;
 class TournamentSearch extends Tournament
 {
 
-    public $tour_id;
-
-    public $surface_id;
-
     /**
      * {@inheritdoc}
      */
     public function rules(): array
     {
         return [
-            [['id', 'surface_id', 'tour_id'], 'integer'],
+            [['id', 'surface', 'tour', 'count_events'], 'integer'],
             [['name', 'comment'], 'safe'],
         ];
     }
@@ -35,7 +30,6 @@ class TournamentSearch extends Tournament
      */
     public function scenarios(): array
     {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
@@ -47,38 +41,52 @@ class TournamentSearch extends Tournament
     public function search(array $params): ActiveDataProvider
     {
         $query = Tournament::find()
-            ->with(['events'])
-            ->joinWith(['tournamentTour', 'tournamentSurface'])
-            ->orderBy([
-                Tour::tableName() . '.name' => SORT_ASC,
-                Surface::tableName() . '.name' => SORT_ASC,
-                'name' => SORT_ASC
+            ->select([
+                Tournament::tableName(). '.*',
+                'count('.Event::tableName().'.id) count_events'
             ])
+            ->joinWith([
+                'tournamentTour',
+                'tournamentSurface',
+                'events'
+            ])
+            ->groupBy([Tournament::tableName() . '.id']);
         ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => 100,
+            'sort' => [
+                'defaultOrder' => [
+                    'tour' => SORT_ASC,
+                    'surface' => SORT_ASC,
+                    'name' => SORT_ASC,
+                ],
+                'attributes' => [
+                    'tour',
+                    'surface',
+                    'name',
+                    'count_events',
+                ]
             ],
-            //'pagination' => false
+            'pagination' => false
         ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
         $query->andFilterWhere([
-            Tour::tableName() . '.id' => $this->tour_id,
-            Surface::tableName() . '.id' => $this->surface_id,
+            'tour' => $this->tour,
+            'surface' => $this->surface,
         ]);
 
         $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->name]);
+
+        if(!is_null($this->count_events)) {
+            $query->andHaving(['>=', 'count_events', $this->count_events]);
+        }
 
         return $dataProvider;
     }

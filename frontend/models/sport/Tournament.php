@@ -6,6 +6,7 @@ namespace frontend\models\sport;
 use frontend\models\sport\query\TournamentQuery;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tn_tournament".
@@ -22,7 +23,7 @@ use yii\db\ActiveQuery;
  * @property Event[] $events
  * @property Tour $tournamentTour
  */
-class Tournament extends \yii\db\ActiveRecord
+class Tournament extends ActiveRecord
 {
 
     public $count_events;
