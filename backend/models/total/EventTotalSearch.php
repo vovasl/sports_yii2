@@ -116,6 +116,11 @@ class EventTotalSearch extends Event
             return $dataProvider;
         }
 
+        /** empty search params */
+        if(empty($params)) {
+            $this->result = 2;
+        }
+
         if(!is_null($this->tournament_name)) {
             $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
         }
@@ -191,12 +196,6 @@ class EventTotalSearch extends Event
             $homeMoneylineOdd = $this->home_moneyline_odd * 100;
             $query->andHaving(['>=', 'home_moneyline_odd', $homeMoneylineOdd]);
             $query->andHaving(['>=', 'away_moneyline_odd', $homeMoneylineOdd]);
-        }
-
-        /** empty search params */
-        if(empty($params)) {
-            $query->andFilterWhere(['IS', 'event.sofa_id', new Expression('null')]);
-            $query->orderBy(['start_at' => SORT_ASC]);
         }
 
         return $dataProvider;

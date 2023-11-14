@@ -97,16 +97,18 @@ class EventSearch extends Event
                     'total_games'
                 ]
             ],
-            'pagination' => [
-                'pageSize' => 100,
-            ],
-            //'pagination' => false
+            'pagination' => false
         ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
             return $dataProvider;
+        }
+
+        /** empty search params */
+        if(empty($params)) {
+            $this->result = 2;
         }
 
         if(!is_null($this->tournament_name)) {
@@ -173,12 +175,6 @@ class EventSearch extends Event
 
         if(!is_null($this->tour_id)) {
             $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
-        }
-
-        /** empty search params */
-        if(empty($params)) {
-            $query->andFilterWhere(['IS', 'event.sofa_id', new Expression('null')]);
-            $query->orderBy(['start_at' => SORT_ASC]);
         }
 
         return $dataProvider;
