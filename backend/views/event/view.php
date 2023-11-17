@@ -21,4 +21,5 @@ $this->render('_breadcrumbs', [
     <?= $this->render('view/_games', ['event' => $event]) ?>
     <?= $this->render('view/_teams', ['event' => $event]) ?>
     <?= $this->render('view/_sets', ['event' => $event]) ?>
+    <?= $this->render('view/_total_over_stats', ['event' => $event]) ?>
 <?php endif; ?>
