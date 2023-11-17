@@ -141,11 +141,11 @@ class OverHelper
      * @param int $sort
      * @return string
      */
-    public static function getQuery(Event $event, int $sort = 0): string
+    public static function getQuery(Event $event, int $sort = 2): string
     {
         $sql = "SELECT player_main.name, " . self::getSubQuery($event) . "
                 FROM `tn_player` player_main
-                HAVING profit2 IS NOT NULL 
+                HAVING profit{$sort} IS NOT NULL 
                 ORDER BY profit{$sort} DESC;";
 
         return $sql;
