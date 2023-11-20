@@ -1,6 +1,7 @@
 <?php
 
 
+use backend\helpers\total\OverHelper;
 use backend\models\total\EventTotalSearch;
 use common\helpers\EventHelper;
 use frontend\models\sport\Event;
@@ -134,6 +135,12 @@ $reset = "/total/events";
                     1 => 'Yes',
                     -1 => 'No',
                 ]
+            ],
+            [
+                'label' => 'Stats',
+                'value' => function(Event $model) {
+                    return OverHelper::getEventPlayersGeneralStat($model);
+                }
             ],
             [
                 'class' => ActionColumn::class,

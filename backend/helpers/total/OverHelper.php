@@ -126,9 +126,9 @@ class OverHelper
      * @return array|DataReader
      * @throws Exception
      */
-    public static function getEventPlayerStat(Event $event)
+    public static function getEventPlayersStat(Event $event)
     {
-        $query = self::getQuery($event, 1);
+        $query = self::getEventPlayersQuery($event, 1);
         $connection = Yii::$app->getDb();
         $command = $connection->createCommand($query);
         $result = $command->queryAll();
@@ -141,9 +141,9 @@ class OverHelper
      * @param int $sort
      * @return string
      */
-    public static function getQuery(Event $event, int $sort = 2): string
+    public static function getEventPlayersQuery(Event $event, int $sort = 2): string
     {
-        $sql = "SELECT player_main.name, " . self::getSubQuery($event) . "
+        $sql = "SELECT player_main.name, " . self::getEventPlayersSubQuery($event) . "
                 FROM `tn_player` player_main
                 HAVING profit{$sort} IS NOT NULL 
                 ORDER BY profit{$sort} DESC;";
@@ -155,9 +155,10 @@ class OverHelper
      * @param Event $event
      * @return string
      */
-    public static function getSubQuery(Event $event): string
+    public static function getEventPlayersSubQuery(Event $event): string
     {
         $minMoneyline = 140;
+        $surface = (in_array($event->eventTournament->surface, [2, 4])) ? '2,4' : $event->eventTournament->surface;
         $odds = OddHelper::totalSettings();
         sort($odds);
 
@@ -165,7 +166,8 @@ class OverHelper
         foreach ($odds as $k => $odd) {
             $where = "player_profit{$k}.id = player_main.id";
             $where .= " and `home_moneyline`.`odd` >= {$minMoneyline} and `away_moneyline`.odd >= {$minMoneyline}";
-            $where .= " and tournament.tour = {$event->eventTournament->tour} and tournament.surface = {$event->eventTournament->surface}";
+            $where .= " and tournament.tour = {$event->eventTournament->tour}";
+            $where .= " and tournament.surface IN ({$surface})";
             /** odd where */
             if(!isset($odds[$k + 1])) $where .= " and odd_total_over.odd >= {$odd}";
             else $where .= " and odd_total_over.odd >= {$odd} and odd_total_over.odd < {$odds[$k + 1]}";
@@ -185,6 +187,59 @@ class OverHelper
 		        ) profit{$k}";
             if(isset($odds[$k + 1])) $sql .= ", ";
         }
+
+        return $sql;
+    }
+
+    /**
+     * @param Event $event
+     * @return string
+     * @throws Exception
+     */
+    public static function getEventPlayersGeneralStat(Event $event): string
+    {
+        $query = self::getEventPlayersGeneralQuery($event);
+        $connection = Yii::$app->getDb();
+        $command = $connection->createCommand($query);
+        $stats = $command->queryAll();
+
+        $output = "";
+        if(count($stats) != 2) return $output;
+
+        foreach ($stats as $stat) {
+            $output .= "{$stat['profit']}/{$stat['count_odds']} ";
+        }
+        return $output;
+    }
+
+    /**
+     * @param Event $event
+     * @return string
+     */
+    public static function getEventPlayersGeneralQuery(Event $event): string
+    {
+        $surface = (in_array($event->eventTournament->surface, [2, 4])) ? '2,4' : $event->eventTournament->surface;
+        $where = "`event`.five_sets = 0 and event.sofa_id is not null";
+        $where .= " and `home_moneyline`.`odd` >= 140 and `away_moneyline`.odd >= 140 and event.five_sets = 0";
+        $where .= " and tournament.tour = {$event->eventTournament->tour}";
+        $where .= " and tournament.surface IN ($surface)";
+        $where .= " and (player.name = '" . $event->homePlayer->name . "' or player.name = '" . $event->awayPlayer->name . "')";
+
+        $sql = "SELECT 
+                    player.id, player.name, sum(odd_total_over.profit) profit, count(odd_total_over.id) count_odds
+                FROM 
+                    `tn_player` player
+                LEFT JOIN `tn_event` event ON (event.home = player.id OR event.away = player.id)
+                LEFT JOIN `tn_tournament` tournament ON (tournament.id = event.tournament)
+                LEFT JOIN `sp_odd` odd_total_over ON (event.id = odd_total_over.event and odd_total_over.type = 2 and odd_total_over.add_type = 'over')
+                LEFT JOIN `sp_odd` `home_moneyline` ON (`event`.`id` = `home_moneyline`.`event` AND `event`.`home` = `home_moneyline`.`player_id`) AND (`home_moneyline`.`type` = 4) 
+                LEFT JOIN `sp_odd` `away_moneyline` ON (`event`.`id` = `away_moneyline`.`event` AND `event`.`away` = `away_moneyline`.`player_id`) AND (`away_moneyline`.`type` = 4)
+                WHERE 
+                      {$where}
+                GROUP BY 
+                         player.id
+                HAVING profit > 800 and count_odds >= 50
+                ";
 
         return $sql;
     }

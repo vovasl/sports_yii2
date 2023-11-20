@@ -10,7 +10,7 @@ use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use yii\web\View;
 
-$stats = OverHelper::getEventPlayerStat($event);
+$stats = OverHelper::getEventPlayersStat($event);
 
 ?>
 
