@@ -110,8 +110,8 @@ class League
         }
 
         /** get tournament name and round */
-        //$data = array_map('trim', explode('-', $name));
-        $data = array_map('trim', explode(' - ', $name));
+        $data = array_map('trim', explode('-', $name)); // for Davis CUP
+        //$data = array_map('trim', explode(' - ', $name)); // for other tournaments with the symbol "-" in the name
 
         /** exception for Davis Cup - without tournament name */
         if(empty($data[0]) && !empty($tour)) $data[0] = $tour;
