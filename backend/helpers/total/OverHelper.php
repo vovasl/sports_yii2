@@ -146,7 +146,8 @@ class OverHelper
         $sql = "SELECT player_main.name, " . self::getEventPlayersSubQuery($event) . "
                 FROM `tn_player` player_main
                 HAVING profit{$sort} IS NOT NULL 
-                ORDER BY profit{$sort} DESC;";
+                ORDER BY FIELD(player_main.name, \"{$event->homePlayer->name}\", \"{$event->awayPlayer->name}\")
+                ;";
 
         return $sql;
     }
@@ -238,7 +239,10 @@ class OverHelper
                       {$where}
                 GROUP BY 
                          player.id
-                HAVING profit > 800 and count_odds >= 50
+                HAVING 
+                       profit > 800 and count_odds >= 50
+                ORDER BY 
+                         FIELD(player.name, \"{$event->homePlayer->name}\", \"{$event->awayPlayer->name}\")
                 ";
 
         return $sql;
