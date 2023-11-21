@@ -9,6 +9,7 @@ class TennisEvent
 {
 
     /** allowed tournament categories */
+    // 76 - Davis Cup Id
     CONST TOUR = [3, 72, 76];
 
     /** allowed status codes */
