@@ -202,7 +202,7 @@ class OverHelper
      */
     public static function getEventPlayersGeneralStat(Event $event): string
     {
-        $minKoef = 0;
+        $minKoef = -100;
         $query = self::getEventPlayersGeneralQuery($event);
         $connection = Yii::$app->getDb();
         $command = $connection->createCommand($query);
@@ -218,12 +218,12 @@ class OverHelper
         }
 
         /** totalOver output markers */
-        $totalOver = EventHelper::getOddStat($event->totalsOver);
+/*        $totalOver = EventHelper::getOddStat($event->totalsOver);
         if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5'])) $output .= 'QQQQQ';
         else if($totalOver == '0/5') $output .= 'WWWWW';
         else if($totalOver == '1/5') $output .= 'EEEEE';
         else if($totalOver == '2/5') $output .= 'RRRRR';
-        else $output .= 'TTTTT';
+        else $output .= 'TTTTT';*/
 
         return $output;
     }
