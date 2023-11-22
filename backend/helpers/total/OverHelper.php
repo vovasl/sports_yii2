@@ -202,7 +202,7 @@ class OverHelper
      */
     public static function getEventPlayersGeneralStat(Event $event): string
     {
-        $minKoef = -100;
+        $minKoef = 0;
         $query = self::getEventPlayersGeneralQuery($event);
         $connection = Yii::$app->getDb();
         $command = $connection->createCommand($query);
