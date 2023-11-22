@@ -11,6 +11,7 @@ use frontend\models\sport\Event;
 use yii\web\View;
 
 $stats = OverHelper::getEventPlayersStat($event);
+$sum = [];
 
 ?>
 
@@ -28,11 +29,17 @@ $stats = OverHelper::getEventPlayersStat($event);
     <tbody>
     <?php foreach ($stats as $player): ?>
         <tr>
-            <?php foreach ($player as $stat): ?>
+            <?php foreach ($player as $k => $stat): ?>
+                <?php if(is_numeric($stat)) $sum[$k] += $stat; else $sum[$k] = ''; ?>
                 <td class="text-center"><?= $stat; ?></td>
             <?php endforeach; ?>
         </tr>
     <?php endforeach; ?>
+    <tr>
+        <?php foreach ($sum as $stat): ?>
+            <td class="text-center"><?= $stat; ?></td>
+        <?php endforeach; ?>
+    </tr>
     </tbody>
 
 </table>
