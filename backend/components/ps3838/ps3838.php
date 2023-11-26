@@ -18,8 +18,8 @@ class PS3838 extends Component
         'games' => ['spreads', 'totals', 'teamTotal'],
     ];
 
-    //const ATP = ['ATP Challenger', 'ATP'];
-    const ATP = ['ATP Challenger', 'ATP', 'Davis Cup'];
+    const ATP = ['ATP Challenger', 'ATP'];
+    //const ATP = ['ATP Challenger', 'ATP', 'Davis Cup'];
 
     /**
      * @param array $settings
