@@ -9,8 +9,8 @@ class TennisEvent
 {
 
     /** allowed tournament categories */
-    // 76 - Davis Cup Id
-    CONST TOUR = [3, 72, 76];
+    CONST TOUR = [3, 72];
+    //CONST TOUR = [3, 72, 76]; // with Davis Cup
 
     /** allowed status codes */
     CONST STATUS_CODES = [100, 98, 92, 91];
