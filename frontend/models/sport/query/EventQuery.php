@@ -4,6 +4,7 @@ namespace frontend\models\sport\query;
 
 
 use frontend\models\sport\Event;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 
@@ -12,7 +13,7 @@ use yii\db\Expression;
  *
  * @see \frontend\models\sport\Event
  */
-class EventQuery extends \yii\db\ActiveQuery
+class EventQuery extends ActiveQuery
 {
 
     /**
