@@ -16,6 +16,8 @@ class m231128_174507_total extends Migration
             'surface_id' => $this->integer(),
             'event_id' => $this->integer(),
             'type' => $this->string(),
+            'min_moneyline' => $this->integer(),
+            'five_sets' => $this->smallInteger(1)->notNull()->defaultValue(0),
             'profit_1' => $this->integer(),
             'profit_2' => $this->integer(),
             'profit_3' => $this->integer(),

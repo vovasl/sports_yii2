@@ -3,11 +3,9 @@
 namespace console\controllers;
 
 
-use backend\components\pinnacle\Pinnacle;
 use backend\components\ps3838\PS3838;
 use Yii;
 use yii\console\Controller;
-use yii\helpers\Console;
 
 class EventController extends Controller
 {
