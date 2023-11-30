@@ -61,6 +61,7 @@ $reset = "/total/players";
                         'EventTotalSearch[count_odds]' => 1,
                         'EventTotalSearch[tour_id]' => $searchModel->tour_id,
                         'EventTotalSearch[surface_id]' => $searchModel->surface_id,
+                        'EventTotalSearch[five_sets]' => $searchModel->five_sets,
                     ], [
                         'target'=>'_blank',
                     ]);
@@ -92,6 +93,12 @@ $reset = "/total/players";
                 'label' => 'Moneyline',
                 'attribute' => 'min_moneyline',
                 'value' => '',
+            ],
+            [
+                'label' => '5 Sets',
+                'attribute' => 'five_sets',
+                'value' => '',
+                'filter' => ['No', 'Yes'],
             ],
             [
                 'label' => '<1.75',

@@ -98,6 +98,9 @@ class PlayerTotalSearch extends Total
         if(is_null($this->count_events)) {
             $this->count_events = 10;
         }
+        if(is_null($this->five_sets)) {
+            $this->five_sets = 0;
+        }
 
         /** player filter */
         if(!empty($this->player_name)) {
@@ -135,6 +138,11 @@ class PlayerTotalSearch extends Total
         /** events filter */
         if(!is_null($this->count_events)) {
             $query->having(['>=', 'count_events', $this->count_events]);
+        }
+
+        /** five sets filter */
+        if(!is_null($this->five_sets)) {
+            $query->andFilterWhere(['sp_total.five_sets' => $this->five_sets]);
         }
 
         return $dataProvider;

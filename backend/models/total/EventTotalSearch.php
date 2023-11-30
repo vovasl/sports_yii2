@@ -35,7 +35,7 @@ class EventTotalSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id'], 'integer'],
+            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets'], 'integer'],
             [['player', 'tournament_name', 'total_over_value'], 'string'],
             [['home_moneyline_odd'], 'double'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
@@ -146,6 +146,7 @@ class EventTotalSearch extends Event
             ]);
         }
 
+        /** result filter */
         if(!is_null($this->result)) {
             if($this->result == 1) {
                 $query->andFilterWhere(['IS NOT', 'home_result', new Expression('null')]);
@@ -157,12 +158,14 @@ class EventTotalSearch extends Event
             }
         }
 
+        /** total games filter */
         if(!is_null($this->total_games)) {
             $query->andFilterWhere([
                 '>=', 'total_games', $this->total_games
             ]);
         }
 
+        /** count odds filter */
         if(!is_null($this->count_odds)) {
             if($this->count_odds == 1) {
                 $query->having(['>', 'count_odds', 0]);
@@ -172,14 +175,18 @@ class EventTotalSearch extends Event
             }
         }
 
-        if(!is_null($this->surface_id)) {
-            $query->andFilterWhere([Surface::tableName() . '.id' => $this->surface_id]);
-        }
-
+        /** tour filter */
         if(!is_null($this->tour_id)) {
             $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
         }
 
+        /** surface filter */
+        if(!is_null($this->surface_id)) {
+            $surface = in_array($this->surface_id, [2, 4]) ? [2, 4] : $this->surface_id;
+            $query->andFilterWhere(['IN', Surface::tableName() . '.id', $surface]);
+        }
+
+        /** total over value filter */
         if(!empty($this->total_over_value)) {
             preg_match('#(\d+)(<.*|>.*)#', $this->total_over_value, $tovalOver);
             if(!empty($tovalOver)) {
@@ -190,8 +197,12 @@ class EventTotalSearch extends Event
             }
         }
 
-        //$query->andFilterWhere(['five_sets' => 0]);
+        /** five sets filter */
+        if(!is_null($this->five_sets)) {
+            $query->andFilterWhere(['five_sets' => $this->five_sets]);
+        }
 
+        /** moneyline filter */
         if(!empty($this->home_moneyline_odd)) {
             $homeMoneylineOdd = $this->home_moneyline_odd * 100;
             $query->andHaving(['>=', 'home_moneyline_odd', $homeMoneylineOdd]);

@@ -122,6 +122,12 @@ $reset = "/total/events";
                 'filter' => '',
             ],
             [
+                'label' => '5 Sets',
+                'attribute' => 'five_sets',
+                'value' => '',
+                'filter' => ['No', 'Yes'],
+            ],
+            [
                 'label' => 'Over',
                 'value' => function(Event $model) {
                     return EventHelper::getOddStat($model->totalsOver);
