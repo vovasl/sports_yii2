@@ -25,6 +25,7 @@ use yii\db\ActiveRecord;
  * @property int|null $profit_2
  * @property int|null $profit_3
  * @property int|null $profit_4
+ * @property int|null $count_events
  * @property int|null $sum_profit_0
  * @property int|null $sum_profit_1
  * @property int|null $sum_profit_2

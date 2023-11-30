@@ -4,6 +4,7 @@
 use backend\models\total\PlayerTotalSearch;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Surface;
+use frontend\models\sport\Total;
 use frontend\models\sport\Tour;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
@@ -51,8 +52,19 @@ $reset = "/total/players";
         'columns' => [
             [
                 'label' => 'Player',
-                'attribute' => 'player_id',
-                'value' => 'player.name',
+                'attribute' => 'player_name',
+                'format' => 'raw',
+                'value' => function(Total $model) use($searchModel) {
+                    return Html::a($model->player->name, [
+                        'total/events',
+                        'EventTotalSearch[player]' => $model->player->name,
+                        'EventTotalSearch[count_odds]' => 1,
+                        'EventTotalSearch[tour_id]' => $searchModel->tour_id,
+                        'EventTotalSearch[surface_id]' => $searchModel->surface_id,
+                    ], [
+                        'target'=>'_blank',
+                    ]);
+                }
             ],
             [
                 'label' => 'Tour',

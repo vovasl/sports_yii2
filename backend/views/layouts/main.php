@@ -41,28 +41,21 @@ Icon::map($this);
         ],
     ]);
     $menuItems = [
-        ['label' => 'Tournaments', 'url' => ['/tournament']],
-        ['label' => 'Events', 'items' => [
-            ['label' => 'Events', 'url' => ['/event']],
-            ['label' => 'Total', 'url' => ['/total/events']],
-        ]],
         ['label' => 'Actions', 'items' => [
             ['label' => 'Add Odds', 'url' => ['/event/add-odds']],
             ['label' => 'Add Line', 'url' => ['/event/add-line']],
             ['label' => 'Add Result', 'url' => ['/event/add-result']],
             ['label' => 'Add Results', 'url' => ['/event/add-results']],
+            ['label' => 'Check Events', 'url' => ['check/event']],
+            ['label' => 'Check Players', 'url' => ['check/player']],
         ]],
-        ['label' => 'Check', 'items' => [
-            ['label' => 'Events', 'url' => ['check/event']],
-            ['label' => 'Player', 'url' => ['check/player']],
-        ]],
-        ['label' => 'Players', 'items' => [
-            ['label' => 'Players', 'url' => ['players/player/index']],
-            ['label' => 'Statistic', 'url' => ['players/statistic/index']],
-        ]
-        ],
-        ['label' => 'Stats', 'items' => [
-            ['label' => 'Totals', 'url' => ['statistic/total']],
+        ['label' => 'Tournaments', 'url' => ['/tournament']],
+        ['label' => 'Events', 'url' => ['/event']],
+        ['label' => 'Players', 'url' => ['players/player/index']],
+        ['label' => 'Total', 'items' => [
+            ['label' => 'Events', 'url' => ['/total/events']],
+            ['label' => 'Players', 'url' => ['/total/players']],
+            ['label' => 'Stats', 'url' => ['/statistic/total']],
         ]],
         ['label' => 'Strategies', 'url' => ['statistic/strategies']],
         ['label' => 'Events Over', 'url' => ['total/events-over']],

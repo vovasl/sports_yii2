@@ -3,13 +3,34 @@
 namespace backend\models\total;
 
 
+use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use frontend\models\sport\Player;
+use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
+use frontend\models\sport\Tour;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 class PlayerTotalSearch extends Total
 {
+
+    public $player_name;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules(): array
+    {
+        return [
+            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'sum_profit_0', 'sum_profit_1', 'sum_profit_2', 'sum_profit_3', 'sum_profit_4'], 'integer'],
+            [['type', 'player_name', 'min_moneyline'], 'string', 'max' => 255],
+            [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['surface_id'], 'exist', 'skipOnError' => true, 'targetClass' => Surface::class, 'targetAttribute' => ['surface_id' => 'id']],
+            [['tour_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tour::class, 'targetAttribute' => ['tour_id' => 'id']],
+        ];
+    }
 
     /**
      * @return array
@@ -76,6 +97,11 @@ class PlayerTotalSearch extends Total
         }
         if(is_null($this->count_events)) {
             $this->count_events = 10;
+        }
+
+        /** player filter */
+        if(!empty($this->player_name)) {
+            $query->andFilterWhere(['LIKE', 'tn_player.name', $this->player_name]);
         }
 
         /** tour filter */
