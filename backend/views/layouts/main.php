@@ -53,12 +53,10 @@ Icon::map($this);
         ['label' => 'Events', 'url' => ['/event']],
         ['label' => 'Players', 'url' => ['players/player/index']],
         ['label' => 'Total', 'items' => [
-            ['label' => 'Events', 'url' => ['/total/events']],
+            ['label' => 'Stats', 'url' => ['/total/statistic']],
             ['label' => 'Players', 'url' => ['/total/players']],
-            ['label' => 'Stats', 'url' => ['/statistic/total']],
+            ['label' => 'Events', 'url' => ['/total/events']],
         ]],
-        ['label' => 'Strategies', 'url' => ['statistic/strategies']],
-        ['label' => 'Events Over', 'url' => ['total/events-over']],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];
     if (Yii::$app->user->isGuest) {

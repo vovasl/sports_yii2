@@ -16,7 +16,7 @@ use yii\web\View;
 
 <h1 class="mb-5">Totals</h1>
 
-<?= $this->render('total/_filter', ['filter' => $filter]); ?>
+<?= $this->render('statistic/_filter', ['filter' => $filter]); ?>
 
 <?= Html::a('Tournaments',
     ['/statistic/total-tournaments', 'tour' => $filter->tour, 'surface' => $filter->surface, 'qualifier' => $filter->round],
@@ -26,7 +26,7 @@ use yii\web\View;
 
 <?php foreach (Odd::ADD_TYPE as $type) : ?>
 
-    <?= $this->render('total/_outer', [
+    <?= $this->render('statistic/_outer', [
         'type' => $type,
         'stats' => $stats,
         'detail' => 0,

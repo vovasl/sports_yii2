@@ -1,13 +1,13 @@
 <?php
 
-
 namespace backend\controllers;
 
-use backend\helpers\total\OverHelper;
+
+use backend\models\statistic\FilterModel;
 use backend\models\total\EventTotalSearch;
 use backend\models\total\PlayerTotalSearch;
-use common\helpers\EventFilterHelper;
-use frontend\models\sport\Odd;
+use common\helpers\OddHelper;
+use frontend\models\sport\Event;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -35,39 +35,28 @@ class TotalController extends Controller
     /**
      * @return string
      */
-    public function actionEvents(): string
+    public function actionStatistic(): string
     {
-        $searchModel = new EventTotalSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $filter = new FilterModel(\Yii::$app->request->post());
 
-        return $this->render('events', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+        $events = Event::find();
+        $events->select(['tn_event.*', 'sp_odd.id o_id', 'sp_odd.add_type o_add_type', 'sp_odd.profit o_profit', 'sp_odd.odd o_odd']);
+        $events->withData();
+        $events->joinWith(['odds' => function($q) {
+            $q->andOnCondition(['type' => 2]);
+            $q->andOnCondition(['IS NOT', 'profit', NULL]);
+            return $q;
+        }]);
+        $events->indexBy('o_id');
 
-    /**
-     * @return string
-     */
-    public function actionEventsOver(): string
-    {
-        $config = [
-            'status' => EventFilterHelper::EVENTS_STATUS['SCHEDULED'],
-            'add_type' => Odd::ADD_TYPE['over'],
-            'sort' => ['start_at' => SORT_ASC]
-        ];
+        $events = $filter->searchEvents($events);
+        $stats = OddHelper::eventsStats($events->all());
 
-        $strategies = [
-            OverHelper::ATPHard(),
-            OverHelper::ATPIndoor(),
-            //OverHelper::challengerClay(),
-            //OverHelper::challengerHard(),
-            //OverHelper::challengerIndoor(),
-        ];
+        //BaseHelper::outputArray($stats);die;
 
-        return $this->render('events-over', [
-            'strategies' => $strategies,
-            'config' => $config,
+        return $this->render('statistic', [
+            'stats' => $stats,
+            'filter' => $filter,
         ]);
     }
 
@@ -80,6 +69,20 @@ class TotalController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('players', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionEvents(): string
+    {
+        $searchModel = new EventTotalSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('events', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

@@ -5,7 +5,6 @@
  * @var Event $event
  */
 
-use backend\helpers\total\OverHelper;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
