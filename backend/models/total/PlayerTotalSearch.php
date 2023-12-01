@@ -23,7 +23,7 @@ class PlayerTotalSearch extends Total
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'sum_profit_0', 'sum_profit_1', 'sum_profit_2', 'sum_profit_3', 'sum_profit_4'], 'integer'],
+            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['type', 'player_name', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -47,11 +47,11 @@ class PlayerTotalSearch extends Total
             ->select([
                 'sp_total.*',
                 'count(event_id) count_events',
-                'sum(profit_0) sum_profit_0',
-                'sum(profit_1) sum_profit_1',
-                'sum(profit_2) sum_profit_2',
-                'sum(profit_3) sum_profit_3',
-                'sum(profit_4) sum_profit_4',
+                'round(sum(profit_0)/count(event_id)) percent_profit_0',
+                'round(sum(profit_1)/count(event_id)) percent_profit_1',
+                'round(sum(profit_2)/count(event_id)) percent_profit_2',
+                'round(sum(profit_3)/count(event_id)) percent_profit_3',
+                'round(sum(profit_4)/count(event_id)) percent_profit_4',
             ])
             ->joinWith([
                 'player',
@@ -65,16 +65,16 @@ class PlayerTotalSearch extends Total
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'sum_profit_0' => SORT_DESC
+                    'percent_profit_0' => SORT_DESC
                 ],
                 'attributes' => [
                     'player_id',
                     'count_events',
-                    'sum_profit_0',
-                    'sum_profit_1',
-                    'sum_profit_2',
-                    'sum_profit_3',
-                    'sum_profit_4',
+                    'percent_profit_0',
+                    'percent_profit_1',
+                    'percent_profit_2',
+                    'percent_profit_3',
+                    'percent_profit_4',
                 ]
             ],
             /*
@@ -114,7 +114,7 @@ class PlayerTotalSearch extends Total
 
         /** surface filter */
         if(!is_null($this->surface_id)) {
-            $surface = in_array($this->surface_id, [2, 4]) ? [2, 4] : $this->surface_id;
+            $surface = in_array($this->surface_id, Surface::HARD_INDOOR) ? Surface::HARD_INDOOR : $this->surface_id;
             $query->andFilterWhere(['IN', 'sp_total.surface_id', $surface]);
         }
 

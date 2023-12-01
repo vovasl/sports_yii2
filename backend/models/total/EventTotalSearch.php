@@ -182,7 +182,7 @@ class EventTotalSearch extends Event
 
         /** surface filter */
         if(!is_null($this->surface_id)) {
-            $surface = in_array($this->surface_id, [2, 4]) ? [2, 4] : $this->surface_id;
+            $surface = in_array($this->surface_id, Surface::HARD_INDOOR) ? Surface::HARD_INDOOR : $this->surface_id;
             $query->andFilterWhere(['IN', Surface::tableName() . '.id', $surface]);
         }
 

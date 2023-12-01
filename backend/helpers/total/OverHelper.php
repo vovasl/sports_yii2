@@ -3,16 +3,16 @@
 
 namespace backend\helpers\total;
 
-use backend\models\statistic\FilterModel;
 use common\helpers\EventFilterHelper;
-use common\helpers\EventHelper;
 use common\helpers\OddHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
-use frontend\models\sport\OddType;
+use frontend\models\sport\Surface;
+use frontend\models\sport\Total;
 use Yii;
 use yii\db\DataReader;
 use yii\db\Exception;
+use yii\db\Expression;
 
 class OverHelper
 {
@@ -160,7 +160,7 @@ class OverHelper
     public static function getEventPlayersSubQuery(Event $event): string
     {
         $minMoneyline = 140;
-        $surface = (in_array($event->eventTournament->surface, [2, 4])) ? '2,4' : $event->eventTournament->surface;
+        $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR)) ? '2, 4' : $event->eventTournament->surface;
         $odds = OddHelper::totalSettings();
         sort($odds);
 
@@ -198,69 +198,50 @@ class OverHelper
     /**
      * @param Event $event
      * @return string
-     * @throws Exception
      */
     public static function getEventPlayersGeneralStat(Event $event): string
     {
-        $minKoef = 0;
-        $query = self::getEventPlayersGeneralQuery($event);
-        $connection = Yii::$app->getDb();
-        $command = $connection->createCommand($query);
-        $stats = $command->queryAll();
+        $minPercent = 10;
+        $minMoneyline = 140;
+        $minEvents = 10;
+
+        $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR)) ? Surface::HARD_INDOOR : $event->eventTournament->surface;
+        $query = Total::find();
+        $query->select([
+            'player_id',
+            'round((round(sum(profit_0)/count(event_id)) + round(sum(profit_1)/count(event_id)))/2) percent_profit',
+        ]);
+        $query->where(['>=', 'min_moneyline', $minMoneyline]);
+        $query->andWhere(['type' => Odd::ADD_TYPE['over']]);
+        $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
+        $query->andWhere(['IN', 'surface_id', $surface]);
+        $query->andWhere(['five_sets' => $event->five_sets]);
+        $query->groupBy('player_id');
+        $query->having(['>=', 'count(event_id)', $minEvents]);
+        $query->andHaving(['>=', 'percent_profit', $minPercent]);
+        $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
+        $models = $query->all();
 
         $output = "";
-        if(count($stats) != 2) return $output;
+        if(count($models) != 2) return $output;
 
-        foreach ($stats as $stat) {
-            $koef = round($stat['profit'] / $stat['count_odds']);
-            if($koef < $minKoef) return '';
-            $output .= "{$koef} ";
+        $stats = [];
+        foreach ($models as $model) {
+            $stats[] = $model->getPercentProfit();
         }
 
+        $output = join(' ', $stats);
+
         /** totalOver output markers */
-/*        $totalOver = EventHelper::getOddStat($event->totalsOver);
-        if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5'])) $output .= 'QQQQQ';
-        else if($totalOver == '0/5') $output .= 'WWWWW';
-        else if($totalOver == '1/5') $output .= 'EEEEE';
-        else if($totalOver == '2/5') $output .= 'RRRRR';
-        else $output .= 'TTTTT';*/
+        /*
+        $totalOver = EventHelper::getOddStat($event->totalsOver);
+        if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5', '2/5'])) $output .= ' QQQQQ';
+        else if($totalOver == '0/5') $output .= ' WWWWW';
+        else if($totalOver == '1/5') $output .= ' EEEEE';
+        else $output .= ' TTTTT';
+        */
 
         return $output;
-    }
-
-    /**
-     * @param Event $event
-     * @return string
-     */
-    public static function getEventPlayersGeneralQuery(Event $event): string
-    {
-        $surface = (in_array($event->eventTournament->surface, [2, 4])) ? '2,4' : $event->eventTournament->surface;
-        $where = "`event`.five_sets = 0 and event.sofa_id is not null";
-        $where .= " and `home_moneyline`.`odd` >= 140 and `away_moneyline`.odd >= 140 and event.five_sets = 0";
-        //$where .= " and tournament.tour = {$event->eventTournament->tour}";
-        $where .= " and tournament.surface IN ($surface)";
-        $where .= ' and (player.name = "' . $event->homePlayer->name . '" or player.name = "' . $event->awayPlayer->name . '")';
-
-        $sql = "SELECT 
-                    player.id, player.name, sum(odd_total_over.profit) profit, count(odd_total_over.id) count_odds
-                FROM 
-                    `tn_player` player
-                LEFT JOIN `tn_event` event ON (event.home = player.id OR event.away = player.id)
-                LEFT JOIN `tn_tournament` tournament ON (tournament.id = event.tournament)
-                LEFT JOIN `sp_odd` odd_total_over ON (event.id = odd_total_over.event and odd_total_over.type = 2 and odd_total_over.add_type = 'over')
-                LEFT JOIN `sp_odd` `home_moneyline` ON (`event`.`id` = `home_moneyline`.`event` AND `event`.`home` = `home_moneyline`.`player_id`) AND (`home_moneyline`.`type` = 4) 
-                LEFT JOIN `sp_odd` `away_moneyline` ON (`event`.`id` = `away_moneyline`.`event` AND `event`.`away` = `away_moneyline`.`player_id`) AND (`away_moneyline`.`type` = 4)
-                WHERE 
-                      {$where}
-                GROUP BY 
-                         player.id
-                HAVING 
-                       count_odds >= 50
-                ORDER BY 
-                         FIELD(player.name, \"{$event->homePlayer->name}\", \"{$event->awayPlayer->name}\")
-                ";
-
-        return $sql;
     }
 
 }

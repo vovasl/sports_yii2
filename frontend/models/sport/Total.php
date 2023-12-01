@@ -26,11 +26,12 @@ use yii\db\ActiveRecord;
  * @property int|null $profit_3
  * @property int|null $profit_4
  * @property int|null $count_events
- * @property int|null $sum_profit_0
- * @property int|null $sum_profit_1
- * @property int|null $sum_profit_2
- * @property int|null $sum_profit_3
- * @property int|null $sum_profit_4
+ * @property int|null $percent_profit
+ * @property int|null $percent_profit_0
+ * @property int|null $percent_profit_1
+ * @property int|null $percent_profit_2
+ * @property int|null $percent_profit_3
+ * @property int|null $percent_profit_4
  *
  * @property Event $event
  * @property Player $player
@@ -41,11 +42,12 @@ class Total extends ActiveRecord
 {
 
     public $count_events;
-    public $sum_profit_0;
-    public $sum_profit_1;
-    public $sum_profit_2;
-    public $sum_profit_3;
-    public $sum_profit_4;
+    public $percent_profit;
+    public $percent_profit_0;
+    public $percent_profit_1;
+    public $percent_profit_2;
+    public $percent_profit_3;
+    public $percent_profit_4;
 
     /**
      * {@inheritdoc}
@@ -61,7 +63,7 @@ class Total extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'sum_profit_0', 'sum_profit_1', 'sum_profit_2', 'sum_profit_3', 'sum_profit_4'], 'integer'],
+            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['type', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -90,11 +92,6 @@ class Total extends ActiveRecord
             'profit_2' => 'Profit 2',
             'profit_3' => 'Profit 3',
             'profit_4' => 'Profit 4',
-            'sum_profit_0' => '<1.75',
-            'sum_profit_1' => '1.75-1.85',
-            'sum_profit_2' => '1.85-1.97',
-            'sum_profit_3' => '1.97-2.1',
-            'sum_profit_4' => '>=2.1',
         ];
     }
 
@@ -119,6 +116,16 @@ class Total extends ActiveRecord
     }
 
     /**
+     * Gets query for [[Tour]].
+     *
+     * @return ActiveQuery
+     */
+    public function getTour(): ActiveQuery
+    {
+        return $this->hasOne(Tour::class, ['id' => 'tour_id']);
+    }
+
+    /**
      * Gets query for [[Surface]].
      *
      * @return ActiveQuery
@@ -129,12 +136,51 @@ class Total extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Tour]].
-     *
-     * @return ActiveQuery
+     * @return string
      */
-    public function getTour(): ActiveQuery
+    public function getPercentProfit(): string
     {
-        return $this->hasOne(Tour::class, ['id' => 'tour_id']);
+        return $this->percent_profit / 100 . '%';
     }
+
+    /**
+     * @return string
+     */
+    public function getPercentProfit0(): string
+    {
+        return $this->percent_profit_0 / 100 . '%';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPercentProfit1(): string
+    {
+        return $this->percent_profit_1 / 100 . '%';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPercentProfit2(): string
+    {
+        return $this->percent_profit_2 / 100 . '%';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPercentProfit3(): string
+    {
+        return $this->percent_profit_3 / 100 . '%';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPercentProfit4(): string
+    {
+        return $this->percent_profit_4 / 100 . '%';
+    }
+
 }

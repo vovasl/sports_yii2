@@ -2,8 +2,9 @@
 
 namespace frontend\models\sport;
 
-use Yii;
+
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tn_surface".
@@ -13,8 +14,11 @@ use yii\db\ActiveQuery;
  *
  * @property Tournament[] $tournaments
  */
-class Surface extends \yii\db\ActiveRecord
+class Surface extends ActiveRecord
 {
+
+    CONST HARD_INDOOR = [2, 4];
+
     /**
      * {@inheritdoc}
      */
