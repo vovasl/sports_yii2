@@ -1,10 +1,11 @@
 <?php
 
 
-use backend\helpers\total\OverHelper;
 use backend\models\total\EventTotalSearch;
 use common\helpers\EventHelper;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
@@ -143,9 +144,9 @@ $reset = "/total/events";
                 ]
             ],
             [
-                'label' => 'Stats',
+                'label' => 'Over',
                 'value' => function(Event $model) {
-                    return OverHelper::getEventPlayersGeneralStat($model);
+                    return TotalHelper::getEventPlayersGeneralStat($model, Odd::ADD_TYPE['over']);
                 }
             ],
             [

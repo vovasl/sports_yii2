@@ -5,7 +5,10 @@
  * @var Event $event
  */
 
+use backend\helpers\total\OverHelper;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 
 $this->title = $event->fullName;
 
@@ -21,5 +24,12 @@ $this->render('_breadcrumbs', [
     <?= $this->render('view/_games', ['event' => $event]) ?>
     <?= $this->render('view/_teams', ['event' => $event]) ?>
     <?= $this->render('view/_sets', ['event' => $event]) ?>
-    <?= $this->render('view/_total_over_stats', ['event' => $event]) ?>
+    <?= $this->render('view/_total_stats', [
+        'title' => 'Total Over Stats',
+        'stats' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['over']),
+    ]) ?>
+    <?= $this->render('view/_total_stats', [
+        'title' => 'Total Under Stats',
+        'stats' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['under']),
+    ]) ?>
 <?php endif; ?>
