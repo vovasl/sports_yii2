@@ -8,6 +8,7 @@ use frontend\models\sport\Event;
 use frontend\models\sport\Total;
 use Yii;
 use yii\console\Controller;
+use yii\db\Expression;
 
 class TotalController extends Controller
 {
@@ -20,6 +21,7 @@ class TotalController extends Controller
         /** get events */
         $events = Event::find()
             ->active()
+            ->andWhere(['IS NOT', 'tn_event.sofa_id', new Expression('null')])
             ->joinWith([
                 'eventTournament',
                 'eventTournament.tournamentTour',

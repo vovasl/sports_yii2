@@ -57,8 +57,10 @@ $reset = "/total/players";
                 'value' => function(Total $model) use($searchModel) {
                     return Html::a($model->player->name, [
                         'total/events',
-                        'EventTotalSearch[player]' => $model->player->name,
                         'EventTotalSearch[count_odds]' => 1,
+                        'EventTotalSearch[result]' => 1,
+                        'EventTotalSearch[home_moneyline_odd]' => 1.4,
+                        'EventTotalSearch[player]' => $model->player->name,
                         'EventTotalSearch[tour_id]' => $searchModel->tour_id,
                         'EventTotalSearch[surface_id]' => $searchModel->surface_id,
                         'EventTotalSearch[five_sets]' => $searchModel->five_sets,

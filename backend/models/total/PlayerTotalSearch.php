@@ -95,6 +95,9 @@ class PlayerTotalSearch extends Total
         if(is_null($this->type)) {
             $this->type = Odd::ADD_TYPE['over'];
         }
+        if(empty($this->min_moneyline)) {
+            $this->min_moneyline = '1.4>=';
+        }
         if(is_null($this->count_events)) {
             $this->count_events = 10;
         }

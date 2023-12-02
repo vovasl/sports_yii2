@@ -23,7 +23,9 @@ class TotalHelper
      */
     public static function getEventPlayersGeneralStat(Event $event, string $type): string
     {
-        $minPercent = 10;
+        $minPercentBoth = 20;
+        $maxPercent = 20;
+        $minPercent = -10;
         $minEvents = 10;
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
         $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
@@ -42,12 +44,23 @@ class TotalHelper
         $query->andWhere(['five_sets' => $event->five_sets]);
         $query->groupBy('player_id');
         $query->having(['>=', 'count(event_id)', $minEvents]);
-        $query->andHaving(['>=', 'percent_profit', $minPercent]);
+        //$query->andHaving(['>=', 'percent_profit', $minPercentBoth]);
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
         $models = $query->all();
 
         $output = "";
         if(count($models) != 2) return $output;
+
+        /** get max and min percent */
+        $maxPercentProfit = ($models[0]->percent_profit >= $models[1]->percent_profit)
+            ? $models[0]->percent_profit:
+            $models[1]->percent_profit;
+        $minPercentProfit = ($models[0]->percent_profit <= $models[1]->percent_profit)
+            ? $models[0]->percent_profit
+            : $models[1]->percent_profit;
+
+        /** filer by max and min percent */
+        if($maxPercentProfit < $maxPercent || $minPercentProfit < $minPercent) return $output;
 
         $stats = [];
         foreach ($models as $model) {
@@ -60,8 +73,8 @@ class TotalHelper
         /*
         $totalOver = EventHelper::getOddStat($event->totalsOver);
         if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5', '2/5'])) $output .= ' QQQQQ';
-        else if($totalOver == '0/5') $output .= ' WWWWW';
-        else if($totalOver == '1/5') $output .= ' EEEEE';
+        else if(in_array($totalOver, ['0/5', '0/6', '0/7', '1/7'])) $output .= ' WWWWW';
+        else if(in_array($totalOver, ['1/5', '2/7'])) $output .= ' EEEEE';
         else $output .= ' TTTTT';
         */
 

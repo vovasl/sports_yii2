@@ -119,6 +119,7 @@ class EventTotalSearch extends Event
         /** empty search params */
         if(empty($params)) {
             $this->result = 2;
+            $this->home_moneyline_odd = 1.4;
         }
 
         if(!is_null($this->tournament_name)) {
