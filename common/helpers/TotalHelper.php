@@ -26,7 +26,7 @@ class TotalHelper
         $minPercentBoth = 20;
         $maxPercent = 20;
         $minPercent = -10;
-        $minEvents = 10;
+        $minEvents = 25;
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
         $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
             ? Surface::HARD_INDOOR
