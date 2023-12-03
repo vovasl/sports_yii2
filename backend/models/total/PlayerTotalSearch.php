@@ -47,11 +47,11 @@ class PlayerTotalSearch extends Total
             ->select([
                 'sp_total.*',
                 'count(event_id) count_events',
-                'round(sum(profit_0)/count(event_id)) percent_profit_0',
-                'round(sum(profit_1)/count(event_id)) percent_profit_1',
-                'round(sum(profit_2)/count(event_id)) percent_profit_2',
-                'round(sum(profit_3)/count(event_id)) percent_profit_3',
-                'round(sum(profit_4)/count(event_id)) percent_profit_4',
+                'round(sum(profit_0)/count(profit_0)) percent_profit_0',
+                'round(sum(profit_1)/count(profit_1)) percent_profit_1',
+                'round(sum(profit_2)/count(profit_2)) percent_profit_2',
+                'round(sum(profit_3)/count(profit_3)) percent_profit_3',
+                'round(sum(profit_4)/count(profit_4)) percent_profit_4',
             ])
             ->joinWith([
                 'player',

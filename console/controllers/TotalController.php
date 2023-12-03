@@ -80,7 +80,7 @@ class TotalController extends Controller
                     $field = "profit_{$k}";
 
                     /** field without value */
-                    if (is_null($model->{$field})) $model->{$field} = $odd->profit;
+                    if (is_null($model->{$field}) || $k == 0) $model->{$field} = $odd->profit;
 
                     break;
                 }
