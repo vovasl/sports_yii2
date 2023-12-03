@@ -99,7 +99,7 @@ class PlayerTotalSearch extends Total
             $this->min_moneyline = '1.4>=';
         }
         if(is_null($this->count_events)) {
-            $this->count_events = 10;
+            $this->count_events = 15;
         }
         if(is_null($this->five_sets)) {
             $this->five_sets = 0;
@@ -108,6 +108,7 @@ class PlayerTotalSearch extends Total
         /** player filter */
         if(!empty($this->player_name)) {
             $query->andFilterWhere(['LIKE', 'tn_player.name', $this->player_name]);
+            $this->count_events = null;
         }
 
         /** tour filter */

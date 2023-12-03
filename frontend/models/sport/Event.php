@@ -301,7 +301,7 @@ class Event extends ActiveRecord
                 'total_under.add_type' => Odd::ADD_TYPE['under']
             ])
             ->orderBy([
-                'total_under.value' => SORT_ASC
+                'total_under.value' => SORT_DESC
             ])
             ;
     }
