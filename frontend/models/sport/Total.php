@@ -3,9 +3,6 @@
 namespace frontend\models\sport;
 
 
-use frontend\models\sport\query\EventQuery;
-use frontend\models\sport\query\TotalQuery;
-use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -42,6 +39,12 @@ class Total extends ActiveRecord
 {
 
     public $count_events;
+    public $count_profit_0;
+    public $count_profit_1;
+    public $count_profit_2;
+    public $count_profit_3;
+    public $count_profit_4;
+
     public $percent_profit;
     public $percent_profit_0;
     public $percent_profit_1;
@@ -63,7 +66,7 @@ class Total extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
+            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['type', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],

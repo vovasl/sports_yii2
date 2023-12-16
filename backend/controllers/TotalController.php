@@ -3,11 +3,9 @@
 namespace backend\controllers;
 
 
-use backend\models\statistic\FilterModel;
 use backend\models\total\EventTotalSearch;
 use backend\models\total\PlayerTotalSearch;
-use common\helpers\OddHelper;
-use frontend\models\sport\Event;
+use backend\models\total\StatisticTotalSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -37,26 +35,12 @@ class TotalController extends Controller
      */
     public function actionStatistic(): string
     {
-        $filter = new FilterModel(\Yii::$app->request->post());
-
-        $events = Event::find();
-        $events->select(['tn_event.*', 'sp_odd.id o_id', 'sp_odd.add_type o_add_type', 'sp_odd.profit o_profit', 'sp_odd.odd o_odd']);
-        $events->withData();
-        $events->joinWith(['odds' => function($q) {
-            $q->andOnCondition(['type' => 2]);
-            $q->andOnCondition(['IS NOT', 'profit', NULL]);
-            return $q;
-        }]);
-        $events->indexBy('o_id');
-
-        $events = $filter->searchEvents($events);
-        $stats = OddHelper::eventsStats($events->all());
-
-        //BaseHelper::outputArray($stats);die;
+        $searchModel = new StatisticTotalSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('statistic', [
-            'stats' => $stats,
-            'filter' => $filter,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
