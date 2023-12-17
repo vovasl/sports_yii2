@@ -13,7 +13,7 @@ use yii\db\Expression;
 class TotalHelper
 {
 
-    CONST OVER_MIN_MONEYLINE = 140;
+    CONST OVER_MIN_MONEYLINE = 150;
     CONST UNDER_MIN_MONEYLINE = 100;
 
     /**
@@ -25,8 +25,8 @@ class TotalHelper
     {
         $minPercentBoth = 20;
         $maxPercent = 20;
-        $minPercent = -10;
-        $minEvents = 25;
+        $minPercent = -15;
+        $minEvents = 15;
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
         $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
             ? Surface::HARD_INDOOR
@@ -37,13 +37,17 @@ class TotalHelper
             'player_id',
             'round((round(sum(profit_0)/count(profit_0)) + round(sum(profit_1)/count(profit_1)))/2) percent_profit',
         ]);
-        $query->joinWith(['event']);
+        $query->joinWith([
+            'event',
+            'event.eventTournament.tournamentTour',
+            'event.eventTournament.tournamentSurface',
+        ]);
         $query->where(['<', 'tn_event.start_at', $event->start_at]);
+        $query->andWhere(['IN', 'tn_surface.id', $surface]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         $query->andWhere(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
-        $query->andWhere(['IN', 'surface_id', $surface]);
-        $query->andWhere(['sp_total.five_sets' => $event->five_sets]);
+        $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
         $query->groupBy('player_id');
         $query->having(['>=', 'count(event_id)', $minEvents]);
         //$query->andHaving(['>=', 'percent_profit', $minPercentBoth]);
@@ -72,13 +76,13 @@ class TotalHelper
         $output = join(' ', $stats);
 
         /** totalOver output markers */
-        /*
+
         $totalOver = EventHelper::getOddStat($event->totalsOver);
         if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5', '2/5'])) $output .= ' QQQQQ';
         else if(in_array($totalOver, ['0/5', '0/6', '0/7', '1/7'])) $output .= ' WWWWW';
         else if(in_array($totalOver, ['1/5', '2/7'])) $output .= ' EEEEE';
         else $output .= ' TTTTT';
-        */
+
 
         return $output;
     }
@@ -105,14 +109,17 @@ class TotalHelper
             'round(sum(profit_3)/count(profit_3)) percent_profit_3',
             'round(sum(profit_4)/count(profit_4)) percent_profit_4',
         ]);
-        $query->with(['player']);
-        $query->joinWith(['event']);
+        $query->joinWith([
+            'event',
+            'event.eventTournament.tournamentTour',
+            'event.eventTournament.tournamentSurface',
+        ]);
         $query->where(['<', 'tn_event.start_at', $event->start_at]);
+        $query->andWhere(['IN', 'tn_surface.id', $surface]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
-        $query->andWhere(['type' => $type]);
-        $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
-        $query->andWhere(['IN', 'surface_id', $surface]);
-        $query->andWhere(['sp_total.five_sets' => $event->five_sets]);
+        $query->andWhere(['sp_total.type' => $type]);
+        $query->andWhere(['IN', 'sp_total.player_id', [$event->home, $event->away]]);
+        $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
         $query->groupBy('player_id');
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
 

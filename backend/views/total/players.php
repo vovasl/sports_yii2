@@ -3,6 +3,7 @@
 
 use backend\models\total\PlayerTotalSearch;
 use frontend\models\sport\Odd;
+use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
 use frontend\models\sport\Tour;
@@ -59,10 +60,11 @@ $reset = "/total/players";
                         'total/events',
                         'EventTotalSearch[count_odds]' => 1,
                         'EventTotalSearch[result]' => 1,
-                        'EventTotalSearch[home_moneyline_odd]' => 1.6,
+                        'EventTotalSearch[home_moneyline_odd]' => 1.5,
                         'EventTotalSearch[player]' => $model->player->name,
-                        'EventTotalSearch[tour_id]' => $searchModel->tour_id,
-                        'EventTotalSearch[surface_id]' => $searchModel->surface_id,
+                        'EventTotalSearch[tour_id]' => $searchModel->tour,
+                        'EventTotalSearch[surface_id]' => $searchModel->surface,
+                        'EventTotalSearch[round_id]' => $searchModel->round,
                         'EventTotalSearch[five_sets]' => $searchModel->five_sets,
                     ], [
                         'target'=>'_blank',
@@ -71,15 +73,21 @@ $reset = "/total/players";
             ],
             [
                 'label' => 'Tour',
-                'attribute' => 'tour_id',
+                'attribute' => 'tour',
                 'value' => '',
                 'filter' => Tour::dropdown()
             ],
             [
                 'label' => 'Surface',
-                'attribute' => 'surface_id',
+                'attribute' => 'surface',
                 'value' => '',
                 'filter' => Surface::dropdown()
+            ],
+            [
+                'label' => 'Round',
+                'attribute' => 'round',
+                'value' => '',
+                'filter' => Round::dropdownFilter(),
             ],
             'count_events',
             [

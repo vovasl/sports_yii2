@@ -49,15 +49,13 @@ class TotalController extends Controller
                     $model = new Total();
                     $model->player_id = $event->{$player};
                     $model->event_id = $event->id;
-                    $model->tour_id = $event->eventTournament->tournamentTour->id;
-                    $model->surface_id = $event->eventTournament->tournamentSurface->id;
-                    $model->five_sets = $event->five_sets;
                     $model->type = $event->{$type}[0]->add_type;
                     $model->min_moneyline = ($homeMoneyline <= $awayMoneyline) ? $homeMoneyline : $awayMoneyline;
                     $model = $this->getProfit($model, $event, $type);
                     $model->save(0);
                 }
             }
+            //break;
         }
     }
 
@@ -77,10 +75,14 @@ class TotalController extends Controller
         foreach ($event->{$type} as $odd) {
             foreach ($oddsSettings as $k => $setting) {
                 if (($k == array_key_last($oddsSettings) && $odd->odd >= $setting) || ($odd->odd >= $setting && $odd->odd < $oddsSettings[$k + 1])) {
-                    $field = "profit_{$k}";
+                    $profitField = "profit_{$k}";
+                    $idField = "odd_id_{$k}";
 
                     /** field without value */
-                    if (is_null($model->{$field}) || $k == 0) $model->{$field} = $odd->profit;
+                    if (is_null($model->{$profitField}) || $k == 0) {
+                        $model->{$profitField} = $odd->profit;
+                        $model->{$idField} = $odd->id;
+                    }
 
                     break;
                 }

@@ -6,9 +6,9 @@ namespace backend\models\total;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
+use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
-use frontend\models\sport\Tour;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -16,6 +16,10 @@ class PlayerTotalSearch extends Total
 {
 
     public $player_name;
+    public $tour;
+    public $surface;
+    public $round;
+    public $five_sets;
 
     /**
      * {@inheritdoc}
@@ -23,12 +27,10 @@ class PlayerTotalSearch extends Total
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
+            [['player_id', 'event_id', 'tour', 'surface', 'round', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['type', 'player_name', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
-            [['surface_id'], 'exist', 'skipOnError' => true, 'targetClass' => Surface::class, 'targetAttribute' => ['surface_id' => 'id']],
-            [['tour_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tour::class, 'targetAttribute' => ['tour_id' => 'id']],
         ];
     }
 
@@ -54,9 +56,10 @@ class PlayerTotalSearch extends Total
                 'round(sum(profit_4)/count(profit_4)) percent_profit_4',
             ])
             ->joinWith([
+                'event',
+                'event.eventTournament.tournamentTour',
+                'event.eventTournament.tournamentSurface',
                 'player',
-                'surface',
-                'tour',
             ])
             ->groupBy('player_id')
         ;
@@ -96,7 +99,7 @@ class PlayerTotalSearch extends Total
             $this->type = Odd::ADD_TYPE['over'];
         }
         if(empty($this->min_moneyline)) {
-            $this->min_moneyline = '1.6>=';
+            $this->min_moneyline = '1.5>=';
         }
         if(is_null($this->count_events)) {
             $this->count_events = 15;
@@ -112,16 +115,25 @@ class PlayerTotalSearch extends Total
         }
 
         /** tour filter */
-        if(!is_null($this->tour_id)) {
-            $query->andFilterWhere(['sp_total.tour_id' => $this->tour_id]);
+        if(!is_null($this->tour)) {
+            $query->andFilterWhere(['tn_tour.id' => $this->tour]);
         }
 
         /** surface filter */
-        if(!is_null($this->surface_id)) {
-            $surface = in_array($this->surface_id, Surface::HARD_INDOOR) ? Surface::HARD_INDOOR : $this->surface_id;
-            $query->andFilterWhere(['IN', 'sp_total.surface_id', $surface]);
+        if(!is_null($this->surface)) {
+            $surface = in_array($this->surface, Surface::HARD_INDOOR) ? Surface::HARD_INDOOR : $this->surface;
+            $query->andFilterWhere(['IN', 'tn_surface.id', $surface]);
         }
 
+        /** round filter */
+        if(!is_null($this->round)) {
+            if($this->round == Round::QUALIFIER_FILTER) {
+                $query->andFilterWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
+            }
+            else {
+                $query->andFilterWhere(['tn_event.round' => $this->round]);
+            }
+        }
         /** type filter */
         if(!is_null($this->type)) {
             $query->andFilterWhere(['sp_total.type' => $this->type]);
@@ -146,7 +158,7 @@ class PlayerTotalSearch extends Total
 
         /** five sets filter */
         if(!is_null($this->five_sets)) {
-            $query->andFilterWhere(['sp_total.five_sets' => $this->five_sets]);
+            $query->andFilterWhere(['tn_event.five_sets' => $this->five_sets]);
         }
 
         return $dataProvider;

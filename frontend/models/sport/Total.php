@@ -12,9 +12,6 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int|null $player_id
  * @property int|null $event_id
- * @property int|null $tour_id
- * @property int|null $surface_id
- * @property int $five_sets
  * @property string|null $type
  * @property int|null $min_moneyline
  * @property int|null $profit_0
@@ -32,8 +29,11 @@ use yii\db\ActiveRecord;
  *
  * @property Event $event
  * @property Player $player
- * @property Surface $surface
- * @property Tour $tour
+ * @property Odd $odd0
+ * @property Odd $odd1
+ * @property Odd $odd2
+ * @property Odd $odd3
+ * @property Odd $odd4
  */
 class Total extends ActiveRecord
 {
@@ -66,12 +66,10 @@ class Total extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'tour_id', 'surface_id', 'five_sets', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
+            [['player_id', 'event_id', 'odd_id_0', 'odd_id_1', 'odd_id_2', 'odd_id_3', 'odd_id_4', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['type', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
-            [['surface_id'], 'exist', 'skipOnError' => true, 'targetClass' => Surface::class, 'targetAttribute' => ['surface_id' => 'id']],
-            [['tour_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tour::class, 'targetAttribute' => ['tour_id' => 'id']],
         ];
     }
 
@@ -84,11 +82,13 @@ class Total extends ActiveRecord
             'id' => 'ID',
             'player_id' => 'Player ID',
             'event_id' => 'Event ID',
-            'tour_id' => 'Tour ID',
-            'surface_id' => 'Surface ID',
-            'five_sets' => 'Five Sets',
             'type' => 'Type',
             'min_moneyline' => 'Moneyline',
+            'odd_id_0' => 'Odd ID 0',
+            'odd_id_1' => 'Odd ID 1',
+            'odd_id_2' => 'Odd ID 2',
+            'odd_id_3' => 'Odd ID 3',
+            'odd_id_4' => 'Odd ID 4',
             'count_events' => 'Events',
             'profit_0' => 'Profit 0',
             'profit_1' => 'Profit 1',
@@ -119,23 +119,43 @@ class Total extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Tour]].
-     *
      * @return ActiveQuery
      */
-    public function getTour(): ActiveQuery
+    public function getOdd0(): ActiveQuery
     {
-        return $this->hasOne(Tour::class, ['id' => 'tour_id']);
+        return $this->hasOne(Odd::class, ['id' => 'odd_id_0']);
     }
 
     /**
-     * Gets query for [[Surface]].
-     *
      * @return ActiveQuery
      */
-    public function getSurface(): ActiveQuery
+    public function getOdd1(): ActiveQuery
     {
-        return $this->hasOne(Surface::class, ['id' => 'surface_id']);
+        return $this->hasOne(Odd::class, ['id' => 'odd_id_1']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getOdd2(): ActiveQuery
+    {
+        return $this->hasOne(Odd::class, ['id' => 'odd_id_2']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getOdd3(): ActiveQuery
+    {
+        return $this->hasOne(Odd::class, ['id' => 'odd_id_3']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getOdd4(): ActiveQuery
+    {
+        return $this->hasOne(Odd::class, ['id' => 'odd_id_4']);
     }
 
     /**

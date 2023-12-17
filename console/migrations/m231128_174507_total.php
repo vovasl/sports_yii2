@@ -14,11 +14,13 @@ class m231128_174507_total extends Migration
             'id' => $this->primaryKey(),
             'player_id' => $this->integer(),
             'event_id' => $this->integer(),
-            'tour_id' => $this->integer(),
-            'surface_id' => $this->integer(),
-            'five_sets' => $this->smallInteger(1)->notNull()->defaultValue(0),
             'type' => $this->string(),
             'min_moneyline' => $this->integer(),
+            'odd_id_0' => $this->integer(),
+            'odd_id_1' => $this->integer(),
+            'odd_id_2' => $this->integer(),
+            'odd_id_3' => $this->integer(),
+            'odd_id_4' => $this->integer(),
             'profit_0' => $this->integer(),
             'profit_1' => $this->integer(),
             'profit_2' => $this->integer(),
@@ -29,10 +31,12 @@ class m231128_174507_total extends Migration
         $this->createIndex('idx-total-type', '{{%sp_total}}', 'type');
 
         $this->addForeignKey('fk-total-player_id', '{{%sp_total}}', 'player_id', '{{%tn_player}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-tour_id', '{{%sp_total}}', 'tour_id', '{{%tn_tour}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-surface_id', '{{%sp_total}}', 'surface_id', '{{%tn_surface}}', 'id', 'SET NULL', 'RESTRICT');
         $this->addForeignKey('fk-total-event_id', '{{%sp_total}}', 'event_id', '{{%tn_event}}', 'id', 'SET NULL', 'RESTRICT');
-
+        $this->addForeignKey('fk-total-odd_id_0', '{{%sp_total}}', 'odd_id_0', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-total-odd_id_1', '{{%sp_total}}', 'odd_id_1', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-total-odd_id_2', '{{%sp_total}}', 'odd_id_2', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-total-odd_id_3', '{{%sp_total}}', 'odd_id_3', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-total-odd_id_4', '{{%sp_total}}', 'odd_id_4', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
     }
 
     public function down()

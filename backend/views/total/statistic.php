@@ -2,6 +2,7 @@
 
 use backend\models\total\StatisticTotalSearch;
 use frontend\models\sport\Odd;
+use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
 use yii\web\View;
@@ -37,15 +38,21 @@ $reset = "/total/statistic";
         'columns' => [
             [
                 'label' => 'Tour',
-                'attribute' => 'tour_id',
+                'attribute' => 'tour',
                 'value' => '',
                 'filter' => Tour::dropdown()
             ],
             [
                 'label' => 'Surface',
-                'attribute' => 'surface_id',
+                'attribute' => 'surface',
                 'value' => '',
                 'filter' => Surface::dropdown()
+            ],
+            [
+                'label' => 'Round',
+                'attribute' => 'round',
+                'value' => '',
+                'filter' => Round::dropdownFilter(),
             ],
             [
                 'label' => 'Type',
@@ -68,6 +75,10 @@ $reset = "/total/statistic";
                 'filter' => ['No', 'Yes'],
             ],
             [
+                'label' => 'Value <1.76',
+                'attribute' => 'value0',
+            ],
+            [
                 'label' => '<1.76',
                 'attribute' => 'percent_profit_0',
                 'filter' => '',
@@ -79,7 +90,8 @@ $reset = "/total/statistic";
                 'label' => '1.76-1.85',
                 'attribute' => 'percent_profit_1',
                 'filter' => '',
-                'value' => function(Total $model) {
+                'value' => function(Total $model) use($searchModel) {
+                    if(!empty($searchModel->value0)) return '';
                     return "{$model->percentProfit1}({$model->count_profit_1})";
                 },
             ],
@@ -87,7 +99,8 @@ $reset = "/total/statistic";
                 'label' => '1.86-1.96',
                 'attribute' => 'percent_profit_2',
                 'filter' => '',
-                'value' => function(Total $model) {
+                'value' => function(Total $model) use($searchModel) {
+                    if(!empty($searchModel->value0)) return '';
                     return "{$model->percentProfit2}({$model->count_profit_2})";
                 },
             ],
@@ -95,7 +108,8 @@ $reset = "/total/statistic";
                 'label' => '1.97-2.08',
                 'attribute' => 'percent_profit_3',
                 'filter' => '',
-                'value' => function(Total $model) {
+                'value' => function(Total $model) use($searchModel) {
+                    if(!empty($searchModel->value0)) return '';
                     return "{$model->percentProfit3}({$model->count_profit_3})";
                 },
             ],
@@ -103,7 +117,8 @@ $reset = "/total/statistic";
                 'label' => '>=2.09',
                 'attribute' => 'percent_profit_4',
                 'filter' => '',
-                'value' => function(Total $model) {
+                'value' => function(Total $model) use($searchModel) {
+                    if(!empty($searchModel->value0)) return '';
                     return "{$model->percentProfit4}({$model->count_profit_4})";
                 },
             ],

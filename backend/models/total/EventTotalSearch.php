@@ -119,7 +119,7 @@ class EventTotalSearch extends Event
         /** empty search params */
         if(empty($params)) {
             $this->result = 2;
-            $this->home_moneyline_odd = 1.6;
+            $this->home_moneyline_odd = 1.5;
             $this->five_sets = 0;
             $this->count_odds = 1;
         }
