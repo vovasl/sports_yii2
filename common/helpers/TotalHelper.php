@@ -6,8 +6,10 @@ namespace common\helpers;
 
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
+use frontend\models\sport\Tour;
 use yii\db\Expression;
 
 class TotalHelper
@@ -24,9 +26,9 @@ class TotalHelper
     public static function getEventPlayersGeneralStat(Event $event, string $type): string
     {
         $minPercentBoth = 20;
-        $maxPercent = 20;
-        $minPercent = -15;
-        $minEvents = 15;
+        $maxPercent = 0;
+        $minPercent = 0;
+        $minEvents = $event->eventTournament->tour == Tour::ATP ? 6 : 11;
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
         $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
             ? Surface::HARD_INDOOR
@@ -43,7 +45,9 @@ class TotalHelper
             'event.eventTournament.tournamentSurface',
         ]);
         $query->where(['<', 'tn_event.start_at', $event->start_at]);
+        $query->andWhere(['tn_tour.id' => $event->eventTournament->tour]);
         $query->andWhere(['IN', 'tn_surface.id', $surface]);
+        $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         $query->andWhere(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
@@ -114,7 +118,9 @@ class TotalHelper
             'event.eventTournament.tournamentSurface',
         ]);
         $query->where(['<', 'tn_event.start_at', $event->start_at]);
+        $query->andWhere(['tn_tour.id' => $event->eventTournament->tour]);
         $query->andWhere(['IN', 'tn_surface.id', $surface]);
+        $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         $query->andWhere(['sp_total.type' => $type]);
         $query->andWhere(['IN', 'sp_total.player_id', [$event->home, $event->away]]);
