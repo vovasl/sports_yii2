@@ -62,7 +62,7 @@ class FixtureOdd
      */
     private function prepareOdds($fixtures)
     {
-        switch ($this->settings['fixture']['sportid']) {
+        switch ($this->settings['fixture']['sportId']) {
             case Pinnacle::TENNIS:
                 return $this->prepareTennisOdds($fixtures);
             default:

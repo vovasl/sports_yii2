@@ -58,18 +58,18 @@ class EventSave extends Component
     public function event(array $event): bool
     {
 
-        if(empty($event['id'] || empty($event['sportid']))) {
-            // ::log empty id or sportid field
+        if(empty($event['id'] || empty($event['sportId']))) {
+            // ::log empty id or sportId field
             return false;
         }
 
         /** check sport id */
-        if(!Sport::findOne($event['sportid'])) {
-            // ::log add sport with id $event['sportid'] to table sp_sport
+        if(!Sport::findOne($event['sportId'])) {
+            // ::log add sport with id $event['sportId'] to table sp_sport
             return false;
         }
 
-        switch ($event['sportid']) {
+        switch ($event['sportId']) {
             case self::TENNIS:
                 if(!$this->eventTennis($event)) return false;
                 break;

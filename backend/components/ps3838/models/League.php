@@ -41,7 +41,7 @@ class League
         /** validate data */
         $this->validate($data);
 
-        switch ($this->settings['base']['sportid']) {
+        switch ($this->settings['base']['sportId']) {
             case PS3838::TENNIS:
                 return $this->getTennis($data);
             default:
@@ -67,62 +67,24 @@ class League
      */
     private function getTennis($leagues): array
     {
-        $data = [];
+        $ids= [];
         foreach ($leagues['leagues'] as $league) {
+
+            /** no events */
             if($league['eventCount'] == 0) continue;
 
             /** check tour */
             if(!preg_match("#{$this->settings['base']['tour']}.*#i", $league['name'])) continue;
 
-            /** doubles and mixed events */
+            /** doubles or mixed events */
             if(preg_match('#doubles|mixed#i', $league['name'])) continue;
 
-            /** parse tournament name */
-            if(!$tournament = $this->parseTennisTournamentName($league['name'])) continue;
-
-            $data[] = [
-                'sportid' => $this->settings['base']['sportid'],
-                'leagueids' => $league['id'],
-                'tournament' => $tournament[0],
-                'round' => $tournament[1],
-                'tour' => $tournament[2],
-            ];
+            $ids[] = $league['id'];
         }
 
         //die;
 
-        return $data;
+        return $ids;
     }
 
-    /**
-     * Parse tournament name
-     * @param $name
-     * @return array|false
-     */
-    private function parseTennisTournamentName($name)
-    {
-        /** get tour */
-        foreach (explode('|', $this->settings['base']['tour']) as $tour) {
-            if(preg_match("#{$tour}.*#i", $name)) {
-                $name = trim(str_replace($tour, '', $name));
-                break;
-            }
-        }
-
-        /** get tournament name and round */
-        //$data = array_map('trim', explode('-', $name)); // for Davis CUP
-        $data = array_map('trim', explode(' - ', $name)); // for other tournaments with the symbol "-" in the name
-
-        /** exception for Davis Cup - without tournament name */
-        if(empty($data[0]) && !empty($tour)) $data[0] = $tour;
-
-        /** add tour info */
-        if(!empty($tour)) $data[] = $tour;
-
-        if(count($data) != 3) {
-            //::log can't parse tournament name
-            return false;
-        }
-        return $data;
-    }
 }

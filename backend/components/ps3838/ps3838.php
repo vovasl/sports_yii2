@@ -18,8 +18,12 @@ class PS3838 extends Component
         'games' => ['spreads', 'totals', 'teamTotal'],
     ];
 
-    const ATP = ['ATP Challenger', 'ATP'];
-    //const ATP = ['ATP Challenger', 'ATP', 'Davis Cup'];
+    const ATP = [
+        'ATP Challenger',
+        'ATP',
+        'Davis Cup',
+        'ITF Men'
+    ];
 
     /**
      * @param array $settings
@@ -28,16 +32,17 @@ class PS3838 extends Component
     public function run(array $settings): array
     {
         //die;
-        /** get leagues */
-        $leagues = $this->getLeagues($settings);
 
-        /** get fixtures with odds */
-        $fixtures = [];
-        foreach ($leagues as $league) {
-            $fixtures = array_merge($fixtures, $this->getFixtures($league));
-        }
+        /** get leagues settings */
+        $leaguesSettings = [
+            'sportId' => $settings['sportId'],
+            'leagueIds' => implode(',', $this->getLeagues($settings))
+        ];
 
-        return $fixtures;
+        /** get events with odds */
+        $events = $this->getFixtures($leaguesSettings);
+
+        return $events;
     }
 
     /**
@@ -49,7 +54,9 @@ class PS3838 extends Component
     {
         /** get league config */
         $config = Setting::getSettings();
-        if(isset($settings['tour']) && is_array($settings['tour'])) $settings['tour'] = implode('|', self::ATP);
+        if(isset($settings['tour']) && is_array($settings['tour'])) {
+            $settings['tour'] = implode('|', self::ATP);
+        }
         $config['base'] = $settings;
 
         /** get leagues */
@@ -59,17 +66,19 @@ class PS3838 extends Component
 
     /**
      * Get events with odds
-     * @param array $settings
+     * @param array $leagues
      * @return array
      */
-    public function getFixtures(array $settings): array
+    public function getFixtures(array $leagues): array
     {
         /** get fixture config */
         $config = Setting::getSettings();
-        $config['fixture'] = $settings;
+        $config['fixture'] = $leagues;
 
         /** get events */
         $fixture = new Fixture($config);
-        return $fixture->getFixtures();
+        $events = $fixture->getFixtures();
+
+        return $events;
     }
 }

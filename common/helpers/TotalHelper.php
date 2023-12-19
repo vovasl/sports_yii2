@@ -30,6 +30,10 @@ class TotalHelper
         $minPercent = 0;
         $minEvents = $event->eventTournament->tour == Tour::ATP ? 6 : 11;
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
+
+        if(is_null($event->eventTournament->surface)) {
+            return '';
+        }
         $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
             ? Surface::HARD_INDOOR
             : $event->eventTournament->surface;
@@ -97,10 +101,14 @@ class TotalHelper
      */
     public static function getEventPlayersStat(Event $event, string $type): array
     {
-        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
+        if(is_null($event->eventTournament->surface)) {
+            return [];
+        }
         $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
             ? Surface::HARD_INDOOR
             : $event->eventTournament->surface;
+
+        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
 
         $query = Total::find();
         $query->select([

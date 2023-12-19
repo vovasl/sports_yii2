@@ -4,6 +4,7 @@ namespace backend\components\ps3838\models;
 
 
 use backend\components\pinnacle\helpers\BaseHelper;
+use backend\components\ps3838\PS3838;
 use backend\components\ps3838\services\Client;
 
 class Fixture
@@ -91,8 +92,11 @@ class Fixture
      */
     private function prepareFields($data): void
     {
-        if(isset($data['league'][0]['events'])) {
-            foreach ($data['league'][0]['events'] as $fixture) {
+        foreach ($data['league'] as $league) {
+            foreach ($league['events'] as $fixture) {
+                $fixture['tour'] = $this->getTour($league['name']);
+                $fixture['round'] = $this->getRound($league['name']);
+                $fixture['tournament'] = $this->getTournament($league['name'], $fixture['tour'], $fixture['round']);
                 $fixture['starts'] = strtotime($fixture['starts']);
                 $fixture['o_starts'] = BaseHelper::outputDate($fixture['starts']);
                 $fixture = array_merge($fixture, $this->settings['fixture']);
@@ -122,6 +126,44 @@ class Fixture
         uasort($this->fixtures, function($a, $b) use ($sort) {
             return strcmp($a[$sort], $b[$sort]);
         });
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    private function getTour(string $name): string
+    {
+        /** get tour */
+        foreach (PS3838::ATP as $tour) {
+            if(preg_match("#{$tour}.*#i", $name)) {
+                return $tour;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    private function getRound(string $name): string
+    {
+        return trim(current(array_reverse(explode('-', $name))));
+    }
+
+    /**
+     * @param string $name
+     * @param string $tour
+     * @param string $round
+     * @return string
+     */
+    private function getTournament(string $name, string $tour, string $round): string
+    {
+        $pattern = "#^{$tour}(.+)*-\s*{$round}$#i";
+        if(!preg_match($pattern, $name, $matches)) return $name;
+        return trim($matches[1]);
     }
 
 }

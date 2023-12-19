@@ -11,9 +11,8 @@ class EventController extends Controller
 {
     public function actionAdd()
     {
-        exit();
         $settings = [
-            'sportid' => PS3838::TENNIS,
+            'sportId' => PS3838::TENNIS,
             'tour' => PS3838::ATP
         ];
         $events = \Yii::$app->ps3838->run($settings);

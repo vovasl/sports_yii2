@@ -57,7 +57,7 @@ class Odd
      */
     private function validate($data): bool
     {
-        if(!isset($data['leagues'][0]['events'])) {
+        if(!isset($data['leagues'])) {
             return false;
         }
 
@@ -72,14 +72,16 @@ class Odd
     private function prepareFields($data): array
     {
         $odds = [];
-        foreach ($data['leagues'][0]['events'] as $event) {
-            foreach ($event['periods'] as $period) {
-                $period = $this->prepareDateFields($period);
-                $odds[$event['id']][] = $period;
+        foreach ($data['leagues'] as $league) {
+            foreach ($league['events'] as $event) {
+                foreach ($event['periods'] as $period) {
+                    $period = $this->prepareDateFields($period);
+                    $odds[$event['id']][] = $period;
+                }
             }
         }
 
-        return  $odds;
+        return $odds;
     }
 
     /**

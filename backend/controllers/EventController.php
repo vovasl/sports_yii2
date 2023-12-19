@@ -117,7 +117,7 @@ class EventController extends Controller
     public function actionAddOdds(): string
     {
         $settings = [
-            'sportid' => PS3838::TENNIS,
+            'sportId' => PS3838::TENNIS,
             'tour' => PS3838::ATP
         ];
         $events = \Yii::$app->ps3838->run($settings);

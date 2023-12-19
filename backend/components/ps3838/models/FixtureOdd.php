@@ -3,6 +3,7 @@
 namespace backend\components\ps3838\models;
 
 
+use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\ps3838\PS3838;
 
 class FixtureOdd
@@ -49,6 +50,7 @@ class FixtureOdd
             return isset($fixture['odds']);
         });
 
+
         /** prepare fixture odds */
         $fixtures = $this->prepareOdds($fixtures);
 
@@ -61,7 +63,7 @@ class FixtureOdd
      */
     private function prepareOdds($fixtures)
     {
-        switch ($this->settings['fixture']['sportid']) {
+        switch ($this->settings['fixture']['sportId']) {
             case PS3838::TENNIS:
                 return $this->prepareTennisOdds($fixtures);
             default:
