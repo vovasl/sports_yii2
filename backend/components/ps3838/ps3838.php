@@ -31,7 +31,7 @@ class PS3838 extends Component
      */
     public function run(array $settings): array
     {
-        //die;
+        return [];
 
         /** get leagues settings */
         $leaguesSettings = [
