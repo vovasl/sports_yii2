@@ -46,7 +46,7 @@ class FixtureOdd
         }
 
         /** fixtures with odds */
-        $fixtures = array_filter($fixtures, function ($fixture){
+        $fixtures = array_filter($fixtures, function ($fixture) {
             return isset($fixture['odds']);
         });
 
@@ -79,35 +79,11 @@ class FixtureOdd
     {
         foreach ($fixtures as $id => $fixture) {
             foreach($fixture['odds'] as $type => $odds) {
-                if(!$odd = $this->getTennisPeriod($type, $odds)) continue;
-                $odd = $this->prepareTennisLine($type, $odd);
-                $fixture['odds'][$type] = $odd;
+                $fixture['odds'][$type] = $this->prepareTennisLine($type, $odds[0]);
             }
             $fixtures[$id] = $fixture;
         }
         return $fixtures;
-    }
-
-    /**
-     * Get period
-     * @param $type
-     * @param $periods
-     * @return array|false
-     */
-    private function getTennisPeriod($type, $periods)
-    {
-        if(empty($settings = PS3838::TENNIS_ODDS_CONFIG[$type])) return false;
-
-        foreach ($periods as $period) {
-            $flag = true;
-            foreach ($settings as $setting) {
-                if(!isset($period[$setting])) $flag = false;
-            }
-            /** returns an array if all conditions are true */
-            if($flag) return $period;
-        }
-
-        return false;
     }
 
     /**
@@ -130,6 +106,7 @@ class FixtureOdd
     {
         $fields = ['altLineId', 'max'];
         foreach (PS3838::TENNIS_ODDS_CONFIG[$type] as $line) {
+            if(!isset($odd[$line])) continue;
             foreach($odd[$line] as $k => $lineOdd) {
                 foreach ($fields as $remove) {
                     unset($lineOdd[$remove]);

@@ -39,8 +39,7 @@ class Odd
         $options = $this->settings['fixture'];
         $options['oddsFormat'] = $this->settings['odds_format'];
 
-        $odds = $this->client->getOdds($options);
-        $data = json_decode($odds, 1);
+        $data = json_decode($this->client->getOdds($options), 1);
 
         /** validate data */
         if(!$this->validate($data)) return [];

@@ -14,15 +14,24 @@ class PS3838 extends Component
 
     const TENNIS = 33;
     const TENNIS_ODDS_CONFIG = [
-        'sets' => ['moneyline', 'spreads', 'totals'],
-        'games' => ['spreads', 'totals', 'teamTotal'],
+        'sets' => [
+            'moneyline',
+            'spreads',
+            'totals'
+        ],
+        'games' => [
+            'spreads',
+            'totals',
+            'teamTotal'
+        ],
     ];
 
     const ATP = [
         'ATP Challenger',
         'ATP',
         'Davis Cup',
-        //'ITF Men'
+        'United Cup',
+        'ITF Men'
     ];
 
     /**
@@ -31,9 +40,14 @@ class PS3838 extends Component
      */
     public function run(array $settings): array
     {
-        return [];
+        //return [];
 
-        /** get leagues settings */
+        /** get leagues */
+        $leagues = $this->getLeagues($settings);
+        if(count($leagues) == 0) {
+            // ::log no leagues
+            return [];
+        }
         $leaguesSettings = [
             'sportId' => $settings['sportId'],
             'leagueIds' => implode(',', $this->getLeagues($settings))

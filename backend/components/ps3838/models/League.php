@@ -76,8 +76,8 @@ class League
             /** check tour */
             if(!preg_match("#{$this->settings['base']['tour']}.*#i", $league['name'])) continue;
 
-            /** doubles or mixed events */
-            if(preg_match('#doubles|mixed#i', $league['name'])) continue;
+            /** doubles or mixed or teams events */
+            if(preg_match('#doubles|mixed|ties|tie winner#i', $league['name'])) continue;
 
             $ids[] = $league['id'];
         }
