@@ -31,7 +31,8 @@ class PS3838 extends Component
         'ATP',
         'Davis Cup',
         'United Cup',
-        'ITF Men'
+        'WTA',
+        //'ITF Men',
     ];
 
     /**
@@ -40,7 +41,7 @@ class PS3838 extends Component
      */
     public function run(array $settings): array
     {
-        //return [];
+        return [];
 
         /** get leagues */
         $leagues = $this->getLeagues($settings);
