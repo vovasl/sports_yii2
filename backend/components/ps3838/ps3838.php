@@ -31,8 +31,9 @@ class PS3838 extends Component
         'ATP',
         'Davis Cup',
         'United Cup',
-        'WTA',
         //'ITF Men',
+        //'ITF Women'
+        'WTA',
     ];
 
     /**
