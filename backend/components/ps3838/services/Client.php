@@ -61,6 +61,16 @@ class Client
     }
 
     /**
+     * Get Settled Events
+     * @param array $options
+     * @return array|string
+     */
+    public function getFixturesSettled(array $options)
+    {
+        return $this->get("fixtures/settled", $options);
+    }
+
+    /**
      * Get Odds
      * @param array $options
      * @return array|string
@@ -68,6 +78,16 @@ class Client
     public function getOdds(array $options)
     {
         return $this->get("odds", $options);
+    }
+
+    /**
+     * Get Parley Odds
+     * @param array $options
+     * @return array|string
+     */
+    public function getOddsParley(array $options)
+    {
+        return $this->get("odds/parlay", $options);
     }
 
     /**
