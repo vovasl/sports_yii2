@@ -3,29 +3,12 @@
 namespace backend\services;
 
 
-use frontend\models\sport\EventLog;
-use backend\components\pinnacle\helpers\BaseHelper;
-use frontend\models\sport\Event;
-use frontend\models\sport\Odd;
-use frontend\models\sport\OddType;
-use frontend\models\sport\Player;
-use frontend\models\sport\Round;
+use backend\components\ps3838\PS3838;
 use frontend\models\sport\Sport;
-use frontend\models\sport\Tour;
-use frontend\models\sport\Tournament;
 use yii\base\Component;
-use yii\helpers\Json;
 
 class EventSave extends Component
 {
-
-    CONST TENNIS = 33;
-    const TENNIS_ODDS_CONFIG = [
-        'sets' => ['moneyline', 'spreads', 'totals'],
-        'games' => ['spreads', 'totals', 'teamTotal'],
-    ];
-    CONST TENNIS_FIELDS_REQUIRED = ['tour', 'tournament', 'round', 'home', 'away'];
-    CONST MIN_ODDS = 20;
 
     private $message = '';
 
@@ -37,10 +20,7 @@ class EventSave extends Component
     {
         foreach ($events as $event) {
 
-            if(empty($event['id'])) {
-                // ::log empty id field
-                continue;
-            }
+            if(!$this->validate($event)) continue;
 
             $this->message .= "{$event['tournament']} {$event['round']}";
             $this->message .= "<br>{$event['o_starts']} {$event['home']} - {$event['away']}";
@@ -57,9 +37,30 @@ class EventSave extends Component
      */
     public function event(array $event): bool
     {
+        switch ($event['sportId']) {
+            case PS3838::TENNIS:
+                $handler = new EventTennisSave();
+                break;
+            default:
+                return false;
+        }
 
-        if(empty($event['id'] || empty($event['sportId']))) {
-            // ::log empty id or sportId field
+        return $handler->save($event);
+    }
+
+    /**
+     * @param array $event
+     * @return bool
+     */
+    private function validate(array $event): bool
+    {
+        if(empty($event['id'])) {
+            // ::log empty id field
+            return false;
+        }
+
+        if(empty($event['sportId'])) {
+            // ::log empty sportId field
             return false;
         }
 
@@ -69,278 +70,7 @@ class EventSave extends Component
             return false;
         }
 
-        switch ($event['sportId']) {
-            case self::TENNIS:
-                if(!$this->eventTennis($event)) return false;
-                break;
-        }
-
         return true;
-
-    }
-
-    /**
-     * @param $event
-     * @return bool
-     */
-    private function eventTennis($event): bool
-    {
-        /** check required fields */
-        foreach (self::TENNIS_FIELDS_REQUIRED as $field) {
-            if(empty($event[$field])) {
-                // ::log empty required field $field
-                return false;
-            }
-            $event[$field] = trim($event[$field]);
-        }
-
-        /** tour */
-        $tour = ($tour = Tour::findOne(['name' => $event['tour']])) ? $tour : new Tour();
-        if ($tour->isNewRecord) {
-            $tour->name = $event['tour'];
-            $tour->save();
-        }
-        $event['tour'] = $tour->id;
-
-        /** tournament */
-        $tournament = ($tournament = Tournament::findOne(['name' => $event['tournament'], 'tour' => $event['tour']])) ? $tournament : new Tournament();
-        if($tournament->isNewRecord) {
-            $tournament->name = $event['tournament'];
-            $tournament->tour = $event['tour'];
-            $tournament->save();
-        }
-        $event['tournament'] = $tournament->id;
-
-        /** round */
-        $round = ($round = Round::findOne(['name' => $event['round']])) ? $round : new Round();
-        if($round->isNewRecord) {
-            $round->name = $event['round'];
-            $round->save();
-        }
-        $event['round'] = $round->id;
-
-        /** players */
-        $home = ($home = Player::findOne(['name' => $event['home']])) ? $home : new Player();
-        if($home->isNewRecord) {
-            $home->name = $event['home'];
-            $home->save();
-        }
-        $event['home'] = $home->id;
-
-        $away = ($away = Player::findOne(['name' => $event['away']])) ? $away : new Player();
-        if($away->isNewRecord) {
-            $away->name = $event['away'];
-            $away->save();
-        }
-        $event['away'] = $away->id;
-
-        /** event */
-        $fixture = ($fixture = Event::findOne(['pin_id' => $event['id']])) ? $fixture : new Event();
-        $fixture->start_at = $event['o_starts'];
-        $updateEvent = 1;
-        if($fixture->isNewRecord) {
-            $updateEvent = 0;
-            $fixture->tournament = $event['tournament'];
-            $fixture->round = $event['round'];
-            $fixture->home = $event['home'];
-            $fixture->away = $event['away'];
-            $fixture->pin_id = $event['id'];
-        }
-        $fixture->save();
-        $event['id'] = $fixture->id;
-
-        $this->message .= "<br>Status: ";
-        $this->message .= ($updateEvent) ? "Updated" : "Added";
-
-        /** exit for an existing event with odds(number of odds must be more than MIN value) */
-        if($updateEvent && count($fixture->odds) > self::MIN_ODDS) return true;
-
-        /** save logs */
-        $log = new EventLog();
-        $log->event_id = $event['id'];
-        $log->message = Json::encode($event);
-        $log->save();
-
-        /** odds */
-        $this->addOdds($event);
-
-        return true;
-    }
-
-    /**
-     * @param $event
-     * @return bool
-     */
-    public function addOdds($event): bool
-    {
-        /** remove all odds */
-        $this->removeOdds($event);
-
-        foreach($event['odds'] as $k => $period) {
-            foreach(self::TENNIS_ODDS_CONFIG[$k] as $line) {
-
-                if(empty($period[$line]) || !is_array($period[$line])) {
-                    // ::log $event['id'] $event['odds']
-                    //echo $event['id'] . '<br>';
-                    //BaseHelper::outputArray($event);
-                    break;
-                }
-
-                /** odd type */
-                $type = ($k == 'sets' && $line != 'moneyline') ? $k . ucfirst($line) : $line;
-                $oddType = ($oddType = OddType::findOne(['name' => $type])) ? $oddType : new OddType();
-                if($oddType->isNewRecord) {
-                    $oddType->name = $type;
-                    $oddType->save();
-                }
-
-                /** save odds */
-                $method = "{$type}Odds";
-                if(!method_exists($this, $method)) {
-                    // ::log add method {$method}
-                    continue;
-                }
-                $this->{$method}($event, $period[$line], $oddType->id);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $event
-     */
-    private function removeOdds($event)
-    {
-        Odd::deleteAll(['event' => $event['id']]);
-    }
-
-    /**
-     * @param $event
-     * @param $odd
-     * @param $type
-     * @return bool
-     */
-    private function moneylineOdds($event, $odd, $type): bool
-    {
-        foreach ($odd as $player => $val) {
-            if(!Odd::create($event['id'], $type, $val, $event[$player])) return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $event
-     * @param $odds
-     * @param $type
-     * @return false
-     */
-    private function spreadsOdds($event, $odds, $type): bool
-    {
-        //BaseHelper::outputArray($odds);
-        foreach ($odds as $odd) {
-            $values = $this->prepareSpreadOdd($odd);
-            foreach ($values as $player => $val) {
-                if(!Odd::create($event['id'], $type, $val['odd'], $event[$player], $val['value'])) return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $event
-     * @param $odds
-     * @param $type
-     * @return bool
-     */
-    private function setsSpreadsOdds($event, $odds, $type): bool
-    {
-        return $this->spreadsOdds($event, $odds, $type);
-    }
-
-    /**
-     * @param $event
-     * @param $odds
-     * @param $type
-     * @return false
-     */
-    private function totalsOdds($event, $odds, $type): bool
-    {
-        //BaseHelper::outputArray($odds);
-        foreach ($odds as $odd) {
-            $values = $this->prepareTotalOdd($odd);
-            foreach ($values as $addType => $val) {
-                if(!Odd::create($event['id'], $type, $val['odd'], null, $val['value'], $addType)) return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $event
-     * @param $odds
-     * @param $type
-     * @return bool
-     */
-    private function setsTotalsOdds($event, $odds, $type): bool
-    {
-        return $this->totalsOdds($event, $odds, $type);
-    }
-
-    /**
-     * @param $event
-     * @param $odds
-     * @param $type
-     * @return bool
-     */
-    private function teamTotalOdds($event, $odds, $type): bool
-    {
-        foreach ($odds as $player => $odd) {
-            $values = $this->prepareTotalOdd($odd);
-            foreach ($values as $addType => $val) {
-                if(!Odd::create($event['id'], $type, $val['odd'], $event[$player], $val['value'], $addType)) return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param $odd
-     * @return array[]
-     */
-    private function prepareSpreadOdd($odd): array
-    {
-        return [
-            'home' => [
-                'value' => $odd['hdp'],
-                'odd' => $odd['home']
-            ],
-            'away' => [
-                'value' => ($odd['hdp'] == 0) ? 0 : -$odd['hdp'],
-                'odd' => $odd['away']
-            ]
-        ];
-    }
-
-    /**
-     * @param $odd
-     * @return array[]
-     */
-    private function prepareTotalOdd($odd): array
-    {
-        return [
-            'over' => [
-                'value' => $odd['points'],
-                'odd' => $odd['over']
-            ],
-            'under' => [
-                'value' => $odd['points'],
-                'odd' => $odd['under']
-            ]
-        ];
     }
 
 }

@@ -135,7 +135,7 @@ class Fixture
     private function getTour(string $name): string
     {
         /** get tour */
-        foreach (PS3838::ATP as $tour) {
+        foreach (PS3838::TOUR as $tour) {
             if(preg_match("#{$tour}.*#i", $name)) {
                 return $tour;
             }

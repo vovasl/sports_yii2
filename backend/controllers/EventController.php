@@ -118,7 +118,7 @@ class EventController extends Controller
     {
         $settings = [
             'sportId' => PS3838::TENNIS,
-            'tour' => PS3838::ATP
+            'tour' => PS3838::TOUR
         ];
         $events = \Yii::$app->ps3838->run($settings);
         return $this->render('add', [

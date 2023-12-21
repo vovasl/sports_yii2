@@ -26,13 +26,13 @@ class PS3838 extends Component
         ],
     ];
 
-    const ATP = [
+    const TOUR = [
         'ATP Challenger',
         'ATP',
         'Davis Cup',
         'United Cup',
         //'ITF Men',
-        //'ITF Women'
+        //'ITF Women',
         'WTA',
     ];
 
@@ -42,7 +42,7 @@ class PS3838 extends Component
      */
     public function run(array $settings): array
     {
-        return [];
+        //return [];
 
         /** get leagues */
         $leagues = $this->getLeagues($settings);
@@ -71,7 +71,7 @@ class PS3838 extends Component
         /** get league config */
         $config = Setting::getSettings();
         if(isset($settings['tour']) && is_array($settings['tour'])) {
-            $settings['tour'] = implode('|', self::ATP);
+            $settings['tour'] = implode('|', self::TOUR);
         }
         $config['base'] = $settings;
 
