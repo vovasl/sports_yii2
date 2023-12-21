@@ -1,46 +1,19 @@
 <?php
 
-namespace console\controllers;
+namespace backend\controllers;
 
 
-use backend\components\ps3838\PS3838;
 use frontend\models\sport\Event;
 use frontend\models\sport\OddMove;
-use Yii;
-use yii\console\Controller;
 use yii\db\Expression;
+use yii\web\Controller;
 
-class EventController extends Controller
+class TestController extends Controller
 {
-    public function actionAdd()
+
+    public function actionEventMoveLine()
     {
-        $settings = [
-            'sportId' => PS3838::TENNIS,
-            'tour' => PS3838::TOUR
-        ];
-        $events = \Yii::$app->ps3838->run($settings);
 
-        $i = 0;
-        $output = "";
-        $count = count($events);
-
-        //Console::output('Events');
-        //Console::startProgress($i, $count, 'Status');
-        foreach ($events as $event) {
-            $i++;
-            //Console::updateProgress($i, $count);
-
-            $output .= "\n";
-            $output .= "{$event['tournament']} {$event['round']} \n";
-            $output .= "{$event['o_starts']} {$event['home']} - {$event['away']} - ";
-            $output .= Yii::$app->event_save->event($event) ? 'OK' : 'Error';
-
-        }
-        //Console::output($output);
-    }
-
-    public function actionOddMove()
-    {
         /** get not started events */
         $events = Event::find()
             ->select(['tn_event.*',])
@@ -74,5 +47,9 @@ class EventController extends Controller
             $model->addEvent($event, OddMove::STATUS_FINISHED);
         }
 
+        return $this->render('event-move-line', [
+            'events' => $events
+        ]);
     }
+
 }

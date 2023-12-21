@@ -229,6 +229,26 @@ class Event extends ActiveRecord
     /**
      * @return ActiveQuery
      */
+    public function getOddsHistory(): ActiveQuery
+    {
+        return $this
+            ->hasMany(OddHistory::class, ['event' => 'id'])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getOddsMove(): ActiveQuery
+    {
+        return $this
+            ->hasMany(OddMove::class, ['event_id' => 'id'])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getHomeMoneyline(): ActiveQuery
     {
         return $this
@@ -243,7 +263,7 @@ class Event extends ActiveRecord
             ->orderBy([
                 'home_moneyline.value' => SORT_ASC
             ])
-            ;
+        ;
     }
 
     /**
@@ -263,7 +283,7 @@ class Event extends ActiveRecord
             ->orderBy([
                 'away_moneyline.value' => SORT_ASC
             ])
-            ;
+        ;
     }
 
     /**
