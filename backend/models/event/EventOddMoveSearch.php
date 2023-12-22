@@ -31,7 +31,7 @@ class EventOddMoveSearch extends Event
     public function rules(): array
     {
         return [
-            [['tour_id', 'surface_id', 'round_id', 'away_moneyline_odd', 'odd_move_status'], 'integer'],
+            [['tour_id', 'surface_id', 'round_id', 'away_moneyline_odd', 'odd_move_value_type', 'odd_move_status'], 'integer'],
             [['player', 'tournament_name', 'o_type_name', 'odd_move_value'], 'string'],
             [['home_moneyline_odd'], 'double'],
             [['start_at', 'created'], 'safe'],
@@ -55,6 +55,7 @@ class EventOddMoveSearch extends Event
                 'home_moneyline.odd home_moneyline_odd',
                 'away_moneyline.odd away_moneyline_odd',
                 'sp_odd_move.value odd_move_value',
+                'sp_odd_move.value_type odd_move_value_type',
                 'sp_odd_move.status odd_move_status',
                 'sp_odd_type.name o_type_name'
             ])
@@ -150,6 +151,10 @@ class EventOddMoveSearch extends Event
             else {
                 $query->andFilterWhere(['=', 'sp_odd_move.value', $this->odd_move_value]);
             }
+        }
+
+        if(!is_null($this->odd_move_value_type)) {
+            $query->andFilterWhere(['=', 'sp_odd_move.value_type', $this->odd_move_value_type]);
         }
 
         /** status filter */

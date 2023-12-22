@@ -74,6 +74,7 @@ class Event extends ActiveRecord
     public $away_moneyline_odd;
     public $total_over_value;
     public $odd_move_value;
+    public $odd_move_value_type;
     public $odd_move_status;
 
     /**
@@ -687,6 +688,14 @@ class Event extends ActiveRecord
     public function getAwayMoneylineOddVal(): float
     {
         return $this->away_moneyline_odd/100;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOddMoveValueType(): string
+    {
+        return ucfirst(array_search($this->odd_move_status, OddMove::VALUE_TYPES));
     }
 
     /**

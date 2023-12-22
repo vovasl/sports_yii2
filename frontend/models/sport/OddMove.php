@@ -17,6 +17,7 @@ use yii\db\StaleObjectException;
  * @property int|null $type_id
  * @property string|null $add_type
  * @property string|null $value
+ * @property int $value_type
  * @property int $status
  *
  * @property Event $event
@@ -30,6 +31,11 @@ class OddMove extends ActiveRecord
     CONST STATUSES = [
         'finished' => 0,
         'open' => 1,
+    ];
+
+    CONST VALUE_TYPES = [
+        'up' => 1,
+        'down' => 2,
     ];
 
     /**
@@ -47,7 +53,7 @@ class OddMove extends ActiveRecord
     {
         return [
             [['event_id'], 'required'],
-            [['event_id', 'type_id', 'status', 'value'], 'integer'],
+            [['event_id', 'type_id', 'status', 'value', 'value_type'], 'integer'],
             [['add_type'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => OddType::class, 'targetAttribute' => ['type_id' => 'id']],
@@ -65,6 +71,7 @@ class OddMove extends ActiveRecord
             'type_id' => 'Type ID',
             'add_type' => 'Add Type',
             'value' => 'Value',
+            'value_type' => 'Move Type',
             'status' => 'Status',
         ];
     }
@@ -95,6 +102,14 @@ class OddMove extends ActiveRecord
     public static function dropdownFilterStatuses(): array
     {
         return array_map('ucfirst', array_flip(self::STATUSES));
+    }
+
+    /**
+     * @return array
+     */
+    public static function dropdownFilterValueType(): array
+    {
+        return array_map('ucfirst', array_flip(self::VALUE_TYPES));
     }
 
     /**
@@ -144,7 +159,9 @@ class OddMove extends ActiveRecord
             $model->event_id = $event->id;
             $model->type_id = $oddModel->type;
         }
-        $model->value = abs($oddModel->odd - $oddHistory->odd);
+        $value = $oddModel->odd - $oddHistory->odd;
+        $model->value = abs($value);
+        $model->value_type = $value > 0 ? self::VALUE_TYPES['up'] : self::VALUE_TYPES['down'];
         $model->status = $status;
         $model->save();
 

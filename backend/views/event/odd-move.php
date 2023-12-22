@@ -109,6 +109,12 @@ $reset = "/event/odd-move";
                 'value' => 'odd_move_value'
             ],
             [
+                'attribute' => 'odd_move_value_type',
+                'label' => 'Move Type',
+                'value' => 'oddMoveValueType',
+                'filter' => OddMove::dropdownFilterValueType(),
+            ],
+            [
                 'attribute' => 'odd_move_status',
                 'label' => 'Status',
                 'value' => 'oddMoveStatus',
