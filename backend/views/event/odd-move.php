@@ -95,11 +95,13 @@ $reset = "/event/odd-move";
                 'attribute' => 'away_moneyline_odd',
                 'label' => 'Away',
                 'value' =>'awayMoneylineOddVal',
+                'filter' => '',
             ],
             [
                 'attribute' => 'o_type_name',
                 'label' => 'Type',
-                'value' => 'o_type_name'
+                'value' => 'o_type_name',
+                'filter' => '',
             ],
             [
                 'attribute' => 'odd_move_value',

@@ -144,7 +144,7 @@ class OddMove extends ActiveRecord
             $model->event_id = $event->id;
             $model->type_id = $oddModel->type;
         }
-        $model->value = $oddModel->odd - $oddHistory->odd;
+        $model->value = abs($oddModel->odd - $oddHistory->odd);
         $model->status = $status;
         $model->save();
 

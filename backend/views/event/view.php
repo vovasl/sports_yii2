@@ -31,4 +31,5 @@ $this->render('_breadcrumbs', [
         'title' => 'Total Under Stats',
         'stats' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['under']),
     ]) ?>
+    <?= $this->render('view/_odd_move', ['event' => $event]) ?>
 <?php endif; ?>

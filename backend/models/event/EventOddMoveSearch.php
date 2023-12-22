@@ -6,6 +6,8 @@ namespace backend\models\event;
 use frontend\models\sport\Event;
 use frontend\models\sport\Player;
 use frontend\models\sport\Round;
+use frontend\models\sport\Surface;
+use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -29,8 +31,9 @@ class EventOddMoveSearch extends Event
     public function rules(): array
     {
         return [
-            [['tour_id', 'surface_id', 'round_id', 'home_moneyline_odd', 'away_moneyline_odd', 'odd_move_value', 'odd_move_status'], 'integer'],
-            [['player', 'tournament_name', 'o_type_name'], 'string'],
+            [['tour_id', 'surface_id', 'round_id', 'away_moneyline_odd', 'odd_move_status'], 'integer'],
+            [['player', 'tournament_name', 'o_type_name', 'odd_move_value'], 'string'],
+            [['home_moneyline_odd'], 'double'],
             [['start_at', 'created'], 'safe'],
         ];
     }
@@ -96,6 +99,62 @@ class EventOddMoveSearch extends Event
 
         if (!$this->validate()) {
             return $dataProvider;
+        }
+
+        /** tour filter */
+        if(!is_null($this->tour_id)) {
+            $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
+        }
+
+        /** surface filter */
+        if(!is_null($this->surface_id)) {
+            $query->andFilterWhere(['IN', Surface::tableName() . '.id', $this->surface_id]);
+        }
+
+        /** round filter */
+        if(!is_null($this->round_id)) {
+            if($this->round_id == Round::QUALIFIER_FILTER) {
+                $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
+            }
+            else {
+                $query->andFilterWhere([Round::tableName() . '.id' => $this->round_id]);
+            }
+        }
+
+        /** tournament name filter */
+        if(!is_null($this->tournament_name)) {
+            $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
+        }
+
+        /** event filter */
+        if(!is_null($this->player)) {
+            $query->andFilterWhere(['or',
+                ['like', 'home.name', $this->player],
+                ['like', 'away.name', $this->player]
+            ]);
+        }
+
+        /** moneyline filter */
+        if(!empty($this->home_moneyline_odd)) {
+            $homeMoneylineOdd = $this->home_moneyline_odd * 100;
+            $query->andHaving(['>=', 'home_moneyline_odd', $homeMoneylineOdd]);
+            $query->andHaving(['>=', 'away_moneyline_odd', $homeMoneylineOdd]);
+        }
+
+        /** odd move filter */
+        if(!empty($this->odd_move_value)) {
+            preg_match('#(\d.+)(<.*|>.*)#', $this->odd_move_value, $oddMoveValue);
+            if(!empty($oddMoveValue)) {
+                $query->andFilterWhere([$oddMoveValue[2], 'sp_odd_move.value', (int)$oddMoveValue[1]]);
+            }
+            else {
+                $query->andFilterWhere(['=', 'sp_odd_move.value', $this->odd_move_value]);
+            }
+        }
+
+        /** status filter */
+        if(!is_null($this->odd_move_status)) {
+            $query->andFilterWhere(['=', 'sp_odd_move.status', $this->odd_move_status]);
         }
 
         return $dataProvider;

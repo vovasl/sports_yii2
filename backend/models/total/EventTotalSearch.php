@@ -124,6 +124,7 @@ class EventTotalSearch extends Event
             $this->count_odds = 1;
         }
 
+        /** tournament name filter */
         if(!is_null($this->tournament_name)) {
             $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
         }
@@ -133,6 +134,7 @@ class EventTotalSearch extends Event
             'total' => $this->total
         ]);
 
+        /** round filter */
         if(!is_null($this->round_id)) {
             if($this->round_id == Round::QUALIFIER_FILTER) {
                 $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
@@ -142,6 +144,7 @@ class EventTotalSearch extends Event
             }
         }
 
+        /** event filter */
         if(!is_null($this->player)) {
             $query->andFilterWhere(['or',
                 ['like', 'home.name', $this->player],

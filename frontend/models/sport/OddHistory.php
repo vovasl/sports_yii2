@@ -114,6 +114,14 @@ class OddHistory extends ActiveRecord
         return $this->hasOne(OddType::class, ['id' => 'type']);
     }
 
+    /**
+     * @return float
+     */
+    public function getOddVal(): float
+    {
+        return $this->odd/100;
+    }
+
     public static function create($eventId, $type, $oddVal, $playerId = null, $value = null, $addType = null): bool
     {
         $odd = new static();
