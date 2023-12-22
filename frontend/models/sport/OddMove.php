@@ -26,8 +26,11 @@ class OddMove extends ActiveRecord
 {
 
     CONST POINTS = 10;
-    CONST STATUS_OPEN = 1;
-    CONST STATUS_FINISHED = 0;
+
+    CONST STATUSES = [
+        'finished' => 0,
+        'open' => 1,
+    ];
 
     /**
      * {@inheritdoc}
@@ -87,13 +90,21 @@ class OddMove extends ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public static function dropdownFilterStatuses(): array
+    {
+        return array_map('ucfirst', array_flip(self::STATUSES));
+    }
+
+    /**
      * @param Event $event
      * @param int $status
      * @return bool
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function addEvent(Event $event, int $status = self::STATUS_OPEN): bool
+    public function addEvent(Event $event, int $status = self::STATUSES['open']): bool
     {
         /** get favorite - base odd model */
         $favorite = $event->homeMoneyline[0]->odd < $event->awayMoneyline[0]->odd

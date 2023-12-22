@@ -10,6 +10,7 @@ use backend\models\AddLineForm;
 use backend\models\AddLineLogForm;
 use backend\models\AddResultForm;
 use backend\models\EventSearch;
+use backend\models\event\EventOddMoveSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use frontend\models\sport\Odd;
@@ -250,6 +251,20 @@ class EventController extends Controller
 
         return $this->render('add-results', [
             'output' => Yii::$app->result_save->events($events, 1)
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionOddMove(): string
+    {
+        $searchModel = new EventOddMoveSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('odd-move', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

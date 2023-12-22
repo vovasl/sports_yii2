@@ -14,11 +14,17 @@ class EventController extends Controller
 {
     public function actionAdd()
     {
+        Yii::$app->runAction('event/add-odd');
+        Yii::$app->runAction('event/add-odd-move');
+    }
+
+    public function actionAddOdd()
+    {
         $settings = [
             'sportId' => PS3838::TENNIS,
             'tour' => PS3838::TOUR
         ];
-        $events = \Yii::$app->ps3838->run($settings);
+        $events = Yii::$app->ps3838->run($settings);
 
         $i = 0;
         $output = "";
@@ -39,7 +45,7 @@ class EventController extends Controller
         //Console::output($output);
     }
 
-    public function actionOddMove()
+    public function actionAddOddMove()
     {
         /** get not started events */
         $events = Event::find()
@@ -64,14 +70,14 @@ class EventController extends Controller
             ->joinWith([
                 'oddsMove'
             ])
-            ->where(['sp_odd_move.status' => OddMove::STATUS_OPEN])
+            ->where(['sp_odd_move.status' => OddMove::STATUSES['open']])
             ->andWhere(['<=', 'tn_event.start_at', new Expression('now()')])
             ->all()
         ;
 
         foreach ($events as $event) {
             $model = new OddMove();
-            $model->addEvent($event, OddMove::STATUS_FINISHED);
+            $model->addEvent($event, OddMove::STATUSES['finished']);
         }
 
     }

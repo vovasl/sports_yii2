@@ -50,7 +50,10 @@ Icon::map($this);
             ['label' => 'Check Players', 'url' => ['check/player']],
         ]],
         ['label' => 'Tournaments', 'url' => ['/tournament']],
-        ['label' => 'Events', 'url' => ['/event']],
+        ['label' => 'Events', 'items' => [
+            ['label' => 'Events', 'url' => ['/event']],
+            ['label' => 'Odd Move', 'url' => ['/event/odd-move']]
+        ]],
         ['label' => 'Players', 'url' => ['players/player/index']],
         ['label' => 'Total', 'items' => [
             ['label' => 'Stats', 'url' => ['/total/statistic']],

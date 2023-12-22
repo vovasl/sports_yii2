@@ -41,6 +41,8 @@ use yii\db\Expression;
  * @property ResultSet[] $setsResult
  * @property Tournament $eventTournament
  * @property Odd[] $odds
+ * @property Odd[] $oddsHistory
+ * @property Odd[] $oddsMove
  * @property Odd[] $homeOdds
  * @property Odd[] $awayOdds
  * @property Odd[] $homeMoneyline
@@ -66,10 +68,13 @@ class Event extends ActiveRecord
     public $o_profit;
     public $o_odd;
     public $o_value;
+    public $o_type_name;
     public $count_odds;
     public $home_moneyline_odd;
     public $away_moneyline_odd;
     public $total_over_value;
+    public $odd_move_value;
+    public $odd_move_status;
 
     /**
      * @return array[]
@@ -682,6 +687,14 @@ class Event extends ActiveRecord
     public function getAwayMoneylineOddVal(): float
     {
         return $this->away_moneyline_odd/100;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOddMoveStatus(): string
+    {
+        return ucfirst(array_search($this->odd_move_status, OddMove::STATUSES));
     }
 
 }

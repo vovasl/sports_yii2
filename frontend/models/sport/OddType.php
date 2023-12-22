@@ -4,6 +4,7 @@ namespace frontend\models\sport;
 
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "sp_odd_type".
@@ -13,7 +14,7 @@ use yii\db\ActiveQuery;
  *
  * @property Odd[] $odds
  */
-class OddType extends \yii\db\ActiveRecord
+class OddType extends ActiveRecord
 {
 
     CONST MONEYLINE = 'moneyline';

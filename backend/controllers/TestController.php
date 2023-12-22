@@ -37,14 +37,14 @@ class TestController extends Controller
             ->joinWith([
                 'oddsMove'
             ])
-            ->where(['sp_odd_move.status' => OddMove::STATUS_OPEN])
+            ->where(['sp_odd_move.status' => OddMove::STATUSES['open']])
             ->andWhere(['<=', 'tn_event.start_at', new Expression('now()')])
             ->all()
         ;
 
         foreach ($events as $event) {
             $model = new OddMove();
-            $model->addEvent($event, OddMove::STATUS_FINISHED);
+            $model->addEvent($event, OddMove::STATUSES['finished']);
         }
 
         return $this->render('event-move-line', [
