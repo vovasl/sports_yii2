@@ -23,6 +23,7 @@ class TotalHelper
         'max' => 0,
         'min' => 0,
     ];
+    CONST ALL = 0;
 
     /**
      * @param Event $event
@@ -61,7 +62,7 @@ class TotalHelper
         $query->andWhere(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
         $query->groupBy('player_id');
-        $query->having(['>=', 'count(event_id)', self::MIN_EVENTS]);
+        $query->having(['>=', 'count(event_id)', !self::ALL ? self::MIN_EVENTS : 1]);
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
         $models = $query->all();
 
@@ -77,7 +78,9 @@ class TotalHelper
             : $models[1]->percent_profit;
 
         /** filer by max and min percent */
-        if($maxPercentProfit < self::PERCENT['max'] || $minPercentProfit < self::PERCENT['min']) return $output;
+        if(!self::ALL) {
+            if ($maxPercentProfit < self::PERCENT['max'] || $minPercentProfit < self::PERCENT['min']) return $output;
+        }
 
         $stats = [];
         foreach ($models as $model) {
@@ -88,8 +91,8 @@ class TotalHelper
         $output = join(' ', $stats);
 
         /** totalOver output markers */
-/*        $totalOver = EventHelper::getOddStat($event->totalsOver);
-        if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5', '2/5'])) $output .= ' QQQQQ';
+        $totalOver = EventHelper::getOddStat($event->totalsOver);
+/*        if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5', '2/5'])) $output .= ' QQQQQ';
         else if(in_array($totalOver, ['0/5', '0/6', '0/7', '1/7'])) $output .= ' WWWWW';
         else if(in_array($totalOver, ['1/5', '2/7'])) $output .= ' EEEEE';
         else $output .= ' TTTTT';*/
