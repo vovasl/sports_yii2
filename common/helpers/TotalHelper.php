@@ -88,11 +88,11 @@ class TotalHelper
         $output = join(' ', $stats);
 
         /** totalOver output markers */
-        $totalOver = EventHelper::getOddStat($event->totalsOver);
+/*        $totalOver = EventHelper::getOddStat($event->totalsOver);
         if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5', '2/5'])) $output .= ' QQQQQ';
         else if(in_array($totalOver, ['0/5', '0/6', '0/7', '1/7'])) $output .= ' WWWWW';
         else if(in_array($totalOver, ['1/5', '2/7'])) $output .= ' EEEEE';
-        else $output .= ' TTTTT';
+        else $output .= ' TTTTT';*/
 
 
         return $output;
