@@ -23,7 +23,7 @@ class TotalHelper
         'max' => 0,
         'min' => 0,
     ];
-    CONST ALL = 0;
+    CONST ALL = 1;
 
     /**
      * @param Event $event
@@ -54,7 +54,9 @@ class TotalHelper
             'event.eventTournament.tournamentTour',
             'event.eventTournament.tournamentSurface',
         ]);
-        $query->where(['<', 'tn_event.start_at', $event->start_at]);
+        if(!self::ALL) {
+            $query->where(['<', 'tn_event.start_at', $event->start_at]);
+        }
         $query->andWhere(['IN', 'tn_tour.id', Tour::filterValue(self::getTour($event->eventTournament->tour))]);
         $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($surface))]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
@@ -62,7 +64,7 @@ class TotalHelper
         $query->andWhere(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
         $query->groupBy('player_id');
-        $query->having(['>=', 'count(event_id)', !self::ALL ? self::MIN_EVENTS : 1]);
+        $query->having(['>=', 'count(event_id)', !self::ALL ? self::MIN_EVENTS : 5]);
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
         $models = $query->all();
 
@@ -85,7 +87,7 @@ class TotalHelper
         $stats = [];
         foreach ($models as $model) {
             //$stats[] = $model->getPercentProfit();
-            $stats[] = $model->getPercentProfit() . '-' . $model->count_events;
+            $stats[] = $model->getPercentProfit() . '' . $model->count_events;
         }
 
         $output = join(' ', $stats);
