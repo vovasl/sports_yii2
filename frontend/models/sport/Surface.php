@@ -17,7 +17,13 @@ use yii\db\ActiveRecord;
 class Surface extends ActiveRecord
 {
 
-    CONST HARD_INDOOR = [2, 4];
+    CONST SURFACES = [
+        'hard' => 2,
+        'indoor' => 4,
+    ];
+    CONST ADD_FILTER = [
+        '-1' => 'Hard + Indoor'
+    ];
 
     /**
      * {@inheritdoc}
@@ -64,7 +70,22 @@ class Surface extends ActiveRecord
      */
     public static function dropdown(): array
     {
-        return self::find()->select(['name', 'id'])->indexBy('id')->column();
+        return array_replace(self::find()->select(['name', 'id'])->indexBy('id')->column(), self::ADD_FILTER);
+    }
+
+    /**
+     * @param $surface
+     * @return int[]
+     */
+    public static function filterValue($surface)
+    {
+        if(empty(self::ADD_FILTER[$surface])) return $surface;
+        switch ($surface) {
+            case '-1':
+                return [self::SURFACES['hard'], self::SURFACES['indoor']];
+            default:
+                return $surface;
+        }
     }
 
 }

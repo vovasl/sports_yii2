@@ -114,6 +114,16 @@ class EventSearch extends Event
             $this->result = 2;
         }
 
+        /** tour filter */
+        if(!is_null($this->tour_id)) {
+            $query->andFilterWhere(['IN', Tour::tableName() . '.id', Tour::filterValue($this->tour_id)]);
+        }
+
+        /** surface filter */
+        if(!is_null($this->surface_id)) {
+            $query->andFilterWhere(['IN', Surface::tableName() . '.id', Surface::filterValue($this->surface_id)]);
+        }
+
         if(!is_null($this->tournament_name)) {
             $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
         }
@@ -170,14 +180,6 @@ class EventSearch extends Event
                 $query->andFilterWhere(['IS NOT', 'event.sofa_id', new Expression('null')]);
                 $query->having(['count_odds' => 0]);
             }
-        }
-
-        if(!is_null($this->surface_id)) {
-            $query->andFilterWhere([Surface::tableName() . '.id' => $this->surface_id]);
-        }
-
-        if(!is_null($this->tour_id)) {
-            $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
         }
 
         return $dataProvider;

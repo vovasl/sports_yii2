@@ -116,17 +116,16 @@ class EventTotalSearch extends Event
             return $dataProvider;
         }
 
-        /** empty search params */
+        /** default search params */
         if(empty($params)) {
-            $this->result = 2;
             $this->home_moneyline_odd = 1.5;
-            $this->five_sets = 0;
+            $this->result = 2;
             $this->count_odds = 1;
         }
 
         /** tournament name filter */
-        if(!is_null($this->tournament_name)) {
-            $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
+        if(!empty(trim($this->tournament_name))) {
+            $query->andFilterWhere(['like', Tournament::tableName() . '.name', trim($this->tournament_name)]);
         }
 
         // grid filtering conditions
@@ -145,10 +144,10 @@ class EventTotalSearch extends Event
         }
 
         /** event filter */
-        if(!is_null($this->player)) {
+        if(!empty(trim($this->player))) {
             $query->andFilterWhere(['or',
-                ['like', 'home.name', $this->player],
-                ['like', 'away.name', $this->player]
+                ['like', 'home.name', trim($this->player)],
+                ['like', 'away.name', trim($this->player)]
             ]);
         }
 
@@ -183,13 +182,12 @@ class EventTotalSearch extends Event
 
         /** tour filter */
         if(!is_null($this->tour_id)) {
-            $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
+            $query->andFilterWhere(['IN', Tour::tableName() . '.id', Tour::filterValue($this->tour_id)]);
         }
 
         /** surface filter */
         if(!is_null($this->surface_id)) {
-            $surface = in_array($this->surface_id, Surface::HARD_INDOOR) ? Surface::HARD_INDOOR : $this->surface_id;
-            $query->andFilterWhere(['IN', Surface::tableName() . '.id', $surface]);
+            $query->andFilterWhere(['IN', Surface::tableName() . '.id', Surface::filterValue($this->surface_id)]);
         }
 
         /** total over value filter */

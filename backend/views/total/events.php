@@ -125,7 +125,9 @@ $reset = "/total/events";
             [
                 'label' => '5 Sets',
                 'attribute' => 'five_sets',
-                'value' => '',
+                'value' => function(Event $model) {
+                    return ($model->five_sets) ? 'Yes' : '';
+                },
                 'filter' => ['No', 'Yes'],
             ],
             [
@@ -145,8 +147,8 @@ $reset = "/total/events";
             ],
             [
                 'label' => 'Over',
-                'value' => function(Event $model) {
-                    return TotalHelper::getEventPlayersGeneralStat($model, Odd::ADD_TYPE['over']);
+                'value' => function(Event $model) use ($searchModel) {
+                    return TotalHelper::getEventPlayersGeneralStat($model, Odd::ADD_TYPE['over'], $searchModel);
                 }
             ],
             [

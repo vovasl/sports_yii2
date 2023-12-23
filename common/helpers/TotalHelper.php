@@ -4,6 +4,7 @@
 namespace common\helpers;
 
 
+use backend\models\total\EventTotalSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
@@ -17,31 +18,35 @@ class TotalHelper
 
     CONST OVER_MIN_MONEYLINE = 150;
     CONST UNDER_MIN_MONEYLINE = 100;
+    CONST MIN_EVENTS = 15;
+    CONST PERCENT = [
+        'max' => 0,
+        'min' => 0,
+    ];
 
     /**
      * @param Event $event
      * @param string $type
+     * @param EventTotalSearch $search
      * @return string
      */
-    public static function getEventPlayersGeneralStat(Event $event, string $type): string
+    public static function getEventPlayersGeneralStat(Event $event, string $type, EventTotalSearch $search): string
     {
-        $minPercentBoth = 20;
-        $maxPercent = 0;
-        $minPercent = 0;
-        $minEvents = $event->eventTournament->tour == Tour::ATP ? 6 : 11;
-        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
 
-        if(is_null($event->eventTournament->surface)) {
-            return '';
-        }
-        $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
-            ? Surface::HARD_INDOOR
-            : $event->eventTournament->surface;
+        /** get surface */
+        $surface = (!empty($search->surface_id)) ? $search->surface_id : $event->eventTournament->surface;
+
+        /** empty surface value */
+        if(is_null($surface)) return '';
+
+        /** get moneyline */
+        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
 
         $query = Total::find();
         $query->select([
             'player_id',
             'round((round(sum(profit_0)/count(profit_0)) + round(sum(profit_1)/count(profit_1)))/2) percent_profit',
+            'count(event_id) count_events'
         ]);
         $query->joinWith([
             'event',
@@ -49,16 +54,14 @@ class TotalHelper
             'event.eventTournament.tournamentSurface',
         ]);
         $query->where(['<', 'tn_event.start_at', $event->start_at]);
-        $query->andWhere(['tn_tour.id' => $event->eventTournament->tour]);
-        $query->andWhere(['IN', 'tn_surface.id', $surface]);
+        $query->andWhere(['IN', 'tn_tour.id', Tour::filterValue(self::getTour($event->eventTournament->tour))]);
+        $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($surface))]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         $query->andWhere(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
-        $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
         $query->groupBy('player_id');
-        $query->having(['>=', 'count(event_id)', $minEvents]);
-        //$query->andHaving(['>=', 'percent_profit', $minPercentBoth]);
+        $query->having(['>=', 'count(event_id)', self::MIN_EVENTS]);
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
         $models = $query->all();
 
@@ -74,21 +77,22 @@ class TotalHelper
             : $models[1]->percent_profit;
 
         /** filer by max and min percent */
-        if($maxPercentProfit < $maxPercent || $minPercentProfit < $minPercent) return $output;
+        if($maxPercentProfit < self::PERCENT['max'] || $minPercentProfit < self::PERCENT['min']) return $output;
 
         $stats = [];
         foreach ($models as $model) {
             $stats[] = $model->getPercentProfit();
+            //$stats[] = $model->getPercentProfit() . '-' . $model->count_events;
         }
 
         $output = join(' ', $stats);
 
         /** totalOver output markers */
-/*        $totalOver = EventHelper::getOddStat($event->totalsOver);
+        $totalOver = EventHelper::getOddStat($event->totalsOver);
         if(in_array($totalOver, ['5/5', '7/7', '4/5', '3/5', '2/5'])) $output .= ' QQQQQ';
         else if(in_array($totalOver, ['0/5', '0/6', '0/7', '1/7'])) $output .= ' WWWWW';
         else if(in_array($totalOver, ['1/5', '2/7'])) $output .= ' EEEEE';
-        else $output .= ' TTTTT';*/
+        else $output .= ' TTTTT';
 
 
         return $output;
@@ -101,12 +105,9 @@ class TotalHelper
      */
     public static function getEventPlayersStat(Event $event, string $type): array
     {
-        if(is_null($event->eventTournament->surface)) {
-            return [];
-        }
-        $surface = (in_array($event->eventTournament->surface, Surface::HARD_INDOOR))
-            ? Surface::HARD_INDOOR
-            : $event->eventTournament->surface;
+
+        /** empty surface value */
+        if(is_null($event->eventTournament->surface)) return [];
 
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
 
@@ -126,16 +127,26 @@ class TotalHelper
             'event.eventTournament.tournamentSurface',
         ]);
         $query->where(['<', 'tn_event.start_at', $event->start_at]);
-        $query->andWhere(['tn_tour.id' => $event->eventTournament->tour]);
-        $query->andWhere(['IN', 'tn_surface.id', $surface]);
+        $query->andWhere(['IN', 'tn_tour.id', Tour::filterValue(self::getTour($event->eventTournament->tour))]);
+        $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($event->eventTournament->surface))]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         $query->andWhere(['sp_total.type' => $type]);
         $query->andWhere(['IN', 'sp_total.player_id', [$event->home, $event->away]]);
-        $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
         $query->groupBy('player_id');
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
 
         return $query->all();
+    }
+
+    public static function getTour($tour)
+    {
+        return (in_array($tour, [Tour::ATP, Tour::DAVIS_CUP])) ? '-1' : $tour;
+    }
+
+    public static function getSurface($surface)
+    {
+        return $surface;
+        //return (in_array($surface, [Surface::SURFACES['hard'], Surface::SURFACES['indoor']])) ? '-1' : $surface;
     }
 }

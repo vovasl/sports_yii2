@@ -4,6 +4,7 @@ namespace backend\models;
 
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "pn_settings".
@@ -12,7 +13,7 @@ use Yii;
  * @property string $name
  * @property string $value
  */
-class Setting extends \yii\db\ActiveRecord
+class Setting extends ActiveRecord
 {
     /**
      * {@inheritdoc}

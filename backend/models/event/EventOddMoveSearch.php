@@ -104,12 +104,12 @@ class EventOddMoveSearch extends Event
 
         /** tour filter */
         if(!is_null($this->tour_id)) {
-            $query->andFilterWhere([Tour::tableName() . '.id' => $this->tour_id]);
+            $query->andFilterWhere(['IN', Tour::tableName() . '.id', Tour::filterValue($this->tour_id)]);
         }
 
         /** surface filter */
         if(!is_null($this->surface_id)) {
-            $query->andFilterWhere(['IN', Surface::tableName() . '.id', $this->surface_id]);
+            $query->andFilterWhere(['IN', Surface::tableName() . '.id', Surface::filterValue($this->surface_id)]);
         }
 
         /** round filter */

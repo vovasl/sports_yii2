@@ -9,6 +9,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
+use frontend\models\sport\Tour;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -88,19 +89,15 @@ class StatisticTotalSearch extends Total
         if(is_null($this->type)) {
             $this->type = Odd::ADD_TYPE['over'];
         }
-        if(is_null($this->five_sets)) {
-            $this->five_sets = 0;
-        }
 
         /** tour filter */
         if(!is_null($this->tour)) {
-            $query->andFilterWhere(['tn_tour.id' => $this->tour]);
+            $query->andFilterWhere(['IN', 'tn_tour.id', Tour::filterValue($this->tour)]);
         }
 
         /** surface filter */
         if(!is_null($this->surface)) {
-            $surface = in_array($this->surface, Surface::HARD_INDOOR) ? Surface::HARD_INDOOR : $this->surface;
-            $query->andFilterWhere(['IN', 'tn_surface.id', $surface]);
+            $query->andFilterWhere(['IN', 'tn_surface.id', Surface::filterValue($this->surface)]);
         }
 
         /** round filter */

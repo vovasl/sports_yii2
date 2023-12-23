@@ -9,6 +9,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
+use frontend\models\sport\Tour;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -94,35 +95,27 @@ class PlayerTotalSearch extends Total
             return $dataProvider;
         }
 
-        /** default values */
-        if(is_null($this->type)) {
+        /** default search params */
+        if(empty($params)) {
             $this->type = Odd::ADD_TYPE['over'];
-        }
-        if(empty($this->min_moneyline)) {
             $this->min_moneyline = '1.5>=';
-        }
-        if(is_null($this->count_events)) {
             $this->count_events = 15;
-        }
-        if(is_null($this->five_sets)) {
-            $this->five_sets = 0;
         }
 
         /** player filter */
-        if(!empty($this->player_name)) {
-            $query->andFilterWhere(['LIKE', 'tn_player.name', $this->player_name]);
+        if(!empty(trim($this->player_name))) {
+            $query->andFilterWhere(['LIKE', 'tn_player.name', trim($this->player_name)]);
             $this->count_events = null;
         }
 
         /** tour filter */
         if(!is_null($this->tour)) {
-            $query->andFilterWhere(['tn_tour.id' => $this->tour]);
+            $query->andFilterWhere(['IN', 'tn_tour.id', Tour::filterValue($this->tour)]);
         }
 
         /** surface filter */
         if(!is_null($this->surface)) {
-            $surface = in_array($this->surface, Surface::HARD_INDOOR) ? Surface::HARD_INDOOR : $this->surface;
-            $query->andFilterWhere(['IN', 'tn_surface.id', $surface]);
+            $query->andFilterWhere(['IN', 'tn_surface.id', Surface::filterValue($this->surface)]);
         }
 
         /** round filter */
