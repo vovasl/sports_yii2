@@ -84,8 +84,8 @@ class TotalHelper
 
         $stats = [];
         foreach ($models as $model) {
-            $stats[] = $model->getPercentProfit();
-            //$stats[] = $model->getPercentProfit() . '-' . $model->count_events;
+            //$stats[] = $model->getPercentProfit();
+            $stats[] = $model->getPercentProfit() . '-' . $model->count_events;
         }
 
         $output = join(' ', $stats);
