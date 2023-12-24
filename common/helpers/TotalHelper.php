@@ -19,11 +19,11 @@ class TotalHelper
     CONST OVER_MIN_MONEYLINE = 150;
     CONST UNDER_MIN_MONEYLINE = 100;
     CONST MIN_EVENTS = 15;
-    CONST PERCENT = [
-        'max' => 0,
+    CONST MIN_PERCENT = [
+        'max' => 20,
         'min' => 0,
     ];
-    CONST ALL = 1;
+    CONST CURRENT = 1;
 
     /**
      * @param Event $event
@@ -47,6 +47,7 @@ class TotalHelper
         $query->select([
             'player_id',
             'round((round(sum(profit_0)/count(profit_0)) + round(sum(profit_1)/count(profit_1)))/2) percent_profit',
+            //'round(sum(profit_0)/count(profit_0)) percent_profit',
             'count(event_id) count_events'
         ]);
         $query->joinWith([
@@ -54,17 +55,17 @@ class TotalHelper
             'event.eventTournament.tournamentTour',
             'event.eventTournament.tournamentSurface',
         ]);
-        if(!self::ALL) {
-            $query->where(['<', 'tn_event.start_at', $event->start_at]);
-        }
+        $query->where(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'tn_tour.id', Tour::filterValue(self::getTour($event->eventTournament->tour))]);
         $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($surface))]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
-        $query->andWhere(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
+        if(!self::CURRENT) {
+            $query->andWhere(['<', 'tn_event.start_at', $event->start_at]);
+        }
         $query->groupBy('player_id');
-        $query->having(['>=', 'count(event_id)', !self::ALL ? self::MIN_EVENTS : 5]);
+        $query->having(['>=', 'count(event_id)', !self::CURRENT ? self::MIN_EVENTS : 5]);
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
         $models = $query->all();
 
@@ -80,9 +81,7 @@ class TotalHelper
             : $models[1]->percent_profit;
 
         /** filer by max and min percent */
-        if(!self::ALL) {
-            if ($maxPercentProfit < self::PERCENT['max'] || $minPercentProfit < self::PERCENT['min']) return $output;
-        }
+        if ($maxPercentProfit < self::MIN_PERCENT['max'] || $minPercentProfit < self::MIN_PERCENT['min']) return $output;
 
         $stats = [];
         foreach ($models as $model) {
