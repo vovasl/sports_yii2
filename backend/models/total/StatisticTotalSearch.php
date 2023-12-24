@@ -85,9 +85,11 @@ class StatisticTotalSearch extends Total
             return $dataProvider;
         }
 
-        /** default values */
-        if(is_null($this->type)) {
+        /** default search params */
+        if(empty($params)) {
             $this->type = Odd::ADD_TYPE['over'];
+            $this->min_moneyline = '1.5>=';
+            $this->round = 100;
         }
 
         /** tour filter */
