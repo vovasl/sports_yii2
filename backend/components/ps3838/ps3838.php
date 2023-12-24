@@ -33,6 +33,7 @@ class PS3838 extends Component
         'United Cup',
         //'ITF Men',
         //'ITF Women',
+        'Fed Cup',
         'WTA',
     ];
 
