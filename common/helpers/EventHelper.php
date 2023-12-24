@@ -1,11 +1,9 @@
 <?php
 
-
 namespace common\helpers;
 
-use backend\components\pinnacle\helpers\BaseHelper;
+
 use frontend\models\sport\Event;
-use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 
 class EventHelper
@@ -43,16 +41,6 @@ class EventHelper
 
     /**
      * @param array $odds
-     * @return int
-     */
-    public static function getOddStatPercent(array $odds): int
-    {
-        $data = self::_getOddStat($odds);
-        return $data['count'] > 0 ? round($data['val'] / $data['count'] * 100) : 0;
-    }
-
-    /**
-     * @param array $odds
      * @return array
      */
     public static function _getOddStat(array $odds): array
@@ -80,27 +68,6 @@ class EventHelper
             else if($qualifier == 1 && $event->round == Round::QUALIFIER) $count++;
         }
         return $count;
-    }
-
-    /**
-     * @param $val
-     * @return string
-     */
-    public static function getQualifierText($val): string
-    {
-        switch ($val) {
-            case 0:
-                $text = "Main";
-                break;
-            case 1:
-                $text = "Qualifiers";
-                break;
-            default:
-                $text = "ALL";
-                break;
-        }
-
-        return $text;
     }
 
     /**
@@ -144,20 +111,6 @@ class EventHelper
                 'style' => 'display: none;',
             ]
         ];
-    }
-
-    /**
-     * @param Event $event
-     * @return array
-     */
-    public static function getOdds(Event $event): array
-    {
-        $odds = [];
-        foreach ($event->odds as $odd) {
-            $odds[] = $odd;
-        }
-
-        return $odds;
     }
 
 }

@@ -1,10 +1,9 @@
 <?php
 
 
+use backend\models\EventSearch;
 use common\helpers\EventHelper;
-use common\helpers\OddHelper;
 use frontend\models\sport\Event;
-use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
@@ -12,14 +11,13 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\web\View;
-use backend\models\TournamentEventSearch;
 use yii\data\ActiveDataProvider;
 use yii\widgets\LinkPager;
 use yii\grid\ActionColumn;
 
 /**
  * @var View $this
- * @var TournamentEventSearch $searchModel
+ * @var EventSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 

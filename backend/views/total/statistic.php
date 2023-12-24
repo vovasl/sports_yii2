@@ -1,7 +1,7 @@
 <?php
 
 use backend\models\total\StatisticTotalSearch;
-use common\helpers\OddHelper;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
@@ -80,7 +80,7 @@ $reset = "/total/statistic";
                 'attribute' => 'value0',
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 0),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
                 'attribute' => 'percent_profit_0',
                 'filter' => '',
                 'value' => function(Total $model) {
@@ -88,7 +88,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 1),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 1),
                 'attribute' => 'percent_profit_1',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
@@ -97,7 +97,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 2),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 2),
                 'attribute' => 'percent_profit_2',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
@@ -106,7 +106,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 3),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 3),
                 'attribute' => 'percent_profit_3',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
@@ -115,7 +115,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 4),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 4),
                 'attribute' => 'percent_profit_4',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {

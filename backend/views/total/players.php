@@ -2,7 +2,7 @@
 
 
 use backend\models\total\PlayerTotalSearch;
-use common\helpers\OddHelper;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
@@ -112,31 +112,31 @@ $reset = "/total/players";
                 'filter' => ['No', 'Yes'],
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 0),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
                 'attribute' => 'percent_profit_0',
                 'value' => 'percentProfit0',
                 'filter' => '',
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 1),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 1),
                 'attribute' => 'percent_profit_1',
                 'value' => 'percentProfit1',
                 'filter' => '',
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 2),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 2),
                 'attribute' => 'percent_profit_2',
                 'value' => 'percentProfit2',
                 'filter' => '',
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 3),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 3),
                 'attribute' => 'percent_profit_3',
                 'value' => 'percentProfit3',
                 'filter' => '',
             ],
             [
-                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 4),
+                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 4),
                 'attribute' => 'percent_profit_4',
                 'value' => 'percentProfit4',
                 'filter' => '',

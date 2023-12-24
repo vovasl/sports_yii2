@@ -6,7 +6,7 @@
  * @var string $title
  */
 
-use common\helpers\OddHelper;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Total;
 use yii\web\View;
 
@@ -21,7 +21,7 @@ $avg = [];
     <tr>
         <td class="text-center"><strong>Player</strong></td>
         <td class="text-center"><strong>Events</strong></td>
-        <?php foreach (OddHelper::getStatsTitle(OddHelper::totalSettings()) as $title): ?>
+        <?php foreach (TotalHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
             <td class="text-center"><strong><?= $title ?></strong></td>
         <?php endforeach; ?>
     </tr>

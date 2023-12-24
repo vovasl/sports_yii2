@@ -3,7 +3,7 @@
 namespace console\controllers;
 
 
-use common\helpers\OddHelper;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Total;
 use Yii;
@@ -68,7 +68,7 @@ class TotalController extends Controller
     public function getProfit(Total $model, Event $event, string $type): Total
     {
         /** get odds settings */
-        $oddsSettings = OddHelper::totalSettings();
+        $oddsSettings = TotalHelper::ODDS;
         sort($oddsSettings);
 
         /** get profit values */

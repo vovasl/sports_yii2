@@ -53,9 +53,4 @@ YiiAsset::register($this);
         ],
     ]) ?>
 
-    <?= $this->render('view/_total', [
-        'events' => $model->events
-    ])
-    ?>
-
 </div>
