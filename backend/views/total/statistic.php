@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\total\StatisticTotalSearch;
+use common\helpers\OddHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
@@ -79,7 +80,7 @@ $reset = "/total/statistic";
                 'attribute' => 'value0',
             ],
             [
-                'label' => '<1.76',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 0),
                 'attribute' => 'percent_profit_0',
                 'filter' => '',
                 'value' => function(Total $model) {
@@ -87,7 +88,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => '1.76-1.85',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 1),
                 'attribute' => 'percent_profit_1',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
@@ -96,7 +97,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => '1.86-1.96',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 2),
                 'attribute' => 'percent_profit_2',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
@@ -105,7 +106,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => '1.97-2.08',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 3),
                 'attribute' => 'percent_profit_3',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
@@ -114,7 +115,7 @@ $reset = "/total/statistic";
                 },
             ],
             [
-                'label' => '>=2.09',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 4),
                 'attribute' => 'percent_profit_4',
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {

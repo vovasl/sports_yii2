@@ -87,33 +87,33 @@ class OddHelper
 
     /**
      * @param $settings
-     * @return array
+     * @param null $current
+     * @return array|mixed
      */
-    public static function getStatsTitle($settings): array
+    public static function getStatsTitle($settings, $current = null)
     {
         $odds = $settings;
         sort($odds);
         $data = [];
 
-        foreach ($odds as $odd) {
+        foreach ($odds as $k => $odd) {
             $prefix = '';
             $titles = [];
-            $key = array_search($odd, $settings);
 
+            /** first title */
+            if($odd == reset($odds)) {
+                $prefix = '<';
+                $titles[] = $odds[$k + 1];
+            }
             /** last title */
-            if($key == array_key_first($settings)) {
+            else if($odd == end($odds)) {
                 $prefix = '>=';
                 $titles[] = $odd;
-            }
-            /** first title */
-            else if($key == array_key_last($settings)) {
-                $prefix = '<';
-                $titles[] = $settings[$key - 1];
             }
             /** middle title */
             else {
                 $titles[] = $odd;
-                $titles[] = $settings[$key - 1];
+                $titles[] = $odds[$k + 1];
             }
 
             /** prepare titles for odd view */
@@ -122,6 +122,9 @@ class OddHelper
             });
 
             $data[] = $prefix . implode("-", $titles);
+
+            /** get one title */
+            if(!is_null($current) && $current == $k) return end($data);
         }
 
         return $data;

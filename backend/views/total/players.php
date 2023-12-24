@@ -2,6 +2,7 @@
 
 
 use backend\models\total\PlayerTotalSearch;
+use common\helpers\OddHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
@@ -111,31 +112,31 @@ $reset = "/total/players";
                 'filter' => ['No', 'Yes'],
             ],
             [
-                'label' => '<1.76',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 0),
                 'attribute' => 'percent_profit_0',
                 'value' => 'percentProfit0',
                 'filter' => '',
             ],
             [
-                'label' => '1.76-1.85',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 1),
                 'attribute' => 'percent_profit_1',
                 'value' => 'percentProfit1',
                 'filter' => '',
             ],
             [
-                'label' => '1.86-1.96',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 2),
                 'attribute' => 'percent_profit_2',
                 'value' => 'percentProfit2',
                 'filter' => '',
             ],
             [
-                'label' => '1.97-2.08',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 3),
                 'attribute' => 'percent_profit_3',
                 'value' => 'percentProfit3',
                 'filter' => '',
             ],
             [
-                'label' => '>=2.09',
+                'label' => OddHelper::getStatsTitle(OddHelper::totalSettings(), 4),
                 'attribute' => 'percent_profit_4',
                 'value' => 'percentProfit4',
                 'filter' => '',
