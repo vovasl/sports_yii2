@@ -100,6 +100,7 @@ class PlayerTotalSearch extends Total
             $this->type = Odd::ADD_TYPE['over'];
             $this->min_moneyline = '1.5>=';
             $this->count_events = 15;
+            $this->round = 100;
         }
 
         /** player filter */
