@@ -36,8 +36,7 @@ class EventTotalSearch extends Event
         return [
             [['start_at'], 'safe'],
             [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets'], 'integer'],
-            [['player', 'tournament_name', 'total_over_value'], 'string'],
-            [['home_moneyline_odd'], 'double'],
+            [['player', 'tournament_name', 'total_over_value', 'home_moneyline_odd'], 'string'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
             [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
