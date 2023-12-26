@@ -17,13 +17,25 @@ use yii\db\ActiveRecord;
 class Tour extends ActiveRecord
 {
 
+    /** tours */
     CONST ATP = 1;
     CONST CHALLENGER = 2;
     CONST DAVIS_CUP = 3;
-    CONST SOFA_CHALLENGER = 72;
+    CONST WTA = 5;
+    CONST UNITED_CUP_WOMEN = 7;
+    CONST UNITED_CUP_MEN = 8;
+
+    /** combine tours */
+    CONST ATP_ALL = [self::ATP, self::DAVIS_CUP, self::UNITED_CUP_MEN];
+    CONST WTA_ALL = [self::WTA, self::UNITED_CUP_WOMEN];
+
+    /** additional filter */
     CONST ADD_FILTER = [
-        '-1' => 'ATP + DAVIS CUP'
+        -1 => 'ATP + DAVIS CUP + United Cup',
+        -2 => 'WTA + United Cup'
     ];
+
+    CONST SOFA_CHALLENGER = 72;
 
     /**
      * {@inheritdoc}
@@ -81,8 +93,10 @@ class Tour extends ActiveRecord
     {
         if(empty(self::ADD_FILTER[$tour])) return $tour;
         switch ($tour) {
-            case '-1':
-                return [self::ATP, self::DAVIS_CUP];
+            case -1:
+                return self::ATP_ALL;
+            case -2:
+                return self::WTA_ALL;
             default:
                 return $tour;
         }

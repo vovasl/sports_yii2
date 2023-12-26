@@ -191,7 +191,10 @@ class TotalHelper
 
     public static function getTour($tour)
     {
-        return (in_array($tour, [Tour::ATP, Tour::DAVIS_CUP])) ? '-1' : $tour;
+        if(in_array($tour, Tour::ATP_ALL)) return -1;
+        if(in_array($tour, Tour::WTA_ALL)) return -2;
+
+        return $tour;
     }
 
     public static function getSurface($surface)
