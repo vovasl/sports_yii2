@@ -695,7 +695,7 @@ class Event extends ActiveRecord
      */
     public function getOddMoveValueType(): string
     {
-        return ucfirst(array_search($this->odd_move_status, OddMove::VALUE_TYPES));
+        return ucfirst(array_search($this->odd_move_value_type, OddMove::VALUE_TYPES));
     }
 
     /**

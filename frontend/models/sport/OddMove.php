@@ -26,7 +26,7 @@ use yii\db\StaleObjectException;
 class OddMove extends ActiveRecord
 {
 
-    CONST POINTS = 10;
+    CONST POINTS = 5;
 
     CONST STATUSES = [
         'finished' => 0,
