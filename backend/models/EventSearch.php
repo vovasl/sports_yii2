@@ -62,11 +62,18 @@ class EventSearch extends Event
     public function search(array $params): ActiveDataProvider
     {
         $query = Event::find()
-            ->select(['event.*', 'count(sp_odd.id) count_odds'])
+            ->select([
+                'event.*',
+                'count(sp_odd.id) count_odds',
+                'home_moneyline.odd home_moneyline_odd',
+                'away_moneyline.odd away_moneyline_odd'
+            ])
             ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
                 'odds',
+                'homeMoneyline',
+                'awayMoneyline',
                 'tournamentRound',
                 'eventTournament',
                 'eventTournament.tournamentTour',

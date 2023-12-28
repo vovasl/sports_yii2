@@ -3,6 +3,7 @@
 namespace backend\models\event;
 
 
+use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Player;
 use frontend\models\sport\Round;
@@ -142,11 +143,11 @@ class EventOddMoveSearch extends Event
             $query->andHaving(['>=', 'away_moneyline_odd', $homeMoneylineOdd]);
         }
 
-        /** odd move filter */
+        /** odd move value filter */
         if(!empty($this->odd_move_value)) {
-            preg_match('#(\d.+)(<.*|>.*)#', $this->odd_move_value, $oddMoveValue);
-            if(!empty($oddMoveValue)) {
-                $query->andFilterWhere([$oddMoveValue[2], 'sp_odd_move.value', (int)$oddMoveValue[1]]);
+            $value = EventHelper::parseValueFilter($this->odd_move_value);
+            if(!empty($value)) {
+                $query->andFilterWhere([$value[2], 'sp_odd_move.value', $value[1]]);
             }
             else {
                 $query->andFilterWhere(['=', 'sp_odd_move.value', $this->odd_move_value]);

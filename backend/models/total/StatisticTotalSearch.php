@@ -3,6 +3,7 @@
 namespace backend\models\total;
 
 
+use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
@@ -119,13 +120,14 @@ class StatisticTotalSearch extends Total
 
         /** moneyline filter */
         if(!empty($this->min_moneyline)) {
-            preg_match('#(\d.+)(<.*|>.*)#', $this->min_moneyline, $minMoneyline);
-            if(!empty($minMoneyline)) {
-                $minMoneyline[1] = $minMoneyline[1] * 100;
-                $query->andFilterWhere([$minMoneyline[2], 'min_moneyline', (int)$minMoneyline[1]]);
+            $moneyline = EventHelper::parseValueFilter($this->min_moneyline);
+            if(!empty($moneyline)) {
+                $moneylineOdd = $moneyline[1] * 100;
+                $query->andFilterWhere([$moneyline[2], 'min_moneyline', $moneylineOdd]);
             }
             else {
-                $query->andFilterWhere(['=', 'min_moneyline', $this->min_moneyline]);
+                $moneylineOdd = $this->min_moneyline * 100;
+                $query->andFilterWhere(['=', 'min_moneyline', $moneylineOdd]);
             }
         }
 
@@ -136,7 +138,7 @@ class StatisticTotalSearch extends Total
 
         /** value0 filter */
         if(!empty($this->value0)) {
-            preg_match('#(\d.+)(<.*|>.*)#', $this->value0, $value);
+            $value =EventHelper::parseValueFilter($this->value0);
             if(!empty($value)) {
                 $query->andFilterWhere([$value[2], 'odd0.value', (int)$value[1]]);
             }

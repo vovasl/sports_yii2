@@ -113,4 +113,12 @@ class EventHelper
         ];
     }
 
+    public static function parseValueFilter($val)
+    {
+        $pattern = '#(\d.*)(<.*|>.*)#';
+        preg_match($pattern, $val, $data);
+
+        return $data;
+    }
+
 }

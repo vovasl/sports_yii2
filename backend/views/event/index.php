@@ -94,11 +94,19 @@ $reset = "/event";
                 'filter' => EventHelper::resultDropdown(),
             ],
             [
+                'attribute' => 'home_moneyline_odd',
+                'label' => 'Home',
+                'value' => 'homeMoneylineOddVal'
+            ],
+            [
+                'attribute' => 'away_moneyline_odd',
+                'label' => 'Away',
+                'value' =>'awayMoneylineOddVal',
+            ],
+            [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
-                'value' => function($model) {
-                    return count($model->odds);
-                },
+                'value' => 'count_odds',
                 'filter' => [
                     1 => 'Yes',
                     -1 => 'No',
@@ -120,6 +128,14 @@ $reset = "/event";
                     }
                 ],
                 'buttons' => [
+                    'view' => function ($url, $model) {
+                        $options = [
+                            'title' => 'Event',
+                            'target' => '_blank'
+                        ];
+                        $url = Url::to(['event/view', 'id' => $model->id]);
+                        return Html::a('<i class="fas fa-eye"></i>', $url, $options);
+                    },
                     'add-line' => function ($url, $model) {
                         $options = [
                             'title' => 'Add Line',
