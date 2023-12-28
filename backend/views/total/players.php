@@ -92,15 +92,6 @@ $reset = "/total/players";
             ],
             'count_events',
             [
-                'label' => 'Type',
-                'attribute' => 'type',
-                'value' => 'type',
-                'filter' => [
-                    Odd::ADD_TYPE['over'] => Odd::ADD_TYPE['over'],
-                    Odd::ADD_TYPE['under'] => Odd::ADD_TYPE['under']
-                ]
-            ],
-            [
                 'label' => 'Moneyline',
                 'attribute' => 'min_moneyline',
                 'value' => '',
@@ -110,6 +101,15 @@ $reset = "/total/players";
                 'attribute' => 'five_sets',
                 'value' => '',
                 'filter' => ['No', 'Yes'],
+            ],
+            [
+                'label' => 'Type',
+                'attribute' => 'type',
+                'value' => 'type',
+                'filter' => [
+                    Odd::ADD_TYPE['over'] => Odd::ADD_TYPE['over'],
+                    Odd::ADD_TYPE['under'] => Odd::ADD_TYPE['under']
+                ]
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
