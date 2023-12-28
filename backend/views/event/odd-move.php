@@ -86,30 +86,8 @@ $reset = "/event/odd-move";
             ],
             EventHelper::gridHomePlayer(['model' => 'EventOddMoveSearch']),
             EventHelper::gridAwayPlayer(['model' => 'EventOddMoveSearch']),
-            [
-                'label' => 'Moneyline',
-                'attribute' => 'moneyline',
-                'value' => 'homeMoneylineOddVal',
-                'format' => 'raw',
-                'headerOptions' => [
-                    'colspan' => 2,
-                    'style' => 'text-align: center;'
-                ],
-                'filterOptions' => [
-                    'colspan' => 2,
-                ],
-            ],
-            [
-                'label' => 'Away',
-                'value' =>'awayMoneylineOddVal',
-                'format' => 'raw',
-                'headerOptions' => [
-                    'style' => 'display: none;',
-                ],
-                'filterOptions' => [
-                    'style' => 'display: none;',
-                ]
-            ],
+            EventHelper::gridHomeMoneyline(),
+            EventHelper::gridAwayMoneyline(),
             [
                 'attribute' => 'o_type_name',
                 'label' => 'Type',

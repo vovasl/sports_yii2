@@ -87,38 +87,40 @@ $reset = "/total/events";
                 'value' => 'tournamentRound.name',
                 'filter' => Round::dropdownFilter(),
             ],
-            EventHelper::gridHomePlayer(['model' => 'EventTotalSearch']),
-            EventHelper::gridAwayPlayer(['model' => 'EventTotalSearch']),
+            EventHelper::gridHomePlayer([
+                'action' => 'total/players',
+                'model' => 'PlayerTotalSearch',
+                'player_field' => 'PlayerTotalSearch[player_name]',
+                'search_data' => [
+                    'PlayerTotalSearch[tour]' => $searchModel->tour_id,
+                    'PlayerTotalSearch[surface]' => $searchModel->surface_id,
+                    'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : 100,
+                    'PlayerTotalSearch[min_moneyline]' => $searchModel->moneyline,
+                    'PlayerTotalSearch[five_sets]' => $searchModel->five_sets,
+                    'PlayerTotalSearch[type]' => 'over',
+                ],
+            ]),
+            EventHelper::gridAwayPlayer([
+                'action' => 'total/players',
+                'model' => 'PlayerTotalSearch',
+                'player_field' => 'PlayerTotalSearch[player_name]',
+                'search_data' => [
+                    'PlayerTotalSearch[tour]' => $searchModel->tour_id,
+                    'PlayerTotalSearch[surface]' => $searchModel->surface_id,
+                    'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : 100,
+                    'PlayerTotalSearch[min_moneyline]' => $searchModel->moneyline,
+                    'PlayerTotalSearch[five_sets]' => $searchModel->five_sets,
+                    'PlayerTotalSearch[type]' => 'over',
+                ],
+            ]),
             [
                 'attribute' => 'result',
                 'label' => 'Result',
                 'value' =>'result',
                 'filter' => EventHelper::resultDropdown(),
             ],
-            [
-                'label' => 'Moneyline',
-                'attribute' => 'moneyline',
-                'value' => 'homeMoneylineOddVal',
-                'format' => 'raw',
-                'headerOptions' => [
-                    'colspan' => 2,
-                    'style' => 'text-align: center;'
-                ],
-                'filterOptions' => [
-                    'colspan' => 2,
-                ],
-            ],
-            [
-                'label' => 'Away',
-                'value' =>'awayMoneylineOddVal',
-                'format' => 'raw',
-                'headerOptions' => [
-                    'style' => 'display: none;',
-                ],
-                'filterOptions' => [
-                    'style' => 'display: none;',
-                ]
-            ],
+            EventHelper::gridHomeMoneyline(),
+            EventHelper::gridAwayMoneyline(),
             [
                 'attribute' => 'total_over_value',
                 'label' => 'Total',

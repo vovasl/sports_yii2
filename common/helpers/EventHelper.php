@@ -113,6 +113,44 @@ class EventHelper
         ];
     }
 
+    /**
+     * @return array
+     */
+    public static function gridHomeMoneyline(): array
+    {
+        return [
+            'label' => 'Moneyline',
+            'attribute' => 'moneyline',
+            'value' => 'homeMoneylineOddVal',
+            'format' => 'raw',
+            'headerOptions' => [
+                'colspan' => 2,
+                'style' => 'text-align: center;'
+            ],
+            'filterOptions' => [
+                'colspan' => 2,
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function gridAwayMoneyline(): array
+    {
+        return [
+            'label' => 'Away',
+            'value' =>'awayMoneylineOddVal',
+            'format' => 'raw',
+            'headerOptions' => [
+                'style' => 'display: none;',
+            ],
+            'filterOptions' => [
+                'style' => 'display: none;',
+            ]
+        ];
+    }
+
     public static function parseValueFilter($val)
     {
         $pattern = '#(\d.*)(<.*|>.*)#';

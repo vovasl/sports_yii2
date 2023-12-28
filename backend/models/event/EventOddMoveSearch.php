@@ -176,6 +176,7 @@ class EventOddMoveSearch extends Event
             }
         }
 
+        /** odd move value type */
         if(!is_null($this->odd_move_value_type)) {
             $query->andFilterWhere(['=', 'sp_odd_move.value_type', $this->odd_move_value_type]);
         }

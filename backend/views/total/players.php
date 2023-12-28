@@ -61,7 +61,7 @@ $reset = "/total/players";
                         'total/events',
                         'EventTotalSearch[count_odds]' => 1,
                         'EventTotalSearch[result]' => 1,
-                        'EventTotalSearch[home_moneyline_odd]' => 1.5,
+                        'EventTotalSearch[moneyline]' => $searchModel->min_moneyline,
                         'EventTotalSearch[player]' => $model->player->name,
                         'EventTotalSearch[tour_id]' => $searchModel->tour,
                         'EventTotalSearch[surface_id]' => $searchModel->surface,

@@ -170,10 +170,15 @@ class Player extends ActiveRecord
                 'model' => 'EventSearch'
             ];
         }
-        return Html::a($name, [
+        $player = (!empty($uri['player_field'])) ? $uri['player_field'] : "{$uri['model']}[player]";
+        $link = [
             $uri['action'],
-            "{$uri['model']}[player]" => $name
-        ], [
+            $player => $name,
+        ];
+       if(!empty($uri['search_data'])) {
+            $link = array_merge($link, $uri['search_data']);
+        }
+        return Html::a($name, $link, [
             'target'=>'_blank',
             'class' => $class
         ]);

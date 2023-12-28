@@ -93,30 +93,8 @@ $reset = "/event";
                 'value' =>'result',
                 'filter' => EventHelper::resultDropdown(),
             ],
-            [
-                'label' => 'Moneyline',
-                'attribute' => 'moneyline',
-                'value' => 'homeMoneylineOddVal',
-                'format' => 'raw',
-                'headerOptions' => [
-                    'colspan' => 2,
-                    'style' => 'text-align: center;'
-                ],
-                'filterOptions' => [
-                    'colspan' => 2,
-                ],
-            ],
-            [
-                'label' => 'Away',
-                'value' =>'awayMoneylineOddVal',
-                'format' => 'raw',
-                'headerOptions' => [
-                    'style' => 'display: none;',
-                ],
-                'filterOptions' => [
-                    'style' => 'display: none;',
-                ]
-            ],
+            EventHelper::gridHomeMoneyline(),
+            EventHelper::gridAwayMoneyline(),
             [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
