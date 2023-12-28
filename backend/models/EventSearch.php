@@ -131,15 +131,12 @@ class EventSearch extends Event
             $query->andFilterWhere(['IN', Surface::tableName() . '.id', Surface::filterValue($this->surface_id)]);
         }
 
+        /** tournament name filter */
         if(!is_null($this->tournament_name)) {
             $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'total' => $this->total
-        ]);
-
+        /** round filter */
         if(!is_null($this->round_id)) {
             if($this->round_id == Round::QUALIFIER_FILTER) {
                 $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
@@ -149,6 +146,7 @@ class EventSearch extends Event
             }
         }
 
+        /** event filter */
         if(!is_null($this->player)) {
             $query->andFilterWhere(['or',
                 ['like', 'home.name', $this->player],
@@ -156,6 +154,7 @@ class EventSearch extends Event
             ]);
         }
 
+        /** result filter */
         if(!is_null($this->result)) {
             if($this->result == 1) {
                 $query->andFilterWhere(['IS NOT', 'home_result', new Expression('null')]);
@@ -167,12 +166,7 @@ class EventSearch extends Event
             }
         }
 
-        if(!is_null($this->total_games)) {
-            $query->andFilterWhere([
-                '>=', 'total_games', $this->total_games
-            ]);
-        }
-
+        /** odds filter */
         if(!is_null($this->count_odds)) {
             if($this->count_odds == 1) {
                 $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);

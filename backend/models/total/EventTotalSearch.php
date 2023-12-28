@@ -3,6 +3,7 @@
 namespace backend\models\total;
 
 
+use common\helpers\EventHelper;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
@@ -191,9 +192,9 @@ class EventTotalSearch extends Event
 
         /** total over value filter */
         if(!empty($this->total_over_value)) {
-            preg_match('#(\d+)(<.*|>.*)#', $this->total_over_value, $tovalOver);
-            if(!empty($tovalOver)) {
-                $query->andHaving([$tovalOver[2], 'total_over_value', (int)$tovalOver[1]]);
+            $totalOver = EventHelper::parseValueFilter($this->total_over_value);
+            if(!empty($totalOver)) {
+                $query->andHaving([$totalOver[2], 'total_over_value', $totalOver[1]]);
             }
             else {
                 $query->andHaving(['=', 'total_over_value', $this->total_over_value]);
