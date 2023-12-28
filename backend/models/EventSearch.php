@@ -3,6 +3,8 @@
 namespace backend\models;
 
 
+use common\helpers\EventHelper;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
@@ -30,6 +32,8 @@ class EventSearch extends Event
 
     public $count_odds;
 
+    public $moneyline;
+
     /**
      * {@inheritdoc}
      */
@@ -37,12 +41,8 @@ class EventSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id'], 'integer'],
-            [['player', 'tournament_name'], 'string'],
-            [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
-            [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
-            [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
-            [['tournament'], 'exist', 'skipOnError' => true, 'targetClass' => Tournament::class, 'targetAttribute' => ['tournament' => 'id']],
+            [['tour_id', 'surface_id', 'round_id', 'result', 'count_odds'], 'integer'],
+            [['tournament_name', 'player', 'moneyline'], 'string'],
         ];
     }
 
@@ -163,6 +163,33 @@ class EventSearch extends Event
             else if($this->result == 2) {
                 $query->andFilterWhere(['IS', 'home_result', new Expression('null')]);
                 $query->andFilterWhere(['IS', 'away_result', new Expression('null')]);
+            }
+        }
+
+        /** moneyline filter */
+        if(!empty($this->moneyline)) {
+            $moneyline = EventHelper::parseValueFilter($this->moneyline);
+            if(!empty($moneyline)) {
+
+                /** get odd */
+                $moneylineOdd = Odd::setOdd($moneyline[1]);
+
+                /** get condition */
+                $condition = (strpos($moneyline[2], '>') !== false) ? 'AND' : 'OR';
+                $query->andHaving([$condition,
+                    [$moneyline[2], 'home_moneyline_odd', $moneylineOdd],
+                    [$moneyline[2], 'away_moneyline_odd', $moneylineOdd]
+                ]);
+            }
+            else {
+
+                /** get odd */
+                $moneylineOdd = Odd::setOdd($this->moneyline);
+
+                $query->andHaving(['OR',
+                    ['=', 'home_moneyline_odd', $moneylineOdd],
+                    ['=', 'away_moneyline_odd', $moneylineOdd]
+                ]);
             }
         }
 

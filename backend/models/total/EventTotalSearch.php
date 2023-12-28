@@ -4,6 +4,7 @@ namespace backend\models\total;
 
 
 use common\helpers\EventHelper;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
@@ -29,6 +30,8 @@ class EventTotalSearch extends Event
 
     public $result;
 
+    public $moneyline;
+
     /**
      * {@inheritdoc}
      */
@@ -36,12 +39,8 @@ class EventTotalSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['round', 'home', 'away', 'total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets'], 'integer'],
-            [['player', 'tournament_name', 'total_over_value', 'home_moneyline_odd'], 'string'],
-            [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
-            [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],
-            [['round'], 'exist', 'skipOnError' => true, 'targetClass' => Round::class, 'targetAttribute' => ['round' => 'id']],
-            [['tournament'], 'exist', 'skipOnError' => true, 'targetClass' => Tournament::class, 'targetAttribute' => ['tournament' => 'id']],
+            [['total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets'], 'integer'],
+            [['player', 'tournament_name', 'total_over_value', 'moneyline'], 'string'],
         ];
     }
 
@@ -118,7 +117,7 @@ class EventTotalSearch extends Event
 
         /** default search params */
         if(empty($params)) {
-            $this->home_moneyline_odd = 1.5;
+            $this->moneyline = '1.5>=';
             $this->result = 2;
             $this->count_odds = 1;
         }
@@ -207,10 +206,30 @@ class EventTotalSearch extends Event
         }
 
         /** moneyline filter */
-        if(!empty($this->home_moneyline_odd)) {
-            $homeMoneylineOdd = $this->home_moneyline_odd * 100;
-            $query->andHaving(['>=', 'home_moneyline_odd', $homeMoneylineOdd]);
-            $query->andHaving(['>=', 'away_moneyline_odd', $homeMoneylineOdd]);
+        if(!empty($this->moneyline)) {
+            $moneyline = EventHelper::parseValueFilter($this->moneyline);
+            if(!empty($moneyline)) {
+
+                /** get odd */
+                $moneylineOdd = Odd::setOdd($moneyline[1]);
+
+                /** get condition */
+                $condition = (strpos($moneyline[2], '>') !== false) ? 'AND' : 'OR';
+                $query->andHaving([$condition,
+                    [$moneyline[2], 'home_moneyline_odd', $moneylineOdd],
+                    [$moneyline[2], 'away_moneyline_odd', $moneylineOdd]
+                ]);
+            }
+            else {
+
+                /** get odd */
+                $moneylineOdd = Odd::setOdd($this->moneyline);
+
+                $query->andHaving(['OR',
+                    ['=', 'home_moneyline_odd', $moneylineOdd],
+                    ['=', 'away_moneyline_odd', $moneylineOdd]
+                ]);
+            }
         }
 
         return $dataProvider;

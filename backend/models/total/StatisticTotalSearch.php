@@ -122,11 +122,11 @@ class StatisticTotalSearch extends Total
         if(!empty($this->min_moneyline)) {
             $moneyline = EventHelper::parseValueFilter($this->min_moneyline);
             if(!empty($moneyline)) {
-                $moneylineOdd = $moneyline[1] * 100;
+                $moneylineOdd = Odd::setOdd($moneyline[1]);
                 $query->andFilterWhere([$moneyline[2], 'min_moneyline', $moneylineOdd]);
             }
             else {
-                $moneylineOdd = $this->min_moneyline * 100;
+                $moneylineOdd = Odd::setOdd($this->min_moneyline);
                 $query->andFilterWhere(['=', 'min_moneyline', $moneylineOdd]);
             }
         }

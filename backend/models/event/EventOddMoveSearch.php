@@ -5,6 +5,7 @@ namespace backend\models\event;
 
 use common\helpers\EventHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
@@ -26,16 +27,17 @@ class EventOddMoveSearch extends Event
 
     public $player;
 
+    public $moneyline;
+
     /**
      * @return array
      */
     public function rules(): array
     {
         return [
-            [['tour_id', 'surface_id', 'round_id', 'away_moneyline_odd', 'odd_move_value_type', 'odd_move_status'], 'integer'],
-            [['player', 'tournament_name', 'o_type_name', 'odd_move_value'], 'string'],
-            [['home_moneyline_odd'], 'double'],
-            [['start_at', 'created'], 'safe'],
+            [['start_at'], 'safe'],
+            [['tour_id', 'surface_id', 'round_id', 'odd_move_value_type', 'odd_move_status'], 'integer'],
+            [['player', 'tournament_name', 'o_type_name', 'odd_move_value', 'moneyline'], 'string'],
         ];
     }
 
@@ -137,10 +139,30 @@ class EventOddMoveSearch extends Event
         }
 
         /** moneyline filter */
-        if(!empty($this->home_moneyline_odd)) {
-            $homeMoneylineOdd = $this->home_moneyline_odd * 100;
-            $query->andHaving(['>=', 'home_moneyline_odd', $homeMoneylineOdd]);
-            $query->andHaving(['>=', 'away_moneyline_odd', $homeMoneylineOdd]);
+        if(!empty($this->moneyline)) {
+            $moneyline = EventHelper::parseValueFilter($this->moneyline);
+            if(!empty($moneyline)) {
+
+                /** get odd */
+                $moneylineOdd = Odd::setOdd($moneyline[1]);
+
+                /** get condition */
+                $condition = (strpos($moneyline[2], '>') !== false) ? 'AND' : 'OR';
+                $query->andHaving([$condition,
+                    [$moneyline[2], 'home_moneyline_odd', $moneylineOdd],
+                    [$moneyline[2], 'away_moneyline_odd', $moneylineOdd]
+                ]);
+            }
+            else {
+
+                /** get odd */
+                $moneylineOdd = Odd::setOdd($this->moneyline);
+
+                $query->andHaving(['OR',
+                    ['=', 'home_moneyline_odd', $moneylineOdd],
+                    ['=', 'away_moneyline_odd', $moneylineOdd]
+                ]);
+            }
         }
 
         /** odd move value filter */
