@@ -98,10 +98,7 @@ $reset = "/event";
             [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
-                //'value' => 'count_odds',
-                'value' => function($model) {
-                    return count($model->odds);
-                },
+                'value' => 'count_odds',
                 'filter' => [
                     1 => 'Yes',
                     -1 => 'No',
