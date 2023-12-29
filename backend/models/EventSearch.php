@@ -64,14 +64,14 @@ class EventSearch extends Event
         $query = Event::find()
             ->select([
                 'event.*',
-                'count(sp_odd.id) count_odds',
+                //'count(sp_odd.id) count_odds',
                 'home_moneyline.odd home_moneyline_odd',
                 'away_moneyline.odd away_moneyline_odd'
             ])
             ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
-                'odds',
+                //'odds',
                 'homeMoneyline',
                 'awayMoneyline',
                 'tournamentRound',

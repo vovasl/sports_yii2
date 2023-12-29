@@ -48,8 +48,13 @@ class PlayerSearch extends Player
         $query
             ->select(['players.*', 'count(events.id) count_events'])
             ->from(['players' => Player::tableName()])
-            ->with(['homeEvents', 'awayEvents', 'homeEvents.eventTournament', 'awayEvents.eventTournament'])
-            ->leftJoin(Event::tableName() . " events", "events.home = players.id OR events.away = players.id")
+            ->with([
+                'homeEvents',
+                'awayEvents',
+                'homeEvents.eventTournament',
+                'awayEvents.eventTournament'
+            ])
+            ->join('JOIN',Event::tableName() . " events", "events.home = players.id OR events.away = players.id")
             ->groupBy('players.id')
         ;
 
@@ -63,7 +68,7 @@ class PlayerSearch extends Player
                 ]
             ],
             'pagination' => [
-                'pageSize' => 100,
+                'pageSize' => 50,
             ],
         ]);
 
