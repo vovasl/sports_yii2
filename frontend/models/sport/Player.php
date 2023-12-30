@@ -164,12 +164,8 @@ class Player extends ActiveRecord
      */
     public static function getEventsLink($name, array $uri = [], string $class = ''): string
     {
-        if(empty($uri['model'])) {
-            $uri = [
-                'action' => 'event/index',
-                'model' => 'EventSearch'
-            ];
-        }
+        $uri['action'] = (isset($uri['action'])) ? $uri['action'] : null;
+        $uri['model'] = (isset($uri['model'])) ? $uri['model'] : 'EventSearch';
         $player = (!empty($uri['player_field'])) ? $uri['player_field'] : "{$uri['model']}[player]";
         $link = [
             $uri['action'],

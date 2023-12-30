@@ -163,7 +163,7 @@ class Total extends ActiveRecord
      */
     public function getPercentProfit(): string
     {
-        return $this->percent_profit / 100 . '%';
+        return $this->percent_profit / 100;
     }
 
     /**
@@ -171,7 +171,7 @@ class Total extends ActiveRecord
      */
     public function getPercentProfit0(): string
     {
-        return $this->percent_profit_0 / 100 . '%';
+        return $this->percent_profit_0 / 100;
     }
 
     /**
@@ -179,7 +179,7 @@ class Total extends ActiveRecord
      */
     public function getPercentProfit1(): string
     {
-        return $this->percent_profit_1 / 100 . '%';
+        return $this->percent_profit_1 / 100;
     }
 
     /**
@@ -187,7 +187,7 @@ class Total extends ActiveRecord
      */
     public function getPercentProfit2(): string
     {
-        return $this->percent_profit_2 / 100 . '%';
+        return $this->percent_profit_2 / 100;
     }
 
     /**
@@ -195,7 +195,7 @@ class Total extends ActiveRecord
      */
     public function getPercentProfit3(): string
     {
-        return $this->percent_profit_3 / 100 . '%';
+        return $this->percent_profit_3 / 100;
     }
 
     /**
@@ -203,7 +203,7 @@ class Total extends ActiveRecord
      */
     public function getPercentProfit4(): string
     {
-        return $this->percent_profit_4 / 100 . '%';
+        return $this->percent_profit_4 / 100;
     }
 
 }

@@ -132,7 +132,7 @@ class TotalHelper
         $stats = [];
         foreach ($models as $model) {
             //$stats[] = $model->getPercentProfit();
-            $stats[] = $model->getPercentProfit() . '' . $model->count_events;
+            $stats[] = TotalHelper::getPercent($model->getPercentProfit()) . '' . $model->count_events;
         }
 
         $output = join(' ', $stats);
@@ -201,5 +201,14 @@ class TotalHelper
     {
         return $surface;
         //return (in_array($surface, [Surface::SURFACES['hard'], Surface::SURFACES['indoor']])) ? '-1' : $surface;
+    }
+
+    /**
+     * @param $val
+     * @return string
+     */
+    public static function getPercent($val): string
+    {
+        return "{$val}%";
     }
 }

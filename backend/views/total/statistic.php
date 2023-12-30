@@ -84,7 +84,7 @@ $reset = "/total/statistic";
                 'attribute' => 'percent_profit_0',
                 'filter' => '',
                 'value' => function(Total $model) {
-                    return "{$model->percentProfit0}({$model->count_profit_0})";
+                    return TotalHelper::getPercent($model->percentProfit0) . "({$model->count_profit_0})";
                 },
             ],
             [
@@ -93,7 +93,7 @@ $reset = "/total/statistic";
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
                     if(!empty($searchModel->value0)) return '';
-                    return "{$model->percentProfit1}({$model->count_profit_1})";
+                    return TotalHelper::getPercent($model->percentProfit1) . "({$model->count_profit_1})";
                 },
             ],
             [
@@ -102,7 +102,7 @@ $reset = "/total/statistic";
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
                     if(!empty($searchModel->value0)) return '';
-                    return "{$model->percentProfit2}({$model->count_profit_2})";
+                    return TotalHelper::getPercent($model->percentProfit2) . "({$model->count_profit_2})";
                 },
             ],
             [
@@ -111,7 +111,7 @@ $reset = "/total/statistic";
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
                     if(!empty($searchModel->value0)) return '';
-                    return "{$model->percentProfit3}({$model->count_profit_3})";
+                    return TotalHelper::getPercent($model->percentProfit3) . "({$model->count_profit_3})";
                 },
             ],
             [
@@ -120,7 +120,7 @@ $reset = "/total/statistic";
                 'filter' => '',
                 'value' => function(Total $model) use($searchModel) {
                     if(!empty($searchModel->value0)) return '';
-                    return "{$model->percentProfit4}({$model->count_profit_4})";
+                    return TotalHelper::getPercent($model->percentProfit4) . "({$model->count_profit_4})";
                 },
             ],
         ],
