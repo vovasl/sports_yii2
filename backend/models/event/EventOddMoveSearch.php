@@ -96,7 +96,9 @@ class EventOddMoveSearch extends Event
                     'odd_move_status'
                 ]
             ],
-            'pagination' => false,
+            'pagination' => [
+                'pageSize' => 50,
+            ],
         ]);
 
         $this->load($params);

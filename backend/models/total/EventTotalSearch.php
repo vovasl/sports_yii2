@@ -120,6 +120,7 @@ class EventTotalSearch extends Event
             $this->moneyline = '1.5>=';
             $this->result = 2;
             $this->count_odds = 1;
+            $this->round_id = 100;
         }
 
         /** tournament name filter */
