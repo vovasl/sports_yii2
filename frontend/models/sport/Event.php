@@ -657,7 +657,7 @@ class Event extends ActiveRecord
         $fields = ['home', 'away'];
         foreach ($fields as $field) {
             /** update field */
-            if ($oldData[$field] != null && $this->{$field} != $oldData[$field]) {
+            if (isset($oldData[$field]) && !is_null($oldData[$field]) && $this->{$field} != $oldData[$field]) {
                 Odd::updateAll(
                     ['player_id' => $this->{$field}],
                     ['event' => $this->id, 'player_id' => $oldData[$field]]

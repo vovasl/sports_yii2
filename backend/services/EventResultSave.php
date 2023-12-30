@@ -110,7 +110,7 @@ class EventResultSave extends Component
         $event->save();
 
         /** save event sets result */
-        if(is_array($result['games'])) {
+        if(isset($result['games']) && is_array($result['games'])) {
             foreach ($result['games'] as $set => $games) {
                 $setRes = new ResultSet();
                 $setRes->event = $event->id;
@@ -216,8 +216,14 @@ class EventResultSave extends Component
         $data['winner'] = $this->getWinner($winner, $data);
         $data['winner_id'] = $data['winner'] == 'home' ? $event->home : $event->away;
         $data['setsTotals'] = is_array($data['sets']) ? array_sum($data['sets']) : 0;
-        $data['teamTotalHome'] = is_array($data['games']) ? array_sum(array_column($data['games'], 0)) : 0;
-        $data['teamTotalAway'] = is_array($data['games']) ? array_sum(array_column($data['games'], 1)) : 0;
+        $data['teamTotalHome'] = (isset($data['games']) && is_array($data['games']))
+            ? array_sum(array_column($data['games'], 0))
+            : 0
+        ;
+        $data['teamTotalAway'] = (isset($data['games']) && is_array($data['games']))
+            ? array_sum(array_column($data['games'], 1))
+            : 0
+        ;
         $data['totals'] = $data['teamTotalHome'] + $data['teamTotalAway'];
         $data['teamSpreadHome'] = $data['teamTotalAway'] - $data['teamTotalHome'];
         $data['teamSpreadAway'] = $data['teamTotalHome'] - $data['teamTotalAway'];

@@ -117,7 +117,8 @@ $reset = "/event";
                         return $model->actionUpdate();
                     },
                     'add-line' => function(Event $model, $key, $index) {
-                        return $model->actionAddLine();
+                        return false;
+                        //return $model->actionAddLine();
                     }
                 ],
                 'buttons' => [

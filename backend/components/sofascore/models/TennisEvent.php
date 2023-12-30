@@ -68,7 +68,14 @@ class TennisEvent
     {
         foreach ($this->events as $k => $event) {
             $res = [];
-            $res['sets'] = [$event['homeScore']['display'], $event['awayScore']['display']];
+/*            if(!isset($event['homeScore']['display'])) {
+                BaseHelper::outputArray($event);
+                die;
+            }*/
+            $res['sets'] = [
+                $event['homeScore']['display'] ?? 0,
+                $event['awayScore']['display'] ?? 0
+            ];
 
             for ($set = 1; $set <= 5; $set++) {
                 if(isset($event['homeScore']['period' . $set]) && isset($event['awayScore']['period' . $set])) {
@@ -86,13 +93,14 @@ class TennisEvent
     public static function output(array $event): string
     {
         $games = [];
-        if($event['result']['games']) {
+        if(isset($event['result']['games'])) {
             foreach ($event['result']['games'] as $res) {
                 $games[] = implode(":", $res);
             }
         }
 
-        $output = "{$event['tournament']['name']}, {$event['roundInfo']['name']}";
+        $output = "{$event['tournament']['name']} ";
+        if(isset($event['roundInfo']['name'])) $output .= ", {$event['roundInfo']['name']}";
         $output .= "<br>" . date('d.m H:i' ,$event['startTimestamp']);
         $output .= " {$event['homeTeam']['name']} ({$event['homeTeam']['id']})";
         $output .= " - {$event['awayTeam']['name']} ({$event['awayTeam']['id']})";
