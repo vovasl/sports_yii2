@@ -107,6 +107,12 @@ class EventOddMoveSearch extends Event
             return $dataProvider;
         }
 
+        /** default search params */
+        if(empty($params)) {
+            $this->tour_id = -1;
+            $this->status = 1;
+        }
+
         /** tour filter */
         if(!is_null($this->tour_id)) {
             $query->andFilterWhere(['IN', Tour::tableName() . '.id', Tour::filterValue($this->tour_id)]);
