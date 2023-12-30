@@ -64,14 +64,12 @@ class EventSearch extends Event
         $query = Event::find()
             ->select([
                 'event.*',
-                'count(sp_odd.id) count_odds',
                 'home_moneyline.odd home_moneyline_odd',
                 'away_moneyline.odd away_moneyline_odd'
             ])
             ->from(['event' => Event::tableName()])
             ->with(['setsResult'])
             ->joinWith([
-                'odds',
                 'homeMoneyline',
                 'awayMoneyline',
                 'tournamentRound',
@@ -197,16 +195,11 @@ class EventSearch extends Event
         if(!is_null($this->count_odds)) {
             if($this->count_odds == 1) {
                 $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);
-                $query->having(['>', 'count_odds', 0]);
             }
             else if($this->count_odds == -1) {
-                $query->andFilterWhere(['IS NOT', 'pin_id', new Expression('null')]);
-                $query->having(['count_odds' => 0]);
-            }
-            else if($this->count_odds == -2) { // finished
                 $query->andFilterWhere(['status' => 1]);
                 $query->andFilterWhere(['IS NOT', 'event.sofa_id', new Expression('null')]);
-                $query->having(['count_odds' => 0]);
+                $query->andFilterWhere(['IS', 'pin_id', new Expression('null')]);
             }
         }
 

@@ -98,11 +98,12 @@ $reset = "/event";
             [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
-                'value' => 'count_odds',
+                'value' => function(Event $model) {
+                    return (is_null($model->pin_id)) ? 'No' : 'Yes';
+                },
                 'filter' => [
                     1 => 'Yes',
-                    -1 => 'No',
-                    -2 => 'No(Finished)'
+                    -1 => 'No(Finished)'
                 ]
             ],
             [
