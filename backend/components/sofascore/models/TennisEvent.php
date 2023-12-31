@@ -13,6 +13,7 @@ class TennisEvent
         3,
         6,
         72,
+        871,
         //76, // Davis Cup
         1705  // United Cup
     ];

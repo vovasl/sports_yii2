@@ -38,6 +38,7 @@ class TotalController extends Controller
             if (count($event->totalsOver) == 0) continue;
 
             /** get moneyline */
+            if(!isset($event->homeMoneyline[0]) || !isset($event->awayMoneyline[0])) continue;
             $homeMoneyline = $event->homeMoneyline[0]->odd;
             $awayMoneyline = $event->awayMoneyline[0]->odd;
 

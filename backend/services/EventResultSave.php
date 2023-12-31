@@ -362,7 +362,7 @@ class EventResultSave extends Component
         if(empty($data['roundInfo']['name'])) {
             $this->message .= EventResultSaveHelper::warningMsg("Check information about the round");
         }
-        if($data['roundInfo']['name'] == 'Round of 32' && $data['tournament']['category']['id'] == Tour::SOFA_CHALLENGER) {
+        if(isset($data['roundInfo']['name']) && $data['roundInfo']['name'] == 'Round of 32' && $data['tournament']['category']['id'] == Tour::SOFA_CHALLENGER) {
             $this->message .= EventResultSaveHelper::warningMsg("Check information about the round");
         }
 
