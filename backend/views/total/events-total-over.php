@@ -66,10 +66,7 @@ foreach ($events as $event) {
     $output .= "<br>{$event->formatStartAt}";
     $output .= " {$event->homePlayer->name}";
     $output .= " - {$event->awayPlayer->name}";
-    $output .= ($event->totalsOver[0]->profit != null)
-        ? "<br>{$event->totalsOver[$oddKey]->oddVal}({$event->totalsOver[$oddKey]->value}): {$event->totalsOver[$oddKey]->profit}"
-        : "<br>No"
-    ;
+    $output .= "<br>{$event->totalsOver[$oddKey]->oddVal}({$event->totalsOver[$oddKey]->value}): {$event->totalsOver[$oddKey]->profit}";
     $output .= "<br>" . EventResultSaveHelper::getLink($event->id);
     $output .= "<hr>";
 
