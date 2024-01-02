@@ -355,7 +355,7 @@ class EventResultSave extends Component
     {
         $round = (empty($data['roundInfo']['name'])) ? $data['tournament']['name'] : $data['roundInfo']['name'];
         if(!$val = Round::getIdBySofa($round, $data['tournament']['category']['id'])) {
-            $this->message .= EventResultSaveHelper::warningMsg("Add information about the round to the event. Unable to find {$data['roundInfo']['name']}");
+            $this->message .= EventResultSaveHelper::warningMsg("Add information about the round to the event. Unable to find {$round}");
         }
 
         /** remove after debug */

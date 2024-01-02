@@ -84,8 +84,8 @@ $reset = "/event/odd-move";
                 'value' => 'tournamentRound.name',
                 'filter' => Round::dropdownFilter(),
             ],
-            EventHelper::gridHomePlayer(['model' => 'EventOddMoveSearch']),
-            EventHelper::gridAwayPlayer(['model' => 'EventOddMoveSearch']),
+            EventHelper::gridHomePlayer(),
+            EventHelper::gridAwayPlayer(),
             EventHelper::gridHomeMoneyline(),
             EventHelper::gridAwayMoneyline(),
             [
