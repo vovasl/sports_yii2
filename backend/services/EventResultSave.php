@@ -358,14 +358,6 @@ class EventResultSave extends Component
             $this->message .= EventResultSaveHelper::warningMsg("Add information about the round to the event. Unable to find {$round}");
         }
 
-        /** remove after debug */
-        if(empty($data['roundInfo']['name'])) {
-            $this->message .= EventResultSaveHelper::warningMsg("Check information about the round");
-        }
-        if(isset($data['roundInfo']['name']) && $data['roundInfo']['name'] == 'Round of 32' && $data['tournament']['category']['id'] == Tour::SOFA_CHALLENGER) {
-            $this->message .= EventResultSaveHelper::warningMsg("Check information about the round");
-        }
-
         return $val;
     }
 

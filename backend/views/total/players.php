@@ -4,10 +4,13 @@
 use backend\models\total\PlayerTotalSearch;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
+use frontend\models\sport\PlayerTotal;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
 use frontend\models\sport\Tour;
+use yii\grid\ActionColumn;
+use yii\web\JqueryAsset;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -23,6 +26,8 @@ use yii\widgets\LinkPager;
 $this->title = 'Players';
 
 $reset = "/total/players";
+
+$this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAsset::class]]);
 
 ?>
 
@@ -150,6 +155,49 @@ $reset = "/total/players";
                     return TotalHelper::getPercent($model->percentProfit4);
                 },
                 'filter' => '',
+            ],
+            [
+                'class' => ActionColumn::class,
+                'template' => '{add}{remove}',
+                'visibleButtons' => [
+                    'add' => function (Total $model, $key, $index) use($searchModel) {
+                        return $model->playerTotalButton(PlayerTotal::ACTION['add'], $searchModel);
+                    },
+                    'remove' => function (Total $model, $key, $index) use($searchModel) {
+                        return $model->playerTotalButton(PlayerTotal::ACTION['remove'], $searchModel);
+                    }
+                ],
+                'buttons' => [
+                    'add' => function ($url, Total $model) use($searchModel) {
+                        $options = [
+                            'title' => 'Add',
+                            'class' => 'player-total-action',
+                            'data-action' => PlayerTotal::ACTION['add'],
+                            'data-total' => json_encode([
+                                "player_id" => $model->player_id,
+                                "tour_id" => $searchModel->tour,
+                                "surface_id" => $searchModel->surface,
+                                "type" => Odd::ADD_TYPE['over']
+                            ]),
+
+                        ];
+                        return Html::a('<i class="fas fa-plus"></i>', '#', $options);
+                    },
+                    'remove' => function ($url, Total $model) use($searchModel) {
+                        $options = [
+                            'title' => 'Remove',
+                            'class' => 'player-total-action',
+                            'data-action' => PlayerTotal::ACTION['remove'],
+                            'data-total' => json_encode([
+                                "player_id" => $model->player_id,
+                                "tour_id" => $searchModel->tour,
+                                "surface_id" => $searchModel->surface,
+                                "type" => Odd::ADD_TYPE['over']
+                            ]),
+                        ];
+                        return Html::a('<i class="fas fa-minus"></i>', '#', $options);
+                    },
+                ],
             ],
         ],
     ]); ?>

@@ -62,6 +62,7 @@ class PlayerTotalSearch extends Total
                 'event.eventTournament.tournamentTour',
                 'event.eventTournament.tournamentSurface',
                 'player',
+                'playerTotal',
             ])
             ->groupBy('player_id')
         ;

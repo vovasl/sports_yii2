@@ -6,8 +6,10 @@ namespace backend\controllers;
 use backend\models\total\EventTotalSearch;
 use backend\models\total\PlayerTotalSearch;
 use backend\models\total\StatisticTotalSearch;
+use frontend\models\sport\PlayerTotal;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\Response;
 
 class TotalController extends Controller
 {
@@ -70,6 +72,44 @@ class TotalController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function actionPlayerTotalAction(): bool
+    {
+        $request = \Yii::$app->request;
+        if($request->isAjax && !empty($request->post('total'))) {
+            $data = $request->post('total');
+            switch ($request->post('action')) {
+                case PlayerTotal::ACTION['add']:
+                    /** save model */
+                    $model = new PlayerTotal();
+                    $model->player_id = $data['player_id'];
+                    $model->tour_id = $data['tour_id'];
+                    $model->surface_id = $data['surface_id'];
+                    $model->type = $data['type'];
+                    $model->save();
+                    break;
+                case PlayerTotal::ACTION['remove']:
+                    /** remove model */
+                    PlayerTotal::deleteAll($data);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function actionEventsTotalOver(): string
+    {
+        return $this->render('events-total-over');
     }
 
 }

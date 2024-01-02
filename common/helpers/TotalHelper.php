@@ -24,7 +24,7 @@ class TotalHelper
         'max' => 20,
         'min' => 0,
     ];
-    CONST CURRENT = 1;
+    CONST CURRENT = 0;
 
     /**
      * @param $settings

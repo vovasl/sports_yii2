@@ -3,6 +3,7 @@
 namespace frontend\models\sport;
 
 
+use backend\models\total\PlayerTotalSearch;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -29,6 +30,7 @@ use yii\db\ActiveRecord;
  *
  * @property Event $event
  * @property Player $player
+ * @property PlayerTotal $playerTotal
  * @property Odd $odd0
  * @property Odd $odd1
  * @property Odd $odd2
@@ -121,6 +123,14 @@ class Total extends ActiveRecord
     /**
      * @return ActiveQuery
      */
+    public function getPlayerTotal(): ActiveQuery
+    {
+        return $this->hasOne(PlayerTotal::class, ['player_id' => 'player_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getOdd0(): ActiveQuery
     {
         return $this->hasOne(Odd::class, ['id' => 'odd_id_0']);
@@ -204,6 +214,46 @@ class Total extends ActiveRecord
     public function getPercentProfit4(): string
     {
         return $this->percent_profit_4 / 100;
+    }
+
+    /**
+     * @param PlayerTotalSearch $search
+     * @return bool
+     */
+    public function playerTotalButton(string $type, PlayerTotalSearch $search): bool
+    {
+        /** empty search params */
+        if(empty($search->tour) || empty($search->surface) || empty($search->type)) return false;
+
+        switch ($type) {
+            case PlayerTotal::ACTION['add']:
+                return $this->addPlayerTotalButton($search);
+            case PlayerTotal::ACTION['remove']:
+                return $this->removePlayerTotalButton($search);
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @param PlayerTotalSearch $search
+     * @return bool
+     */
+    private function addPlayerTotalButton(PlayerTotalSearch $search): bool
+    {
+        /** no player added */
+        if(is_null($this->playerTotal)) return true;
+
+        return !($this->playerTotal->tour_id == $search->tour && $this->playerTotal->surface_id == $search->surface);
+    }
+
+    /**
+     * @param PlayerTotalSearch $search
+     * @return bool
+     */
+    private function removePlayerTotalButton(PlayerTotalSearch $search): bool
+    {
+        return (!is_null($this->playerTotal) && $this->playerTotal->tour_id == $search->tour && $this->playerTotal->surface_id == $search->surface);
     }
 
 }
