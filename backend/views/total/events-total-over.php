@@ -36,7 +36,7 @@ $events = \frontend\models\sport\Event::find()
     ->andWhere(['>=', 'home_moneyline.odd', 150])
     ->andWhere(['>=', 'away_moneyline.odd', 150])
     //->andWhere(['five_sets' => 0])
-    ->andWhere(['tn_event.sofa_id' => null])
+    //->andWhere(['tn_event.sofa_id' => null])
     ->orderBy(['tn_event.id' => SORT_DESC])
     ->all()
 ;
@@ -45,16 +45,16 @@ $events = \frontend\models\sport\Event::find()
 $profit = $count = 0;
 $output = '';
 foreach ($events as $event) {
+    $oddKey = 0;
     $over = [];
     foreach ($event->totalsOver as $k => $totalOver) {
-        if($totalOver->odd < 176) {
-        /*if($totalOver->odd >= 197 && $totalOver->odd < 209) {*/
+        //if($totalOver->odd < 176) {
+        if($totalOver->odd > 165 && $totalOver->odd <= 180) {
             $over[$k] = $totalOver->profit;
             $oddKey = $k;
         }
     }
-    if(count($over) == 0) continue;
-    if(count($over) == 2) {
+    if(count($over) > 1) {
         $oddKey = array_key_last($over);
     }
 
@@ -64,10 +64,9 @@ foreach ($events as $event) {
     $output .= "{$event->eventTournament->name} ";
     $output .= ", {$event->tournamentRound->name}";
     $output .= "<br>{$event->formatStartAt}";
-    $output .= " {$event->homePlayer->name}";
-    $output .= " - {$event->awayPlayer->name}";
-    $output .= "<br>{$event->totalsOver[$oddKey]->oddVal}({$event->totalsOver[$oddKey]->value}): {$event->totalsOver[$oddKey]->profit}";
+    $output .= " {$event->fullNameLink} {$event->result}";
     $output .= "<br>" . EventResultSaveHelper::getLink($event->id);
+    $output .= "<br>{$event->totalsOver[$oddKey]->oddVal}({$event->totalsOver[$oddKey]->value}): {$event->totalsOver[$oddKey]->profit}";
     $output .= "<hr>";
 
 }
