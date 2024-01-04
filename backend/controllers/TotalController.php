@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 
+use backend\models\total\EventTotalOverSearch;
 use backend\models\total\EventTotalSearch;
 use backend\models\total\PlayerTotalSearch;
 use backend\models\total\StatisticTotalSearch;
@@ -75,6 +76,20 @@ class TotalController extends Controller
     }
 
     /**
+     * @return string
+     */
+    public function actionEventsTotalOver(): string
+    {
+        $searchModel = new EventTotalOverSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('events-total-over', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
      * @return bool
      */
     public function actionPlayerTotalAction(): bool
@@ -102,14 +117,6 @@ class TotalController extends Controller
             return true;
         }
         return false;
-    }
-
-    /**
-     * @return string
-     */
-    public function actionEventsTotalOver(): string
-    {
-        return $this->render('events-total-over');
     }
 
 }

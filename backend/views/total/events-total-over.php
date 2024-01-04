@@ -1,80 +1,137 @@
 <?php
 
-use backend\helpers\EventResultSaveHelper;
-use backend\models\total\PlayerTotalSearch;
+use common\helpers\EventHelper;
+use frontend\models\sport\Event;
+use frontend\models\sport\Round;
+use frontend\models\sport\Surface;
+use frontend\models\sport\Tour;
 use yii\web\View;
+use backend\models\total\EventTotalOverSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\widgets\LinkPager;
+use yii\grid\ActionColumn;
+use yii\helpers\Url;
 
 /**
  * @var View $this
- * @var PlayerTotalSearch $searchModel
+ * @var EventTotalOverSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 
 $this->title = 'Events Total Over';
 
-$playerTotal= \frontend\models\sport\PlayerTotal::find()->all();
+$reset = "/total/events-total-over";
 
 ?>
 
-<h1><?= Html::encode($this->title) ?></h1>
+<div class="tournament-index">
 
-<?php
+    <h1><?= Html::encode($this->title) ?></h1>
 
-$events = \frontend\models\sport\Event::find()
-    ->withData()
-    ->joinWith([
-        'homeMoneyline',
-        'awayMoneyline',
-        'totalsOver',
-    ])
-    ->andWhere(['IN', 'home', \yii\helpers\ArrayHelper::getColumn($playerTotal, 'player_id')])
-    ->andWhere(['IN', 'away', \yii\helpers\ArrayHelper::getColumn($playerTotal, 'player_id')])
-    ->andWhere(['IN', 'tn_tournament.tour', [1, 3, 8]])
-    ->andWhere(['tn_tournament.surface' => 2])
-    ->andWhere(['>=', 'home_moneyline.odd', 150])
-    ->andWhere(['>=', 'away_moneyline.odd', 150])
-    //->andWhere(['five_sets' => 0])
-    //->andWhere(['tn_event.sofa_id' => null])
-    ->orderBy(['tn_event.id' => SORT_DESC])
-    ->all()
-;
+    <p>
+        <?= Html::a('Clear', [$reset], ['class' => 'btn btn-primary']) ?>
+    </p>
 
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'summary' => 'Total: {totalCount}',
+        'pager' => [
+            'linkContainerOptions' => [
+                'class' => 'page-item'
+            ],
+            'linkOptions' => [
+                'class' => 'page-link'
+            ],
+            'disabledListItemSubTagOptions' => [
+                'class' => 'page-link'
+            ],
+            'pagination' => $dataProvider->pagination,
+            'class' => LinkPager::class
+        ],
+        'columns' => [
+            [
+                'label' => 'Start',
+                'attribute' => 'start_at',
+                'value' => 'formatStartAt',
+                'filter' => '',
+            ],
+            [
+                'label' => 'Tour',
+                'attribute' => 'tour_id',
+                'value' => 'eventTournament.tournamentTour.name',
+                'filter' => Tour::dropdown(),
+            ],
+            [
+                'label' => 'Surface',
+                'attribute' => 'surface_id',
+                'value' => 'eventTournament.tournamentSurface.name',
+                'filter' => Surface::dropdown(),
+            ],
+            [
+                'label' => 'Tournament',
+                'attribute' => 'tournament_name',
+                'value' => 'eventTournament.name'
+            ],
+            [
+                'label' => 'Round',
+                'attribute' => 'round_id',
+                'value' => 'tournamentRound.name',
+                'filter' => Round::dropdownFilter(),
+            ],
+            EventHelper::gridHomePlayer(),
+            EventHelper::gridAwayPlayer(),
+            [
+                'attribute' => 'result',
+                'label' => 'Result',
+                'value' =>'result',
+                'filter' => EventHelper::resultDropdown(),
+            ],
+            EventHelper::gridHomeMoneyline(),
+            EventHelper::gridAwayMoneyline(),
+            [
+                'attribute' => 'total',
+                'label' => 'Sets',
+                'value' => 'total',
+                'filter' => EventHelper::setsDropdown(),
+            ],
+            [
+                'attribute' => 'total_games',
+                'label' => 'Games',
+                'value' => 'total_games',
+                'filter' => '',
+            ],
+            [
+                'label' => '5 Sets',
+                'attribute' => 'five_sets',
+                'value' => function(Event $model) {
+                    return ($model->five_sets) ? 'Yes' : '';
+                },
+                'filter' => ['No', 'Yes'],
+            ],
+            [
+                'label' => 'Over',
+                'value' => function(Event $model) {
+                    return EventHelper::getOddStat($model->totalsOver);
+                }
+            ],
+            [
+                'class' => ActionColumn::class,
+                'template' => '{view}',
+                'buttons' => [
+                    'view' => function ($url, $model) {
+                        $options = [
+                            'title' => 'Event',
+                            'target' => '_blank'
+                        ];
+                        $url = Url::to(['event/view', 'id' => $model->id]);
+                        return Html::a('<i class="fas fa-eye"></i>', $url, $options);
+                    },
+                ],
+            ],
+        ],
+    ]); ?>
 
-$profit = $count = 0;
-$output = '';
-foreach ($events as $event) {
-    $oddKey = 0;
-    $over = [];
-    foreach ($event->totalsOver as $k => $totalOver) {
-        //if($totalOver->odd < 176) {
-        if($totalOver->odd > 165 && $totalOver->odd <= 180) {
-            $over[$k] = $totalOver->profit;
-            $oddKey = $k;
-        }
-    }
-    if(count($over) > 1) {
-        $oddKey = array_key_last($over);
-    }
-
-    $profit += (int)$event->totalsOver[$oddKey]->profit;
-    $count++;
-
-    $output .= "{$event->eventTournament->name} ";
-    $output .= ", {$event->tournamentRound->name}";
-    $output .= "<br>{$event->formatStartAt}";
-    $output .= " {$event->fullNameLink} {$event->result}";
-    $output .= "<br>" . EventResultSaveHelper::getLink($event->id);
-    $output .= "<br>{$event->totalsOver[$oddKey]->oddVal}({$event->totalsOver[$oddKey]->value}): {$event->totalsOver[$oddKey]->profit}";
-    $output .= "<hr>";
-
-}
-
-$output .= "Events: {$count}<br>";
-$output .= "Profit: $profit";
-$output .= "<hr>";
-echo $output;
-
-?>
-
+</div>
