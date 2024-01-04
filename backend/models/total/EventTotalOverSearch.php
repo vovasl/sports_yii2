@@ -4,6 +4,7 @@ namespace backend\models\total;
 
 
 use common\helpers\EventHelper;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
@@ -61,24 +62,6 @@ class EventTotalOverSearch extends Event
      */
     public function search(array $params): ActiveDataProvider
     {
-        $playerTotal = PlayerTotal::find()->all();
-        $events = Event::find()
-            ->select('tn_event.id')
-            ->withData()
-            ->joinWith([
-                'homeMoneyline',
-                'awayMoneyline',
-            ])
-            ->where(['<>', Round::tableName() . '.id', Round::QUALIFIER])
-            ->andWhere(['IN', 'home', ArrayHelper::getColumn($playerTotal, 'player_id')])
-            ->andWhere(['IN', 'away', ArrayHelper::getColumn($playerTotal, 'player_id')])
-            ->andWhere(['IN', 'tn_tournament.tour', [1, 3, 8]])
-            ->andWhere(['tn_tournament.surface' => 2])
-            ->andWhere(['>=', 'home_moneyline.odd', 150])
-            ->andWhere(['>=', 'away_moneyline.odd', 150])
-            ->all()
-        ;
-
         $query = Event::find()
             ->select([
                 'event.*',
@@ -104,7 +87,7 @@ class EventTotalOverSearch extends Event
                     $q->from(Player::tableName() . ' away');
                 }
             ])
-            ->where(['IN', 'event.id', ArrayHelper::getColumn($events, 'id')])
+            ->where(['IN', 'event.id', TotalHelper::getEventsTotalOver()])
             ->groupBy('event.id')
         ;
 

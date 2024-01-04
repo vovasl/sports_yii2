@@ -6,11 +6,13 @@ namespace common\helpers;
 use backend\models\total\EventTotalSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use frontend\models\sport\PlayerTotal;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
 use frontend\models\sport\Tour;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 
 class TotalHelper
 {
@@ -210,5 +212,33 @@ class TotalHelper
     public static function getPercent($val): string
     {
         return "{$val}%";
+    }
+
+    /**
+     * @return array
+     */
+    public static function getEventsTotalOver(): array
+    {
+        $playerTotal = PlayerTotal::find()->all();
+        $events = Event::find()
+            ->select('tn_event.id')
+            ->withData()
+            ->joinWith([
+                'homeMoneyline',
+                'awayMoneyline',
+            ])
+            ->where(['<>', Round::tableName() . '.id', Round::QUALIFIER])
+            ->andWhere(['IN', 'home', ArrayHelper::getColumn($playerTotal, 'player_id')])
+            ->andWhere(['IN', 'away', ArrayHelper::getColumn($playerTotal, 'player_id')])
+            ->andWhere(['IN', 'tn_tournament.tour', [1, 3, 8]])
+            ->andWhere(['tn_tournament.surface' => 2])
+            ->andWhere(['>=', 'home_moneyline.odd', 150])
+            ->andWhere(['>=', 'away_moneyline.odd', 150])
+            ->all()
+        ;
+
+        $ids = ArrayHelper::getColumn($events, 'id');
+
+        return $ids;
     }
 }
