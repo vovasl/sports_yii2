@@ -45,6 +45,9 @@ class EventTennisSave
             7, // United Cup Womens
             8, // United Cup Men
         ],
+        'disable_round' => [
+            Round::QUALIFIER
+        ]
     ];
 
     private $oddClass;
@@ -333,6 +336,9 @@ class EventTennisSave
     {
         /** check tour */
         if(!in_array($event['tour'], self::CONFIG_HISTORY['tour'])) return;
+
+        /** check round */
+        if(in_array($event['round'], self::CONFIG_HISTORY['disable_round'])) return;
 
         /** add odds */
         $this->addOdds($event, self::CONFIG_HISTORY);
