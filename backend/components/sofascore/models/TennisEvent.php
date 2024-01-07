@@ -15,7 +15,7 @@ class TennisEvent
         72,
         871,
         //76, // Davis Cup
-        1705  // United Cup
+        //1705  // United Cup
     ];
 
     /** allowed status codes */
