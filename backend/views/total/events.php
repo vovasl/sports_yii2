@@ -161,12 +161,12 @@ $reset = "/total/events";
                     -1 => 'No',
                 ]
             ],
-            [
+/*            [
                 'label' => 'Over',
                 'value' => function(Event $model) use ($searchModel) {
                     return TotalHelper::getEventPlayersGeneralStat($model, Odd::ADD_TYPE['over'], $searchModel);
                 }
-            ],
+            ],*/
             [
                 'class' => ActionColumn::class,
                 'template' => '{view}',
