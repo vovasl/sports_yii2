@@ -219,25 +219,45 @@ class TotalHelper
      */
     public static function getEventsTotalOver(): array
     {
-        $playerTotal = PlayerTotal::find()->all();
-        $events = Event::find()
-            ->select('tn_event.id')
-            ->withData()
-            ->joinWith([
-                'homeMoneyline',
-                'awayMoneyline',
-            ])
-            ->where(['<>', Round::tableName() . '.id', Round::QUALIFIER])
-            ->andWhere(['IN', 'home', ArrayHelper::getColumn($playerTotal, 'player_id')])
-            ->andWhere(['IN', 'away', ArrayHelper::getColumn($playerTotal, 'player_id')])
-            ->andWhere(['IN', 'tn_tournament.tour', [1, 3, 8]])
-            ->andWhere(['tn_tournament.surface' => 2])
-            ->andWhere(['>=', 'home_moneyline.odd', 150])
-            ->andWhere(['>=', 'away_moneyline.odd', 150])
+        $searchModels = PlayerTotal::find()
+            ->where(['type' => Odd::ADD_TYPE['over']])
+            ->groupBy(['tour_id', 'surface_id'])
             ->all()
         ;
 
-        $ids = ArrayHelper::getColumn($events, 'id');
+        $ids = [];
+        foreach ($searchModels as $searchModel) {
+
+            /** get tour ids */
+            $tourIds = in_array($searchModel->tour_id,Tour::ATP_ALL) ? Tour::ATP_ALL : [$searchModel->tour_id];
+
+            /** get players */
+            $playerTotal = PlayerTotal::find()
+                ->where(['IN', 'tour_id', $tourIds])
+                ->andWhere(['surface_id' => $searchModel->surface_id])
+                ->all()
+            ;
+
+            /** get events */
+            $events = Event::find()
+                ->select('tn_event.id')
+                ->withData()
+                ->joinWith([
+                    'homeMoneyline',
+                    'awayMoneyline',
+                ])
+                ->where(['<>', Round::tableName() . '.id', Round::QUALIFIER])
+                ->andWhere(['IN', 'home', ArrayHelper::getColumn($playerTotal, 'player_id')])
+                ->andWhere(['IN', 'away', ArrayHelper::getColumn($playerTotal, 'player_id')])
+                ->andWhere(['IN', 'tn_tournament.tour', $tourIds])
+                ->andWhere(['tn_tournament.surface' => $searchModel->surface_id])
+                ->andWhere(['>=', 'home_moneyline.odd', self::OVER_MIN_MONEYLINE])
+                ->andWhere(['>=', 'away_moneyline.odd', self::OVER_MIN_MONEYLINE])
+                ->all()
+            ;
+
+            $ids = array_merge($ids, ArrayHelper::getColumn($events, 'id'));
+        }
 
         return $ids;
     }
