@@ -39,7 +39,7 @@ $avg = [];
         </tr>
     <?php endforeach; ?>
     <tr>
-        <td></td>
+        <td class="text-center">AVG ROI</td>
         <td></td>
         <?php foreach ($avg as $stat): ?>
             <?php $stat = round($stat / count($stats), 2); ?>

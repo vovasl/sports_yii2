@@ -241,4 +241,34 @@ class TotalHelper
 
         return $ids;
     }
+
+    /**
+     * @param Event[] $models
+     * @return array
+     */
+    public static function getEventsTotalOverStats(array $models): array
+    {
+        $data = [];
+        foreach ($models as $model) {
+            foreach (array_keys(self::ODDS) as $i) {
+                $statField = "profit_$i";
+                $profit = $model->totalOverStat->$statField ?? null;
+                if (is_null($profit)) continue;
+
+                /** get profit */
+                $data[$i]['profit'] = !isset($data[$i]['profit'])
+                    ? $profit
+                    : $data[$i]['profit'] + $profit;
+
+                /** get count */
+                $data[$i]['count'] = !isset($data[$i]['count'])
+                    ? 1
+                    : $data[$i]['count'] + 1
+                ;
+            }
+        }
+
+        ksort($data);
+        return $data;
+    }
 }

@@ -30,6 +30,8 @@ $reset = "/total/events-total-over";
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <?= $this->render('events-total-over/stats', ['dataProvider' => $dataProvider]) ?>
+
     <p>
         <?= Html::a('Clear', [$reset], ['class' => 'btn btn-primary']) ?>
     </p>

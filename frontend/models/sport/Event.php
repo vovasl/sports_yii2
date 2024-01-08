@@ -40,6 +40,7 @@ use yii\db\Expression;
  * @property Round $tournamentRound
  * @property ResultSet[] $setsResult
  * @property Tournament $eventTournament
+ * @property Total $totalsOverStat
  * @property Odd[] $odds
  * @property Odd[] $oddsHistory
  * @property Odd[] $oddsMove
@@ -492,6 +493,17 @@ class Event extends ActiveRecord
             ->where([
                 'sp_odd_type.name' => OddType::SETS_SPREADS,
             ])
+        ;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTotalOverStat(): ActiveQuery
+    {
+        return $this
+            ->hasOne(Total::class, ['event_id' => 'id'])
+            ->where(['sp_total.type' => Odd::ADD_TYPE['over']])
         ;
     }
 

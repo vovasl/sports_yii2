@@ -8,7 +8,6 @@ use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
-use frontend\models\sport\PlayerTotal;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
@@ -71,11 +70,13 @@ class EventTotalOverSearch extends Event
                 'away_moneyline.odd away_moneyline_odd'
             ])
             ->from(['event' => Event::tableName()])
-            ->with(['setsResult'])
+            ->with(['setsResult', 'totalOverStat'])
             ->joinWith([
                 'homeMoneyline',
                 'awayMoneyline',
-                'totalsOver',
+                'totalsOver' => function($q) {
+                    $q->orderBy('');
+                },
                 'tournamentRound',
                 'eventTournament',
                 'eventTournament.tournamentTour',
@@ -85,7 +86,7 @@ class EventTotalOverSearch extends Event
                 },
                 'awayPlayer' => function($q) {
                     $q->from(Player::tableName() . ' away');
-                }
+                },
             ])
             ->where(['IN', 'event.id', TotalHelper::getEventsTotalOver()])
             ->groupBy('event.id')
