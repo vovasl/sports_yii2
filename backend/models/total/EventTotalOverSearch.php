@@ -97,7 +97,18 @@ class EventTotalOverSearch extends Event
                 'defaultOrder' => [
                     'start_at' => SORT_DESC
                 ],
-                'attributes' => []
+                'attributes' => [
+                    'start_at',
+                    'round_id' => [
+                        'asc' => [Round::tableName() . '.rank' => SORT_ASC, 'event.start_at' => SORT_DESC],
+                        'desc' => [Round::tableName() . '.rank' => SORT_DESC, 'event.start_at' => SORT_ASC],
+                    ],
+                    'home_moneyline_odd',
+                    'away_moneyline_odd',
+                    'total_over_value',
+                    'total',
+                    'total_games',
+                ]
             ],
             'pagination' => false
         ]);
@@ -139,6 +150,17 @@ class EventTotalOverSearch extends Event
                 ['like', 'home.name', trim($this->player)],
                 ['like', 'away.name', trim($this->player)]
             ]);
+        }
+
+        /** average total value filter */
+        if(!empty($this->total_over_value)) {
+            $totalOver = EventHelper::parseValueFilter($this->total_over_value);
+            if(!empty($totalOver)) {
+                $query->andHaving([$totalOver[2], 'total_over_value', $totalOver[1]]);
+            }
+            else {
+                $query->andHaving(['=', 'total_over_value', $this->total_over_value]);
+            }
         }
 
         /** result filter */

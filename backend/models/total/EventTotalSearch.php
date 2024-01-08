@@ -190,7 +190,7 @@ class EventTotalSearch extends Event
             $query->andFilterWhere(['IN', Surface::tableName() . '.id', Surface::filterValue($this->surface_id)]);
         }
 
-        /** total over value filter */
+        /** average total value filter */
         if(!empty($this->total_over_value)) {
             $totalOver = EventHelper::parseValueFilter($this->total_over_value);
             if(!empty($totalOver)) {

@@ -84,6 +84,11 @@ $reset = "/total/events-total-over";
             EventHelper::gridHomePlayer(),
             EventHelper::gridAwayPlayer(),
             [
+                'attribute' => 'total_over_value',
+                'label' => 'Total',
+                'value' => 'total_over_value'
+            ],
+            [
                 'attribute' => 'result',
                 'label' => 'Result',
                 'value' =>'result',
