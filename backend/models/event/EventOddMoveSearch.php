@@ -90,9 +90,24 @@ class EventOddMoveSearch extends Event
                 ],
                 'attributes' => [
                     'start_at',
-                    'home_moneyline_odd',
-                    'away_moneyline_odd',
+                    'tour_id' => [
+                        'asc' => [Tour::tableName() . '.name' => SORT_ASC],
+                        'desc' => [Tour::tableName() . '.name' => SORT_DESC],
+                    ],
+                    'surface_id' => [
+                        'asc' => [Surface::tableName() . '.name' => SORT_ASC],
+                        'desc' => [Surface::tableName() . '.name' => SORT_DESC],
+                    ],
+                    'tournament_name' => [
+                        'asc' => [Tournament::tableName() . '.name' => SORT_ASC],
+                        'desc' => [Tournament::tableName() . '.name' => SORT_DESC],
+                    ],
+                    'round_id' => [
+                        'asc' => [Round::tableName() . '.rank' => SORT_ASC],
+                        'desc' => [Round::tableName() . '.rank' => SORT_DESC],
+                    ],
                     'odd_move_value',
+                    'odd_move_value_type',
                     'odd_move_status'
                 ]
             ],

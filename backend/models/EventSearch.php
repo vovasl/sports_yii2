@@ -94,12 +94,22 @@ class EventSearch extends Event
                 ],
                 'attributes' => [
                     'start_at',
+                    'tour_id' => [
+                        'asc' => [Tour::tableName() . '.name' => SORT_ASC],
+                        'desc' => [Tour::tableName() . '.name' => SORT_DESC],
+                    ],
+                    'surface_id' => [
+                        'asc' => [Surface::tableName() . '.name' => SORT_ASC],
+                        'desc' => [Surface::tableName() . '.name' => SORT_DESC],
+                    ],
+                    'tournament_name' => [
+                        'asc' => [Tournament::tableName() . '.name' => SORT_ASC],
+                        'desc' => [Tournament::tableName() . '.name' => SORT_DESC],
+                    ],
                     'round_id' => [
                         'asc' => [Round::tableName() . '.rank' => SORT_ASC, 'event.start_at' => SORT_DESC],
                         'desc' => [Round::tableName() . '.rank' => SORT_DESC, 'event.start_at' => SORT_ASC],
                     ],
-                    'total',
-                    'total_games'
                 ]
             ],
             //'pagination' => false,
