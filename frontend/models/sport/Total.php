@@ -244,7 +244,10 @@ class Total extends ActiveRecord
         /** no player added */
         if(is_null($this->playerTotal)) return true;
 
-        return !($this->playerTotal->tour_id == $search->tour && $this->playerTotal->surface_id == $search->surface);
+        return !($this->playerTotal->tour_id == $search->tour
+            && $this->playerTotal->surface_id == $search->surface
+            && $this->playerTotal->type == $search->type
+        );
     }
 
     /**
@@ -253,7 +256,11 @@ class Total extends ActiveRecord
      */
     private function removePlayerTotalButton(PlayerTotalSearch $search): bool
     {
-        return (!is_null($this->playerTotal) && $this->playerTotal->tour_id == $search->tour && $this->playerTotal->surface_id == $search->surface);
+        return (!is_null($this->playerTotal)
+            && $this->playerTotal->tour_id == $search->tour
+            && $this->playerTotal->surface_id == $search->surface
+            && $this->playerTotal->type == $search->type
+        );
     }
 
 }

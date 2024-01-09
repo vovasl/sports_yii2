@@ -71,7 +71,8 @@ class EventTotalSearch extends Event
             ->from(['event' => Event::tableName()])
             ->with([
                 'setsResult',
-                'totalOverStat'
+                'totalOverStat',
+                'totalUnderStat'
             ])
             ->joinWith([
                 'homeMoneyline',

@@ -1,0 +1,182 @@
+<?php
+
+namespace common\helpers\total;
+
+
+use common\helpers\TotalHelper;
+use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
+use frontend\models\sport\PlayerTotal;
+use frontend\models\sport\Round;
+use frontend\models\sport\Tour;
+use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
+
+class PlayerHelper
+{
+
+    CONST MONEYLINE =[
+        'over' => [
+            'min' => 150
+        ],
+        'under' => [
+            'max' => 140
+        ],
+    ];
+
+    /**
+     * @param string $type
+     * @return array
+     */
+    public static function getEvents(string $type = Odd::ADD_TYPE['over']): array
+    {
+        $searchModels = PlayerTotal::find()
+            ->where(['type' => $type])
+            ->groupBy(['tour_id', 'surface_id'])
+            ->all()
+        ;
+
+        $ids = [];
+        foreach ($searchModels as $searchModel) {
+
+            /** get tour ids */
+            $tourIds = in_array($searchModel->tour_id,Tour::ATP_ALL) ? Tour::ATP_ALL : [$searchModel->tour_id];
+
+            /** get players total models */
+            $playersTotal = PlayerTotal::find()
+                ->where(['IN', 'tour_id', $tourIds])
+                ->andWhere(['surface_id' => $searchModel->surface_id])
+                ->andWhere(['type' => $type])
+                ->all()
+            ;
+
+            /** get events */
+            $query = Event::find()
+                ->select([
+                    'tn_event.*',
+                    'home_moneyline.odd home_moneyline_odd',
+                    'away_moneyline.odd away_moneyline_odd'
+                ])
+                ->withData()
+                ->joinWith([
+                    'homeMoneyline',
+                    'awayMoneyline',
+                ])
+                ->where(['<>', Round::tableName() . '.id', Round::QUALIFIER])
+                ->andWhere(['IN', 'tn_tournament.tour', $tourIds])
+                ->andWhere(['tn_tournament.surface' => $searchModel->surface_id])
+            ;
+
+            /** get where */
+            $query = ($type == Odd::ADD_TYPE['over'])
+                ? self::getWhereOver($query, ArrayHelper::getColumn($playersTotal, 'player_id'))
+                : self::getWhereUnder($query, ArrayHelper::getColumn($playersTotal, 'player_id'))
+            ;
+
+            $events = ($type == Odd::ADD_TYPE['over'])
+                ? ArrayHelper::getColumn($query->all(), 'id')
+                : self::getEventsUnder($query->all(), $playersTotal)
+            ;
+
+            $ids = array_merge($ids, $events);
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @param ActiveQuery $model
+     * @param array $players
+     * @return ActiveQuery
+     */
+    public static function getWhereOver(ActiveQuery $model, array $players): ActiveQuery
+    {
+        $model->andWhere(['IN', 'home', $players]);
+        $model->andWhere(['IN', 'away', $players]);
+        $model->andWhere(['>=', 'home_moneyline.odd', self::MONEYLINE['over']['min']]);
+        $model->andWhere(['>=', 'away_moneyline.odd', self::MONEYLINE['over']['min']]);
+
+        return $model;
+    }
+
+    /**
+     * @param ActiveQuery $model
+     * @param array $players
+     * @return ActiveQuery
+     */
+    public static function getWhereUnder(ActiveQuery $model, array $players): ActiveQuery
+    {
+        $model->andWhere(['OR',
+            ['IN', 'home', $players],
+            ['IN', 'away', $players]
+        ]);
+        $model->andWhere(['OR',
+            ['<', 'home_moneyline.odd', self::MONEYLINE['under']['max']],
+            ['<', 'away_moneyline.odd', self::MONEYLINE['under']['max']]
+        ]);
+
+        return $model;
+    }
+
+    /**
+     * @param array $models
+     * @param array $playersTotal
+     * @return array
+     */
+    public static function getEventsUnder(array $models, array $playersTotal): array
+    {
+        $events = [];
+        foreach ($playersTotal as $playerTotal) {
+            foreach ($models as $k => $model) {
+
+                /** check if player's event */
+                if(!in_array($playerTotal->player_id, [$model->home, $model->away])) continue;
+
+                /** get player moneyline field */
+                $moneyline = ($playerTotal->player_id == $model->home) ? 'home_moneyline_odd' : 'away_moneyline_odd';
+
+                /** check event */
+                if(($playerTotal->favorite === 1 && $model->$moneyline >= self::MONEYLINE['under']['max'])
+                    || ($playerTotal->favorite === 0 && $model->$moneyline < self::MONEYLINE['under']['max'])
+                ) continue;
+
+                $events[] = $model;
+            }
+        }
+
+        return ArrayHelper::getColumn($events, 'id');
+    }
+
+    /**
+     * @param Event[] $models
+     * @param string $type
+     * @return array
+     */
+    public static function getEventsStat(array $models, string $type = Odd::ADD_TYPE['over']): array
+    {
+        $method = ($type == Odd::ADD_TYPE['over']) ? 'totalOverStat' : 'totalUnderStat';
+        $data = [];
+        foreach ($models as $model) {
+            foreach (array_keys(TotalHelper::ODDS) as $i) {
+                $statField = "profit_$i";
+                $profit = $model->$method->$statField ?? null;
+                if (is_null($profit)) continue;
+
+                /** get profit */
+                $data[$i]['profit'] = !isset($data[$i]['profit'])
+                    ? $profit
+                    : $data[$i]['profit'] + $profit;
+
+                /** get count */
+                $data[$i]['count'] = !isset($data[$i]['count'])
+                    ? 1
+                    : $data[$i]['count'] + 1
+                ;
+            }
+        }
+
+        ksort($data);
+        return $data;
+    }
+
+}

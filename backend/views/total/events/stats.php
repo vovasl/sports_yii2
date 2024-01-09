@@ -2,14 +2,11 @@
 
 use common\helpers\TotalHelper;
 use yii\web\View;
-use yii\data\ActiveDataProvider;
 
 /**
  * @var View $this
- * @var ActiveDataProvider $dataProvider
+ * @var array $stats
  */
-
-$stats = TotalHelper::getEventsTotalOverStats($dataProvider->getModels());
 
 ?>
 

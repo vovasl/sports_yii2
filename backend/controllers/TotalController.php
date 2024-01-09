@@ -6,7 +6,9 @@ namespace backend\controllers;
 use backend\models\total\EventTotalSearch;
 use backend\models\total\PlayerTotalSearch;
 use backend\models\total\StatisticTotalSearch;
+use common\helpers\total\PlayerHelper;
 use common\helpers\TotalHelper;
+use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -80,11 +82,27 @@ class TotalController extends Controller
     public function actionEventsOver(): string
     {
         $params = $this->request->queryParams;
-        $params['EventTotalSearch']['ids'] = TotalHelper::getEventsTotalOver();
+        $params['EventTotalSearch']['ids'] = PlayerHelper::getEvents();
         $searchModel = new EventTotalSearch();
         $dataProvider = $searchModel->search($params);
 
         return $this->render('events-over', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionEventsUnder(): string
+    {
+        $params = $this->request->queryParams;
+        $params['EventTotalSearch']['ids'] = PlayerHelper::getEvents(Odd::ADD_TYPE['under']);
+        $searchModel = new EventTotalSearch();
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('events-under', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

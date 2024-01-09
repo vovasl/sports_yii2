@@ -1,6 +1,7 @@
 <?php
 
 use common\helpers\total\PlayerHelper;
+use frontend\models\sport\Odd;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
 use backend\models\total\EventTotalSearch;
@@ -12,11 +13,11 @@ use yii\helpers\Html;
  * @var ActiveDataProvider $dataProvider
  */
 
-$this->title = 'Events - Total Over';
+$this->title = 'Events - Total Under';
 
 $this->params['breadcrumbs'][] = $this->title;
 
-$reset = '/total/events-over';
+$reset = '/total/events-under';
 
 ?>
 
@@ -25,7 +26,7 @@ $reset = '/total/events-over';
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('events/stats', [
-        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
+        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels(), Odd::ADD_TYPE['under'])
     ]); ?>
 
     <p>

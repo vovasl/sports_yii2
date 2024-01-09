@@ -177,7 +177,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                                 "player_id" => $model->player_id,
                                 "tour_id" => $searchModel->tour,
                                 "surface_id" => $searchModel->surface,
-                                "type" => Odd::ADD_TYPE['over']
+                                "type" => $searchModel->type
                             ]),
 
                         ];

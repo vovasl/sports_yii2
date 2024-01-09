@@ -6,13 +6,11 @@ namespace common\helpers;
 use backend\models\total\EventTotalSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
-use frontend\models\sport\PlayerTotal;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Total;
 use frontend\models\sport\Tour;
 use yii\db\Expression;
-use yii\helpers\ArrayHelper;
 
 class TotalHelper
 {
@@ -214,81 +212,4 @@ class TotalHelper
         return "{$val}%";
     }
 
-    /**
-     * @return array
-     */
-    public static function getEventsTotalOver(): array
-    {
-        $searchModels = PlayerTotal::find()
-            ->where(['type' => Odd::ADD_TYPE['over']])
-            ->groupBy(['tour_id', 'surface_id'])
-            ->all()
-        ;
-
-        $ids = [];
-        foreach ($searchModels as $searchModel) {
-
-            /** get tour ids */
-            $tourIds = in_array($searchModel->tour_id,Tour::ATP_ALL) ? Tour::ATP_ALL : [$searchModel->tour_id];
-
-            /** get players */
-            $playerTotal = PlayerTotal::find()
-                ->where(['IN', 'tour_id', $tourIds])
-                ->andWhere(['surface_id' => $searchModel->surface_id])
-                ->all()
-            ;
-
-            /** get events */
-            $events = Event::find()
-                ->select('tn_event.id')
-                ->withData()
-                ->joinWith([
-                    'homeMoneyline',
-                    'awayMoneyline',
-                ])
-                ->where(['<>', Round::tableName() . '.id', Round::QUALIFIER])
-                ->andWhere(['IN', 'home', ArrayHelper::getColumn($playerTotal, 'player_id')])
-                ->andWhere(['IN', 'away', ArrayHelper::getColumn($playerTotal, 'player_id')])
-                ->andWhere(['IN', 'tn_tournament.tour', $tourIds])
-                ->andWhere(['tn_tournament.surface' => $searchModel->surface_id])
-                ->andWhere(['>=', 'home_moneyline.odd', self::OVER_MIN_MONEYLINE])
-                ->andWhere(['>=', 'away_moneyline.odd', self::OVER_MIN_MONEYLINE])
-                ->all()
-            ;
-
-            $ids = array_merge($ids, ArrayHelper::getColumn($events, 'id'));
-        }
-
-        return $ids;
-    }
-
-    /**
-     * @param Event[] $models
-     * @return array
-     */
-    public static function getEventsTotalOverStats(array $models): array
-    {
-        $data = [];
-        foreach ($models as $model) {
-            foreach (array_keys(self::ODDS) as $i) {
-                $statField = "profit_$i";
-                $profit = $model->totalOverStat->$statField ?? null;
-                if (is_null($profit)) continue;
-
-                /** get profit */
-                $data[$i]['profit'] = !isset($data[$i]['profit'])
-                    ? $profit
-                    : $data[$i]['profit'] + $profit;
-
-                /** get count */
-                $data[$i]['count'] = !isset($data[$i]['count'])
-                    ? 1
-                    : $data[$i]['count'] + 1
-                ;
-            }
-        }
-
-        ksort($data);
-        return $data;
-    }
 }
