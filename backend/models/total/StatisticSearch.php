@@ -14,7 +14,7 @@ use frontend\models\sport\Tour;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class StatisticTotalSearch extends Total
+class StatisticSearch extends Total
 {
 
     public $tour;

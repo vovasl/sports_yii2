@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\total\StatisticTotalSearch;
+use backend\models\total\StatisticSearch;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
@@ -14,7 +14,7 @@ use yii\grid\GridView;
 
 /**
  * @var View $this
- * @var StatisticTotalSearch $searchModel
+ * @var StatisticSearch $searchModel
  * @var ActiveDataProvider $dataProvider
  */
 

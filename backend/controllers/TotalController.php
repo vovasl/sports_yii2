@@ -5,9 +5,8 @@ namespace backend\controllers;
 
 use backend\models\total\EventTotalSearch;
 use backend\models\total\PlayerTotalSearch;
-use backend\models\total\StatisticTotalSearch;
+use backend\models\total\StatisticSearch;
 use common\helpers\total\PlayerHelper;
-use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;
 use yii\filters\AccessControl;
@@ -39,7 +38,7 @@ class TotalController extends Controller
      */
     public function actionStatistic(): string
     {
-        $searchModel = new StatisticTotalSearch();
+        $searchModel = new StatisticSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('statistic', [

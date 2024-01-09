@@ -14,6 +14,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\PlayerAddEvent;
 use frontend\models\sport\ResultSet;
 use frontend\models\sport\Round;
+use frontend\models\sport\Total;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
 use yii\base\Component;
@@ -75,6 +76,10 @@ class EventResultSave extends Component
             $this->message .= "<br> Status: OK";
 
         }
+
+        /** total stats */
+        Total::add();
+
         return ($output) ? $this->message : '';
     }
 
