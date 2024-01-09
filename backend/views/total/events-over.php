@@ -11,11 +11,11 @@ use yii\helpers\Html;
  * @var ActiveDataProvider $dataProvider
  */
 
-$this->title = 'Events Total Over';
+$this->title = 'Events - Total Over';
 
 $this->params['breadcrumbs'][] = $this->title;
 
-$reset = "/total/events-total-over";
+$reset = "/total/events-over";
 
 ?>
 

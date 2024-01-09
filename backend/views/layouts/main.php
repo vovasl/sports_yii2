@@ -59,7 +59,8 @@ Icon::map($this);
             ['label' => 'Stats', 'url' => ['/total/statistic']],
             ['label' => 'Players', 'url' => ['/total/players']],
             ['label' => 'Events', 'url' => ['/total/events']],
-            ['label' => 'Event Over', 'url' => ['/total/events-total-over']]
+            ['label' => 'Events Over', 'url' => ['/total/events-over']],
+            ['label' => 'Events Under', 'url' => ['/total/events-under']]
         ]],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];

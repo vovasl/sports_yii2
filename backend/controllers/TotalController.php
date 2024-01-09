@@ -77,7 +77,7 @@ class TotalController extends Controller
     /**
      * @return string
      */
-    public function actionEventsTotalOver(): string
+    public function actionEventsOver(): string
     {
         $params = $this->request->queryParams;
         $params['EventTotalSearch']['ids'] = TotalHelper::getEventsTotalOver();
@@ -106,7 +106,7 @@ class TotalController extends Controller
                     $model->tour_id = $data['tour_id'];
                     $model->surface_id = $data['surface_id'];
                     $model->type = $data['type'];
-                    $model->save();
+                    $model->save(0);
                     break;
                 case PlayerTotal::ACTION['remove']:
                     /** remove model */
