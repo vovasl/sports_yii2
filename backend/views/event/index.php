@@ -87,14 +87,14 @@ $reset = "/event";
             ],
             EventHelper::gridHomePlayer(),
             EventHelper::gridAwayPlayer(),
+            EventHelper::gridHomeMoneyline(),
+            EventHelper::gridAwayMoneyline(),
             [
                 'attribute' => 'result',
                 'label' => 'Result',
                 'value' =>'result',
                 'filter' => EventHelper::resultDropdown(),
             ],
-            EventHelper::gridHomeMoneyline(),
-            EventHelper::gridAwayMoneyline(),
             [
                 'label' => 'Odds',
                 'attribute' => 'count_odds',
