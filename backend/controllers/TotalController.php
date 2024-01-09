@@ -3,14 +3,13 @@
 namespace backend\controllers;
 
 
-use backend\models\total\EventTotalOverSearch;
 use backend\models\total\EventTotalSearch;
 use backend\models\total\PlayerTotalSearch;
 use backend\models\total\StatisticTotalSearch;
+use common\helpers\TotalHelper;
 use frontend\models\sport\PlayerTotal;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
 
 class TotalController extends Controller
 {
@@ -80,10 +79,12 @@ class TotalController extends Controller
      */
     public function actionEventsTotalOver(): string
     {
-        $searchModel = new EventTotalOverSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $params = $this->request->queryParams;
+        $params['EventTotalSearch']['ids'] = TotalHelper::getEventsTotalOver();
+        $searchModel = new EventTotalSearch();
+        $dataProvider = $searchModel->search($params);
 
-        return $this->render('events-total-over', [
+        return $this->render('events-over', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

@@ -73,7 +73,8 @@ class Event extends ActiveRecord
     public $count_odds;
     public $home_moneyline_odd;
     public $away_moneyline_odd;
-    public $total_over_value;
+    public $total_avg_value;
+    public $total_over_min_profit;
     public $odd_move_value;
     public $odd_move_value_type;
     public $odd_move_status;
@@ -108,8 +109,8 @@ class Event extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit', 'home_moneyline_odd', 'away_moneyline_odd'], 'integer'],
-            [['o_add_type', 'o_value', 'count_odds', 'total_over_value'], 'string'],
+            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit', 'home_moneyline_odd', 'away_moneyline_odd', 'total_over_min_profit'], 'integer'],
+            [['o_add_type', 'o_value', 'count_odds', 'total_avg_value'], 'string'],
             [['start_at', 'created'], 'safe'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
             [['home'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['home' => 'id']],

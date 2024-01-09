@@ -9,7 +9,7 @@ use yii\data\ActiveDataProvider;
  * @var ActiveDataProvider $dataProvider
  */
 
-$stats = TotalHelper::getEventsTotalOverStats($dataProvider->query->all());
+$stats = TotalHelper::getEventsTotalOverStats($dataProvider->getModels());
 
 ?>
 
