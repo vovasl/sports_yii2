@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
  * @property int $tour_id
  * @property int $surface_id
  * @property string $type
+ * @property int $favorite
  *
  * @property Player $player
  * @property Surface $surface
@@ -42,7 +43,7 @@ class PlayerTotal extends ActiveRecord
     {
         return [
             [['player_id', 'tour_id', 'surface_id', 'type'], 'required'],
-            [['player_id', 'tour_id', 'surface_id'], 'integer'],
+            [['player_id', 'tour_id', 'surface_id', 'favorite'], 'integer'],
             [['type'], 'string', 'max' => 255],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
             [['surface_id'], 'exist', 'skipOnError' => true, 'targetClass' => Surface::class, 'targetAttribute' => ['surface_id' => 'id']],
@@ -61,6 +62,7 @@ class PlayerTotal extends ActiveRecord
             'tour_id' => 'Tour ID',
             'surface_id' => 'Surface ID',
             'type' => 'Type',
+            'favorite' => 'Favorite'
         ];
     }
 
