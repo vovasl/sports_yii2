@@ -56,11 +56,11 @@ Icon::map($this);
         ]],
         ['label' => 'Players', 'url' => ['players/player/index']],
         ['label' => 'Total', 'items' => [
-            ['label' => 'Stats', 'url' => ['/total/statistic']],
-            ['label' => 'Players', 'url' => ['/total/players']],
-            ['label' => 'Events', 'url' => ['/total/events']],
-            ['label' => 'Events Over', 'url' => ['/total/events-over']],
-            ['label' => 'Events Under', 'url' => ['/total/events-under']]
+            ['label' => 'Stats', 'url' => ['statistic/total/statistic']],
+            ['label' => 'Players', 'url' => ['statistic/total/players']],
+            ['label' => 'Events', 'url' => ['statistic/total/events']],
+            ['label' => 'Events Over', 'url' => ['statistic/total/events-over']],
+            ['label' => 'Events Under', 'url' => ['statistic/total/events-under']]
         ]],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];

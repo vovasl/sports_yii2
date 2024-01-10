@@ -14,7 +14,7 @@ class m231128_174507_total extends Migration
             'id' => $this->primaryKey(),
             'player_id' => $this->integer(),
             'event_id' => $this->integer(),
-            'type' => $this->string(),
+            'add_type' => $this->string(),
             'min_moneyline' => $this->integer(),
             'odd_id_0' => $this->integer(),
             'odd_id_1' => $this->integer(),
@@ -28,7 +28,7 @@ class m231128_174507_total extends Migration
             'profit_4' => $this->integer(),
         ]);
 
-        $this->createIndex('idx-statistic-type', '{{%tn_statistic}}', 'type');
+        $this->createIndex('idx-statistic-add_type', '{{%tn_statistic}}', 'add_type');
 
         $this->addForeignKey('fk-statistic-player_id', '{{%tn_statistic}}', 'player_id', '{{%tn_player}}', 'id', 'SET NULL', 'RESTRICT');
         $this->addForeignKey('fk-statistic-event_id', '{{%tn_statistic}}', 'event_id', '{{%tn_event}}', 'id', 'SET NULL', 'RESTRICT');

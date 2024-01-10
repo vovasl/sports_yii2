@@ -181,7 +181,7 @@ class TotalHelper
         $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($event->eventTournament->surface))]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
-        $query->andWhere(['tn_statistic.type' => $type]);
+        $query->andWhere(['tn_statistic.add_type' => $type]);
         $query->andWhere(['IN', 'tn_statistic.player_id', [$event->home, $event->away]]);
         $query->groupBy('player_id');
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);

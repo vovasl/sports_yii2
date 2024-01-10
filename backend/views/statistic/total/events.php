@@ -15,7 +15,7 @@ $this->title = 'Events';
 
 $this->params['breadcrumbs'][] = $this->title;
 
-$reset = "/total/events";
+$reset = "/statistic/total/events";
 
 ?>
 

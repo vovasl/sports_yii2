@@ -19,7 +19,7 @@ $(function() {
             total: $(this).data('total'),
         };
         $.ajax({
-            url: '/total/player-total-action',
+            url: '/statistic/total/player-total-action',
             type: 'POST',
             data: data,
             success: function(response) {

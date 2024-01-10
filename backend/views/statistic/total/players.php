@@ -25,7 +25,7 @@ use yii\widgets\LinkPager;
 
 $this->title = 'Players';
 
-$reset = "/total/players";
+$reset = "/statistic/total/players";
 
 $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAsset::class]]);
 
@@ -109,8 +109,8 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             ],
             [
                 'label' => 'Type',
-                'attribute' => 'type',
-                'value' => 'type',
+                'attribute' => 'add_type',
+                'value' => 'add_type',
                 'filter' => [
                     Odd::ADD_TYPE['over'] => Odd::ADD_TYPE['over'],
                     Odd::ADD_TYPE['under'] => Odd::ADD_TYPE['under']

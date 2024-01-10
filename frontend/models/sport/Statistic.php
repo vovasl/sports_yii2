@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property int|null $player_id
  * @property int|null $event_id
- * @property string|null $type
+ * @property string|null $add_type
  * @property int|null $min_moneyline
  * @property int|null $profit_0
  * @property int|null $profit_1
@@ -72,7 +72,7 @@ class Statistic extends ActiveRecord
     {
         return [
             [['player_id', 'event_id', 'odd_id_0', 'odd_id_1', 'odd_id_2', 'odd_id_3', 'odd_id_4', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
-            [['type', 'min_moneyline'], 'string', 'max' => 255],
+            [['add_type', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
@@ -87,7 +87,7 @@ class Statistic extends ActiveRecord
             'id' => 'ID',
             'player_id' => 'Player ID',
             'event_id' => 'Event ID',
-            'type' => 'Type',
+            'add_type' => 'Additional Type',
             'min_moneyline' => 'Moneyline',
             'odd_id_0' => 'Odd ID 0',
             'odd_id_1' => 'Odd ID 1',
@@ -282,7 +282,7 @@ class Statistic extends ActiveRecord
         ;
 
         /** get total ids */
-        $totalIds = ArrayHelper::getColumn(Total::find()
+        $totalIds = ArrayHelper::getColumn(Statistic::find()
             ->select(['event_id'])
             ->groupBy('event_id')
             ->all(), 'event_id')
@@ -319,10 +319,10 @@ class Statistic extends ActiveRecord
                 /** types */
                 foreach ($types as $type) {
                     /** save model */
-                    $model = new Total();
+                    $model = new Statistic();
                     $model->player_id = $event->{$player};
                     $model->event_id = $event->id;
-                    $model->type = $event->{$type}[0]->add_type;
+                    $model->add_type = $event->{$type}[0]->add_type;
                     $model->min_moneyline = ($homeMoneyline <= $awayMoneyline) ? $homeMoneyline : $awayMoneyline;
                     $model = self::getProfit($model, $event, $type);
                     $model->save(0);
@@ -333,12 +333,12 @@ class Statistic extends ActiveRecord
     }
 
     /**
-     * @param Total $model
+     * @param Statistic $model
      * @param Event $event
      * @param string $type
-     * @return Total
+     * @return Statistic
      */
-    public static function getProfit(Total $model, Event $event, string $type): Total
+    public static function getProfit(Statistic $model, Event $event, string $type): Statistic
     {
         /** get odds settings */
         $oddsSettings = TotalHelper::ODDS;

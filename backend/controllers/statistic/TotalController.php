@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\controllers;
+namespace backend\controllers\statistic;
 
 
 use backend\models\statistic\total\EventTotalSearch;
 use backend\models\statistic\total\PlayerTotalSearch;
-use backend\models\statistic\StatisticSearch;
+use backend\models\statistic\total\StatisticSearch;
 use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;

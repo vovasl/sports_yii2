@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\statistic\StatisticSearch;
+use backend\models\statistic\total\StatisticSearch;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
@@ -20,7 +20,7 @@ use yii\grid\GridView;
 
 $this->title = 'Statistic';
 
-$reset = "/total/statistic";
+$reset = "/statistic/total/statistic";
 
 ?>
 
@@ -57,8 +57,8 @@ $reset = "/total/statistic";
             ],
             [
                 'label' => 'Type',
-                'attribute' => 'type',
-                'value' => 'type',
+                'attribute' => 'add_type',
+                'value' => 'add_type',
                 'filter' => [
                     Odd::ADD_TYPE['over'] => Odd::ADD_TYPE['over'],
                     Odd::ADD_TYPE['under'] => Odd::ADD_TYPE['under']

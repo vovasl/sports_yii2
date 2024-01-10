@@ -30,7 +30,7 @@ class PlayerTotalSearch extends Statistic
     {
         return [
             [['player_id', 'event_id', 'tour', 'surface', 'round', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
-            [['type', 'player_name', 'min_moneyline'], 'string', 'max' => 255],
+            [['add_type', 'player_name', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
@@ -99,7 +99,7 @@ class PlayerTotalSearch extends Statistic
 
         /** default search params */
         if(empty($params)) {
-            $this->type = Odd::ADD_TYPE['over'];
+            $this->add_type = Odd::ADD_TYPE['over'];
             $this->min_moneyline = '1.5>=';
             $this->count_events = 15;
             $this->round = 100;
@@ -131,8 +131,8 @@ class PlayerTotalSearch extends Statistic
             }
         }
         /** type filter */
-        if(!is_null($this->type)) {
-            $query->andFilterWhere(['tn_statistic.type' => $this->type]);
+        if(!is_null($this->add_type)) {
+            $query->andFilterWhere(['tn_statistic.add_type' => $this->add_type]);
         }
 
         /** moneyline filter */
