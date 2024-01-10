@@ -3,14 +3,14 @@
 use yii\db\Migration;
 
 /**
- * Class m231128_174507_total
+ * Class m231128_174507_statistic
  */
 class m231128_174507_total extends Migration
 {
 
     public function up()
     {
-        $this->createTable('{{%sp_total}}', [
+        $this->createTable('{{%tn_statistic}}', [
             'id' => $this->primaryKey(),
             'player_id' => $this->integer(),
             'event_id' => $this->integer(),
@@ -28,19 +28,19 @@ class m231128_174507_total extends Migration
             'profit_4' => $this->integer(),
         ]);
 
-        $this->createIndex('idx-total-type', '{{%sp_total}}', 'type');
+        $this->createIndex('idx-statistic-type', '{{%tn_statistic}}', 'type');
 
-        $this->addForeignKey('fk-total-player_id', '{{%sp_total}}', 'player_id', '{{%tn_player}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-event_id', '{{%sp_total}}', 'event_id', '{{%tn_event}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-odd_id_0', '{{%sp_total}}', 'odd_id_0', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-odd_id_1', '{{%sp_total}}', 'odd_id_1', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-odd_id_2', '{{%sp_total}}', 'odd_id_2', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-odd_id_3', '{{%sp_total}}', 'odd_id_3', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
-        $this->addForeignKey('fk-total-odd_id_4', '{{%sp_total}}', 'odd_id_4', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-statistic-player_id', '{{%tn_statistic}}', 'player_id', '{{%tn_player}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-statistic-event_id', '{{%tn_statistic}}', 'event_id', '{{%tn_event}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-statistic-odd_id_0', '{{%tn_statistic}}', 'odd_id_0', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-statistic-odd_id_1', '{{%tn_statistic}}', 'odd_id_1', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-statistic-odd_id_2', '{{%tn_statistic}}', 'odd_id_2', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-statistic-odd_id_3', '{{%tn_statistic}}', 'odd_id_3', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
+        $this->addForeignKey('fk-statistic-odd_id_4', '{{%tn_statistic}}', 'odd_id_4', '{{%sp_odd}}', 'id', 'SET NULL', 'RESTRICT');
     }
 
     public function down()
     {
-        $this->dropTable('{{%sp_total}}');
+        $this->dropTable('{{%tn_statistic}}');
     }
 }

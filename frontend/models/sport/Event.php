@@ -40,8 +40,8 @@ use yii\db\Expression;
  * @property Round $tournamentRound
  * @property ResultSet[] $setsResult
  * @property Tournament $eventTournament
- * @property Total $totalOverStat
- * @property Total $totalUnderStat
+ * @property Statistic $totalOverStat
+ * @property Statistic $totalUnderStat
  * @property Odd[] $odds
  * @property Odd[] $oddsHistory
  * @property Odd[] $oddsMove
@@ -504,8 +504,8 @@ class Event extends ActiveRecord
     public function getTotalOverStat(): ActiveQuery
     {
         return $this
-            ->hasOne(Total::class, ['event_id' => 'id'])
-            ->where(['sp_total.type' => Odd::ADD_TYPE['over']])
+            ->hasOne(Statistic::class, ['event_id' => 'id'])
+            ->where(['tn_statistic.type' => Odd::ADD_TYPE['over']])
         ;
     }
 
@@ -515,8 +515,8 @@ class Event extends ActiveRecord
     public function getTotalUnderStat(): ActiveQuery
     {
         return $this
-            ->hasOne(Total::class, ['event_id' => 'id'])
-            ->where(['sp_total.type' => Odd::ADD_TYPE['under']])
+            ->hasOne(Statistic::class, ['event_id' => 'id'])
+            ->where(['tn_statistic.type' => Odd::ADD_TYPE['under']])
             ;
     }
 

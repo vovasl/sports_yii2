@@ -2,12 +2,12 @@
 
 /**
  * @var View $this
- * @var Total[] $stats
+ * @var Statistic[] $stats
  * @var string $title
  */
 
 use common\helpers\TotalHelper;
-use frontend\models\sport\Total;
+use frontend\models\sport\Statistic;
 use yii\web\View;
 
 $avg = [];

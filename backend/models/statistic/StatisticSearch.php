@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models\total;
+namespace backend\models\statistic;
 
 
 use common\helpers\EventHelper;
@@ -9,12 +9,12 @@ use frontend\models\sport\Odd;
 use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
-use frontend\models\sport\Total;
+use frontend\models\sport\Statistic;
 use frontend\models\sport\Tour;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class StatisticSearch extends Total
+class StatisticSearch extends Statistic
 {
 
     public $tour;
@@ -47,9 +47,9 @@ class StatisticSearch extends Total
 
     public function search(array $params): ActiveDataProvider
     {
-        $query = Total::find()
+        $query = Statistic::find()
             ->select([
-                'sp_total.*',
+                'tn_statistic.*',
                 'round(count(profit_0)/2) count_profit_0',
                 'round(count(profit_1)/2) count_profit_1',
                 'round(count(profit_2)/2) count_profit_2',
@@ -115,7 +115,7 @@ class StatisticSearch extends Total
 
         /** type filter */
         if(!is_null($this->type)) {
-            $query->andFilterWhere(['sp_total.type' => $this->type]);
+            $query->andFilterWhere(['tn_statistic.type' => $this->type]);
         }
 
         /** moneyline filter */

@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\total\EventTotalSearch;
+use backend\models\statistic\total\EventTotalSearch;
 use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;

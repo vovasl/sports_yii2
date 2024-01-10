@@ -3,9 +3,9 @@
 namespace backend\controllers;
 
 
-use backend\models\total\EventTotalSearch;
-use backend\models\total\PlayerTotalSearch;
-use backend\models\total\StatisticSearch;
+use backend\models\statistic\total\EventTotalSearch;
+use backend\models\statistic\total\PlayerTotalSearch;
+use backend\models\statistic\StatisticSearch;
 use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;

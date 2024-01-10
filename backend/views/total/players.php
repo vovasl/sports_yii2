@@ -1,13 +1,13 @@
 <?php
 
 
-use backend\models\total\PlayerTotalSearch;
+use backend\models\statistic\total\PlayerTotalSearch;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
-use frontend\models\sport\Total;
+use frontend\models\sport\Statistic;
 use frontend\models\sport\Tour;
 use yii\grid\ActionColumn;
 use yii\web\JqueryAsset;
@@ -61,7 +61,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                 'label' => 'Player',
                 'attribute' => 'player_name',
                 'format' => 'raw',
-                'value' => function(Total $model) use($searchModel) {
+                'value' => function(Statistic $model) use($searchModel) {
                     return Html::a($model->player->name, [
                         'total/events',
                         'EventTotalSearch[count_odds]' => 1,
@@ -119,7 +119,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
                 'attribute' => 'percent_profit_0',
-                'value' => function(Total $model) {
+                'value' => function(Statistic $model) {
                     return TotalHelper::getPercent($model->percentProfit0);
                 },
                 'filter' => '',
@@ -127,7 +127,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 1),
                 'attribute' => 'percent_profit_1',
-                'value' => function(Total $model) {
+                'value' => function(Statistic $model) {
                     return TotalHelper::getPercent($model->percentProfit1);
                 },
                 'filter' => '',
@@ -135,7 +135,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 2),
                 'attribute' => 'percent_profit_2',
-                'value' => function(Total $model) {
+                'value' => function(Statistic $model) {
                     return TotalHelper::getPercent($model->percentProfit2);
                 },
                 'filter' => '',
@@ -143,7 +143,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 3),
                 'attribute' => 'percent_profit_3',
-                'value' => function(Total $model) {
+                'value' => function(Statistic $model) {
                     return TotalHelper::getPercent($model->percentProfit3);
                 },
                 'filter' => '',
@@ -151,7 +151,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 4),
                 'attribute' => 'percent_profit_4',
-                'value' => function(Total $model) {
+                'value' => function(Statistic $model) {
                     return TotalHelper::getPercent($model->percentProfit4);
                 },
                 'filter' => '',
@@ -160,15 +160,15 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                 'class' => ActionColumn::class,
                 'template' => '{add}{remove}',
                 'visibleButtons' => [
-                    'add' => function (Total $model, $key, $index) use($searchModel) {
+                    'add' => function (Statistic $model, $key, $index) use($searchModel) {
                         return $model->playerTotalButton(PlayerTotal::ACTION['add'], $searchModel);
                     },
-                    'remove' => function (Total $model, $key, $index) use($searchModel) {
+                    'remove' => function (Statistic $model, $key, $index) use($searchModel) {
                         return $model->playerTotalButton(PlayerTotal::ACTION['remove'], $searchModel);
                     }
                 ],
                 'buttons' => [
-                    'add' => function ($url, Total $model) use($searchModel) {
+                    'add' => function ($url, Statistic $model) use($searchModel) {
                         $options = [
                             'title' => 'Add',
                             'class' => 'player-total-action',
@@ -183,7 +183,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                         ];
                         return Html::a('<i class="fas fa-plus"></i>', '#', $options);
                     },
-                    'remove' => function ($url, Total $model) use($searchModel) {
+                    'remove' => function ($url, Statistic $model) use($searchModel) {
                         $options = [
                             'title' => 'Remove',
                             'class' => 'player-total-action',

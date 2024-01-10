@@ -3,12 +3,12 @@
 namespace common\helpers;
 
 
-use backend\models\total\EventTotalSearch;
+use backend\models\statistic\total\EventTotalSearch;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
-use frontend\models\sport\Total;
+use frontend\models\sport\Statistic;
 use frontend\models\sport\Tour;
 use yii\db\Expression;
 
@@ -89,7 +89,7 @@ class TotalHelper
         /** get moneyline */
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
 
-        $query = Total::find();
+        $query = Statistic::find();
         $query->select([
             'player_id',
             'round((round(sum(profit_0)/count(profit_0)) + round(sum(profit_1)/count(profit_1)))/2) percent_profit',
@@ -161,9 +161,9 @@ class TotalHelper
 
         $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
 
-        $query = Total::find();
+        $query = Statistic::find();
         $query->select([
-            'sp_total.*',
+            'tn_statistic.*',
             'count(event_id) count_events',
             'round(sum(profit_0)/count(profit_0)) percent_profit_0',
             'round(sum(profit_1)/count(profit_1)) percent_profit_1',
@@ -181,8 +181,8 @@ class TotalHelper
         $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($event->eventTournament->surface))]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
-        $query->andWhere(['sp_total.type' => $type]);
-        $query->andWhere(['IN', 'sp_total.player_id', [$event->home, $event->away]]);
+        $query->andWhere(['tn_statistic.type' => $type]);
+        $query->andWhere(['IN', 'tn_statistic.player_id', [$event->home, $event->away]]);
         $query->groupBy('player_id');
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
 

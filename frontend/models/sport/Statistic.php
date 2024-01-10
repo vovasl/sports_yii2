@@ -3,16 +3,15 @@
 namespace frontend\models\sport;
 
 
-use backend\models\total\PlayerTotalSearch;
+use backend\models\statistic\total\PlayerTotalSearch;
 use common\helpers\TotalHelper;
-use yii\base\BaseObject;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "sp_total".
+ * This is the model class for table "tn_statistic".
  *
  * @property int $id
  * @property int|null $player_id
@@ -41,7 +40,7 @@ use yii\helpers\ArrayHelper;
  * @property Odd $odd3
  * @property Odd $odd4
  */
-class Total extends ActiveRecord
+class Statistic extends ActiveRecord
 {
 
     public $count_events;
@@ -63,7 +62,7 @@ class Total extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return 'sp_total';
+        return 'tn_statistic';
     }
 
     /**

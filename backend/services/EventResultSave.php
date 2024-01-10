@@ -14,8 +14,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\PlayerAddEvent;
 use frontend\models\sport\ResultSet;
 use frontend\models\sport\Round;
-use frontend\models\sport\Total;
-use frontend\models\sport\Tour;
+use frontend\models\sport\Statistic;
 use frontend\models\sport\Tournament;
 use yii\base\Component;
 use yii\db\ActiveRecord;
@@ -78,7 +77,7 @@ class EventResultSave extends Component
         }
 
         /** total stats */
-        Total::add();
+        Statistic::add();
 
         return ($output) ? $this->message : '';
     }

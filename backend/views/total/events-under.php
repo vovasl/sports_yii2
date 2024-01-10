@@ -4,7 +4,7 @@ use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Odd;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
-use backend\models\total\EventTotalSearch;
+use backend\models\statistic\total\EventTotalSearch;
 use yii\helpers\Html;
 
 /**
