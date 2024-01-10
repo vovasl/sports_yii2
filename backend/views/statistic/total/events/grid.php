@@ -70,7 +70,7 @@ use yii\grid\ActionColumn;
             'filter' => Round::dropdownFilter(),
         ],
         EventHelper::gridHomePlayer([
-            'action' => 'total/players',
+            'action' => '/statistic/total/players',
             'model' => 'PlayerTotalSearch',
             'player_field' => 'PlayerTotalSearch[player_name]',
             'search_data' => [
@@ -83,7 +83,8 @@ use yii\grid\ActionColumn;
             ],
         ]),
         EventHelper::gridAwayPlayer([
-            'action' => 'total/players',
+            'action' => '/statistic
+            /total/players',
             'model' => 'PlayerTotalSearch',
             'player_field' => 'PlayerTotalSearch[player_name]',
             'search_data' => [

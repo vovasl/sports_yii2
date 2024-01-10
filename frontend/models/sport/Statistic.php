@@ -227,7 +227,7 @@ class Statistic extends ActiveRecord
     public function playerTotalButton(string $type, PlayerTotalSearch $search): bool
     {
         /** empty search params */
-        if(empty($search->tour) || empty($search->surface) || empty($search->type)) return false;
+        if(empty($search->tour) || empty($search->surface) || empty($search->add_type)) return false;
 
         switch ($type) {
             case PlayerTotal::ACTION['add']:
@@ -250,7 +250,7 @@ class Statistic extends ActiveRecord
 
         return !($this->playerTotal->tour_id == $search->tour
             && $this->playerTotal->surface_id == $search->surface
-            && $this->playerTotal->type == $search->type
+            && $this->playerTotal->type == $search->add_type
         );
     }
 
@@ -263,7 +263,7 @@ class Statistic extends ActiveRecord
         return (!is_null($this->playerTotal)
             && $this->playerTotal->tour_id == $search->tour
             && $this->playerTotal->surface_id == $search->surface
-            && $this->playerTotal->type == $search->type
+            && $this->playerTotal->type == $search->add_type
         );
     }
 

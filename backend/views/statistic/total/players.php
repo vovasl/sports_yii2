@@ -63,7 +63,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                 'format' => 'raw',
                 'value' => function(Statistic $model) use($searchModel) {
                     return Html::a($model->player->name, [
-                        'total/events',
+                        '/statistic/total/events',
                         'EventTotalSearch[count_odds]' => 1,
                         'EventTotalSearch[result]' => 1,
                         'EventTotalSearch[moneyline]' => $searchModel->min_moneyline,
@@ -177,7 +177,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                                 "player_id" => $model->player_id,
                                 "tour_id" => $searchModel->tour,
                                 "surface_id" => $searchModel->surface,
-                                "type" => $searchModel->type
+                                "type" => $searchModel->add_type
                             ]),
 
                         ];
