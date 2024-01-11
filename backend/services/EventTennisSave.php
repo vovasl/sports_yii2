@@ -193,7 +193,7 @@ class EventTennisSave
                     // ::log add method {$method}
                     continue;
                 }
-                $this->{$method}($event, $period[$line], $oddType->id);
+                $this->$method($event, $period[$line], $oddType->id);
             }
         }
 

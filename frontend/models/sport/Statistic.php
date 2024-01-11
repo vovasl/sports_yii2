@@ -4,11 +4,8 @@ namespace frontend\models\sport;
 
 
 use backend\models\statistic\total\PlayerTotalSearch;
-use common\helpers\TotalHelper;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\db\Expression;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "tn_statistic".
@@ -250,104 +247,4 @@ class Statistic extends ActiveRecord
                 return false;
         }
     }
-
-    public static function add()
-    {
-        /** get event ids */
-        $eventIds = ArrayHelper::getColumn(Event::find()
-            ->select(['tn_event.id'])
-            ->joinWith(['totalsOver'])
-            ->active()
-            ->andWhere(['IS NOT', 'tn_event.sofa_id', new Expression('null')])
-            ->andWhere(['IS NOT', 'tn_event.pin_id', new Expression('null')])
-            ->having(['>', 'count(total_over.id)', 0])
-            ->groupBy('tn_event.id')
-            ->all(), 'id')
-        ;
-
-        /** get total ids */
-        $totalIds = ArrayHelper::getColumn(Statistic::find()
-            ->select(['event_id'])
-            ->groupBy('event_id')
-            ->all(), 'event_id')
-        ;
-
-        $ids = array_diff($eventIds, $totalIds);
-        if(count($ids) == 0) return;
-
-        /** get events */
-        $events = Event::find()
-            ->where(['IN', 'tn_event.id', $ids])
-            ->joinWith([
-                'eventTournament',
-                'eventTournament.tournamentTour',
-                'eventTournament.tournamentSurface'
-            ])
-            //->limit(10)
-            ->orderBy(['id' => SORT_ASC])
-            ->all()
-        ;
-
-        $players = ['home', 'away'];
-        $types = ['totalsOver', 'totalsUnder'];
-        foreach ($events as $event) {
-            if (count($event->totalsOver) == 0) continue;
-
-            /** get moneyline */
-            if(!isset($event->homeMoneyline[0]) || !isset($event->awayMoneyline[0])) continue;
-            $homeMoneyline = $event->homeMoneyline[0]->odd;
-            $awayMoneyline = $event->awayMoneyline[0]->odd;
-
-            /** players */
-            foreach ($players as $player) {
-                /** types */
-                foreach ($types as $type) {
-                    /** save model */
-                    $model = new Statistic();
-                    $model->player_id = $event->{$player};
-                    $model->event_id = $event->id;
-                    //$model->type = 2;
-                    $model->add_type = $event->{$type}[0]->add_type;
-                    $model->min_moneyline = ($homeMoneyline <= $awayMoneyline) ? $homeMoneyline : $awayMoneyline;
-                    $model = self::getProfit($model, $event, $type);
-                    $model->save(0);
-                }
-            }
-            //break;
-        }
-    }
-
-    /**
-     * @param Statistic $model
-     * @param Event $event
-     * @param string $type
-     * @return Statistic
-     */
-    public static function getProfit(Statistic $model, Event $event, string $type): Statistic
-    {
-        /** get odds settings */
-        $oddsSettings = TotalHelper::ODDS;
-        sort($oddsSettings);
-
-        /** get profit values */
-        foreach ($event->{$type} as $odd) {
-            foreach ($oddsSettings as $k => $setting) {
-                if (($k == array_key_last($oddsSettings) && $odd->odd >= $setting) || ($odd->odd >= $setting && $odd->odd < $oddsSettings[$k + 1])) {
-                    $profitField = "profit_{$k}";
-                    $idField = "odd_id_{$k}";
-
-                    /** field without value */
-                    if (is_null($model->{$profitField}) || $k == 0) {
-                        $model->{$profitField} = $odd->profit;
-                        $model->{$idField} = $odd->id;
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        return $model;
-    }
-
 }

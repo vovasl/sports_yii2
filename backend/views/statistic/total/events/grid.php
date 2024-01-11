@@ -79,12 +79,11 @@ use yii\grid\ActionColumn;
                 'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : 100,
                 'PlayerTotalSearch[min_moneyline]' => $searchModel->moneyline,
                 'PlayerTotalSearch[five_sets]' => $searchModel->five_sets,
-                'PlayerTotalSearch[type]' => 'over',
+                'PlayerTotalSearch[add_type]' => 'over',
             ],
         ]),
         EventHelper::gridAwayPlayer([
-            'action' => '/statistic
-            /total/players',
+            'action' => '/statistic/total/players',
             'model' => 'PlayerTotalSearch',
             'player_field' => 'PlayerTotalSearch[player_name]',
             'search_data' => [
@@ -93,7 +92,7 @@ use yii\grid\ActionColumn;
                 'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : 100,
                 'PlayerTotalSearch[min_moneyline]' => $searchModel->moneyline,
                 'PlayerTotalSearch[five_sets]' => $searchModel->five_sets,
-                'PlayerTotalSearch[type]' => 'over',
+                'PlayerTotalSearch[add_type]' => 'over',
             ],
         ]),
         EventHelper::gridHomeMoneyline(),
