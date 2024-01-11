@@ -2,6 +2,7 @@
 
 namespace frontend\models\sport;
 
+use backend\models\statistic\total\PlayerTotalSearch;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -94,5 +95,29 @@ class PlayerTotal extends ActiveRecord
     public function getTour(): ActiveQuery
     {
         return $this->hasOne(Tour::class, ['id' => 'tour_id']);
+    }
+
+    /**
+     * @param PlayerTotalSearch $search
+     * @return bool
+     */
+    public function addButton(PlayerTotalSearch $search): bool
+    {
+        return !($this->tour_id == $search->tour
+            && $this->surface_id == $search->surface
+            && $this->type == $search->add_type
+        );
+    }
+
+    /**
+     * @param PlayerTotalSearch $search
+     * @return bool
+     */
+    public function removeButton(PlayerTotalSearch $search): bool
+    {
+        return ($this->tour_id == $search->tour
+            && $this->surface_id == $search->surface
+            && $this->type == $search->add_type
+        );
     }
 }

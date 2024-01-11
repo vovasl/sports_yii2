@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property int|null $player_id
  * @property int|null $event_id
+ * @property int|null $type
  * @property string|null $add_type
  * @property int|null $min_moneyline
  * @property int|null $profit_0
@@ -71,7 +72,7 @@ class Statistic extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'odd_id_0', 'odd_id_1', 'odd_id_2', 'odd_id_3', 'odd_id_4', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
+            [['player_id', 'event_id', 'type', 'odd_id_0', 'odd_id_1', 'odd_id_2', 'odd_id_3', 'odd_id_4', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['add_type', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -87,6 +88,7 @@ class Statistic extends ActiveRecord
             'id' => 'ID',
             'player_id' => 'Player ID',
             'event_id' => 'Event ID',
+            'type' => 'Type',
             'add_type' => 'Additional Type',
             'min_moneyline' => 'Moneyline',
             'odd_id_0' => 'Odd ID 0',
@@ -104,16 +106,6 @@ class Statistic extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Event]].
-     *
-     * @return ActiveQuery
-     */
-    public function getEvent(): ActiveQuery
-    {
-        return $this->hasOne(Event::class, ['id' => 'event_id']);
-    }
-
-    /**
      * Gets query for [[Player]].
      *
      * @return ActiveQuery
@@ -121,6 +113,16 @@ class Statistic extends ActiveRecord
     public function getPlayer(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'player_id']);
+    }
+
+    /**
+     * Gets query for [[Event]].
+     *
+     * @return ActiveQuery
+     */
+    public function getEvent(): ActiveQuery
+    {
+        return $this->hasOne(Event::class, ['id' => 'event_id']);
     }
 
     /**
@@ -229,42 +231,24 @@ class Statistic extends ActiveRecord
         /** empty search params */
         if(empty($search->tour) || empty($search->surface) || empty($search->add_type)) return false;
 
+        /** additional filters */
+        if($search->tour < 0 || $search->surface < 0) return false;
+
+        /** no player added */
+        if(is_null($this->playerTotal)) {
+            if($type == PlayerTotal::ACTION['add']) return true;
+            else if($type == PlayerTotal::ACTION['remove']) return false;
+        }
+
+        /** get button status */
         switch ($type) {
             case PlayerTotal::ACTION['add']:
-                return $this->addPlayerTotalButton($search);
+                return $this->playerTotal->addButton($search);
             case PlayerTotal::ACTION['remove']:
-                return $this->removePlayerTotalButton($search);
+                return $this->playerTotal->removeButton($search);
             default:
                 return false;
         }
-    }
-
-    /**
-     * @param PlayerTotalSearch $search
-     * @return bool
-     */
-    private function addPlayerTotalButton(PlayerTotalSearch $search): bool
-    {
-        /** no player added */
-        if(is_null($this->playerTotal)) return true;
-
-        return !($this->playerTotal->tour_id == $search->tour
-            && $this->playerTotal->surface_id == $search->surface
-            && $this->playerTotal->type == $search->add_type
-        );
-    }
-
-    /**
-     * @param PlayerTotalSearch $search
-     * @return bool
-     */
-    private function removePlayerTotalButton(PlayerTotalSearch $search): bool
-    {
-        return (!is_null($this->playerTotal)
-            && $this->playerTotal->tour_id == $search->tour
-            && $this->playerTotal->surface_id == $search->surface
-            && $this->playerTotal->type == $search->add_type
-        );
     }
 
     public static function add()
@@ -322,6 +306,7 @@ class Statistic extends ActiveRecord
                     $model = new Statistic();
                     $model->player_id = $event->{$player};
                     $model->event_id = $event->id;
+                    //$model->type = 2;
                     $model->add_type = $event->{$type}[0]->add_type;
                     $model->min_moneyline = ($homeMoneyline <= $awayMoneyline) ? $homeMoneyline : $awayMoneyline;
                     $model = self::getProfit($model, $event, $type);

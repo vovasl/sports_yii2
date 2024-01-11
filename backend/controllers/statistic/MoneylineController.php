@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\controllers;
+namespace backend\controllers\statistic;
 
 
 use yii\filters\AccessControl;

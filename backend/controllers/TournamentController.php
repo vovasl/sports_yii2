@@ -3,7 +3,6 @@
 namespace backend\controllers;
 
 
-use backend\models\TournamentEventSearch;
 use frontend\models\sport\Tournament;
 use backend\models\TournamentSearch;
 use yii\filters\AccessControl;
