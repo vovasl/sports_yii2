@@ -29,8 +29,9 @@ use yii\db\ActiveRecord;
  * @property int|null $percent_profit_3
  * @property int|null $percent_profit_4
  *
- * @property Event $event
  * @property Player $player
+ * @property Event $event
+ * @property OddType $oddType
  * @property PlayerTotal $playerTotal
  * @property Odd $odd0
  * @property Odd $odd1
@@ -120,6 +121,16 @@ class Statistic extends ActiveRecord
     public function getEvent(): ActiveQuery
     {
         return $this->hasOne(Event::class, ['id' => 'event_id']);
+    }
+
+    /**
+     * Gets query for [[oddType]].
+     *
+     * @return ActiveQuery
+     */
+    public function getOddType(): ActiveQuery
+    {
+        return $this->hasOne(OddType::class, ['id' => 'type']);
     }
 
     /**

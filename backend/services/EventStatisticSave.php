@@ -5,6 +5,7 @@ namespace backend\services;
 
 use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\OddType;
 use frontend\models\sport\Statistic;
 use yii\db\Expression;
@@ -100,14 +101,9 @@ class EventStatisticSave
     private function add(): bool
     {
         foreach (self::METHODS as $type => $methods) {
-
-            /** get type id */
-            $oddType = OddType::findOne(['name' => $type]);
-            if(is_null($oddType)) continue;
-
             /** add statistic */
             $addMethod = $this->getAddMethod($type);
-            $this->$addMethod($type, $oddType->id);
+            $this->$addMethod($type);
         }
 
         return true;
@@ -122,17 +118,16 @@ class EventStatisticSave
         return "add" . ucfirst($type);
     }
 
-    private function addMoneyline(string $type, int $typeId): bool
+    private function addMoneyline(string $type): bool
     {
         return true;
     }
 
     /**
      * @param string $type
-     * @param int $typeId
      * @return bool
      */
-    private function addTotals(string $type, int $typeId): bool
+    private function addTotals(string $type): bool
     {
         if (count($this->event->totalsOver) == 0) return false;
 
@@ -151,7 +146,7 @@ class EventStatisticSave
                 $model = new Statistic();
                 $model->player_id = $this->event->{$player};
                 $model->event_id = $this->event->id;
-                $model->type = $typeId;
+                $model->type = (Odd::TYPE[$type]) ?? null;
                 $model->add_type = $this->event->{$method}[0]->add_type;
                 $model->min_moneyline = ($moneyline['home'] <= $moneyline['away']) ? $moneyline['home'] : $moneyline['away'];
                 $model = $this->getTotalProfit($model, $method);

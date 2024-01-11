@@ -505,7 +505,10 @@ class Event extends ActiveRecord
     {
         return $this
             ->hasOne(Statistic::class, ['event_id' => 'id'])
-            ->where(['tn_statistic.add_type' => Odd::ADD_TYPE['over']])
+            ->where([
+                'tn_statistic.type' => Odd::TYPE['totals'],
+                'tn_statistic.add_type' => Odd::ADD_TYPE['over']
+            ])
         ;
     }
 
@@ -516,7 +519,10 @@ class Event extends ActiveRecord
     {
         return $this
             ->hasOne(Statistic::class, ['event_id' => 'id'])
-            ->where(['tn_statistic.add_type' => Odd::ADD_TYPE['under']])
+            ->where([
+                'tn_statistic.type' => Odd::TYPE['totals'],
+                'tn_statistic.add_type' => Odd::ADD_TYPE['under']
+            ])
             ;
     }
 
