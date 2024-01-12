@@ -117,15 +117,15 @@ use yii\grid\ActionColumn;
             'value' => 'total_avg_value'
         ],
         [
+            'attribute' => 'total_games',
+            'label' => 'Games',
+            'value' => 'total_games',
+        ],
+        [
             'attribute' => 'total',
             'label' => 'Sets',
             'value' => 'total',
             'filter' => EventHelper::setsDropdown(),
-        ],
-        [
-            'attribute' => 'total_games',
-            'label' => 'Games',
-            'value' => 'total_games',
         ],
         [
             'label' => 'Over',
