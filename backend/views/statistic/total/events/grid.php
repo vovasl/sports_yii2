@@ -135,7 +135,7 @@ use yii\grid\ActionColumn;
             },
             'filter' => [
                 1 => 'Yes',
-                0 => '0',
+                100 => '0',
                 -1 => 'No',
             ],
         ],

@@ -256,7 +256,7 @@ class EventTotalSearch extends Event
                 case 1:
                     $query->andHaving(['>', 'total_over_min_profit', 0]);
                     break;
-                case 0:
+                case 100:
                     $query->andHaving(['=', 'total_over_min_profit', 0]);
                     break;
                 case -1:
