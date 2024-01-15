@@ -639,7 +639,11 @@ class Event extends ActiveRecord
     public function outputPlayer($field, array $uri = []): string
     {
         $player = $this->{$field};
-        $class = ($this->winner === $player->id) ? 'winner' : '';
+        $class = '';
+        $class .= ($this->winner === $player->id) ? 'winner' : '';
+        if(is_null($this->sofa_id)) {
+            $class = ' fail';
+        }
         return Player::getEventsLink($player->name, $uri, $class);
     }
 

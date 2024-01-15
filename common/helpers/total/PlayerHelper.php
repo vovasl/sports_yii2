@@ -208,9 +208,9 @@ class PlayerHelper
 
         foreach ($players as $k => $player) {
             $players[$k]['link'] = [
-                '/event/index',
-                'model' => 'EventSearch',
-                'EventSearch[player]' => $player['player']
+                '/statistic/total/events',
+                'model' => 'EventTotalSearch',
+                'EventTotalSearch[player]' => $player['player']
             ];
             $players[$k]['tournament_link'] = [
                 '/event/index',
