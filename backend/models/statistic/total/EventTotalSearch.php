@@ -251,7 +251,7 @@ class EventTotalSearch extends Event
         }
 
         /** min total over filter */
-        if(!empty($this->total_over_min_profit)) {
+        if(!is_null($this->total_over_min_profit)) {
             switch ($this->total_over_min_profit) {
                 case 1:
                     $query->andHaving(['>', 'total_over_min_profit', 0]);

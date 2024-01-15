@@ -7,9 +7,11 @@ use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;
+use frontend\models\sport\query\EventQuery;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tour;
 use yii\db\ActiveQuery;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
 class PlayerHelper
@@ -177,6 +179,45 @@ class PlayerHelper
 
         ksort($data);
         return $data;
+    }
+
+    /**
+     * @param string $type
+     * @return array
+     */
+    public static function getPlayers(string $type): array
+    {
+        $players = (new Query())
+            ->select([
+                'tn_player.id player_id',
+                'tn_player.name player',
+                'tn_tournament.name tournament',
+                'tn_event.sofa_id sofa_id'
+            ])
+            ->from('tn_player_total')
+            ->leftJoin('tn_player', 'tn_player_total.player_id = tn_player.id')
+            ->leftJoin('tn_event', 'tn_player.id = tn_event.home or tn_player.id = tn_event.away')
+            ->leftJoin('tn_tournament', 'tn_event.tournament = tn_tournament.id and tn_player_total.tour_id =  tn_tournament.tour and tn_player_total.surface_id = tn_tournament.surface')
+            ->where(['tn_player_total.type' => $type])
+            ->andWhere(['IS', 'tn_event.sofa_id', null])
+            ->andWhere(['IS NOT', 'tn_tournament.id', null])
+            ->all()
+        ;
+
+        foreach ($players as $k => $player) {
+            $players[$k]['link'] = [
+                '/event/index',
+                'model' => 'EventSearch',
+                'EventSearch[player]' => $player['player']
+            ];
+            $players[$k]['tournament_link'] = [
+                '/event/index',
+                'model' => 'EventSearch',
+                'EventSearch[tournament_name]' => $player['tournament']
+            ];
+        }
+
+        return $players;
     }
 
 }

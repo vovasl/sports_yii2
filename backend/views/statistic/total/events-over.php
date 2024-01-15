@@ -1,6 +1,7 @@
 <?php
 
 use common\helpers\total\PlayerHelper;
+use frontend\models\sport\Odd;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
 use backend\models\statistic\total\EventTotalSearch;
@@ -24,10 +25,6 @@ $reset = '/statistic/total/events-over';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('events/stats', [
-        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
-    ]); ?>
-
     <p>
         <?= Html::a('Clear', [$reset], ['class' => 'btn btn-primary']) ?>
     </p>
@@ -35,6 +32,14 @@ $reset = '/statistic/total/events-over';
     <?= $this->render('events/grid', [
         'searchModel' => $searchModel,
         'dataProvider' => $dataProvider,
+    ]); ?>
+
+    <?= $this->render('events/stats', [
+        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
+    ]); ?>
+
+    <?= $this->render('events/players', [
+        'players' => PlayerHelper::getPlayers(Odd::ADD_TYPE['over']),
     ]); ?>
 
 </div>
