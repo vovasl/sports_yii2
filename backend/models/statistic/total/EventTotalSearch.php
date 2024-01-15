@@ -250,6 +250,7 @@ class EventTotalSearch extends Event
             ]);
         }
 
+
         /** min total over filter */
         if(!is_null($this->total_over_min_profit)) {
             switch ($this->total_over_min_profit) {

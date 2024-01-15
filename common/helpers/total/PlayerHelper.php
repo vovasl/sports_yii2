@@ -192,15 +192,17 @@ class PlayerHelper
                 'tn_player.id player_id',
                 'tn_player.name player',
                 'tn_tournament.name tournament',
-                'tn_event.sofa_id sofa_id'
             ])
             ->from('tn_player_total')
             ->leftJoin('tn_player', 'tn_player_total.player_id = tn_player.id')
             ->leftJoin('tn_event', 'tn_player.id = tn_event.home or tn_player.id = tn_event.away')
-            ->leftJoin('tn_tournament', 'tn_event.tournament = tn_tournament.id and tn_player_total.tour_id =  tn_tournament.tour and tn_player_total.surface_id = tn_tournament.surface')
+            ->leftJoin('tn_event event_winner', 'tn_player.id = event_winner.winner and tn_event.id = event_winner.id')
+            ->leftJoin('tn_tournament', 'tn_event.tournament = tn_tournament.id and tn_player_total.tour_id = tn_tournament.tour and tn_player_total.surface_id = tn_tournament.surface')
             ->where(['tn_player_total.type' => $type])
-            ->andWhere(['IS', 'tn_event.sofa_id', null])
             ->andWhere(['IS NOT', 'tn_tournament.id', null])
+            ->andWhere('tn_event.id = (SELECT MAX(id) FROM tn_event event_id WHERE (tn_player.id = event_id.home or tn_player.id = event_id.away))')
+            ->andWhere('(tn_event.sofa_id is null or (event_winner.winner = player_id and event_winner.round != 3))')
+            ->orderBy(['tn_tournament.name' => SORT_ASC])
             ->all()
         ;
 

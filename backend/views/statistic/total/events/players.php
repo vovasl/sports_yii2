@@ -10,7 +10,7 @@ use yii\web\View;
 
 ?>
 
-<table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-5 w-25">
+<table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-4 w-25">
     <thead>
     <tr>
         <td class="text-center"><strong>#</strong></td>
