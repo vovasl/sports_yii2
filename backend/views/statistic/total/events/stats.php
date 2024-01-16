@@ -37,7 +37,7 @@ use yii\web\View;
     <tr>
         <td class="text-center">ROI</td>
         <?php foreach (array_keys(TotalHelper::ODDS) as $i): ?>
-            <td class="text-center"><?= isset($stats[$i]['profit']) ? round($stats[$i]['profit'] / $stats[$i]['count'] / 100, 2) :  0; ?>%</td>
+            <td class="text-center"><?= isset($stats[$i]['profit']) ? round($stats[$i]['profit'] / $stats[$i]['count']) :  0; ?>%</td>
         <?php endforeach; ?>
     </tr>
     </tbody>
