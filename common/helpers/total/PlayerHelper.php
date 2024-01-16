@@ -192,31 +192,64 @@ class PlayerHelper
                 'tn_player.id player_id',
                 'tn_player.name player',
                 'tn_tournament.name tournament',
+                'tn_event.id event_id',
+                'tn_event.start_at event_start',
+                'tn_event.sofa_id event_sofa_id',
+                'tn_round.name round',
+                'player_home.name player_home',
+                'player_away.name player_away',
+                'moneyline_home.odd moneyline_home_odd',
+                'moneyline_away.odd moneyline_away_odd',
             ])
             ->from('tn_player_total')
             ->leftJoin('tn_player', 'tn_player_total.player_id = tn_player.id')
             ->leftJoin('tn_event', 'tn_player.id = tn_event.home or tn_player.id = tn_event.away')
             ->leftJoin('tn_event event_winner', 'tn_player.id = event_winner.winner and tn_event.id = event_winner.id')
             ->leftJoin('tn_tournament', 'tn_event.tournament = tn_tournament.id and tn_player_total.tour_id = tn_tournament.tour and tn_player_total.surface_id = tn_tournament.surface')
+            ->leftJoin('tn_round', 'tn_round.id = tn_event.round')
+            ->leftJoin('tn_player player_home', 'tn_event.home = player_home.id')
+            ->leftJoin('tn_player player_away', 'tn_event.away = player_away.id')
+            ->leftJoin('sp_odd moneyline_home', 'tn_event.id = moneyline_home.event and tn_event.home = moneyline_home.player_id and moneyline_home.type = ' .  Odd::TYPE['moneyline'])
+            ->leftJoin('sp_odd moneyline_away', 'tn_event.id = moneyline_away.event and tn_event.away = moneyline_away.player_id and moneyline_away.type = ' .  Odd::TYPE['moneyline'])
             ->where(['tn_player_total.type' => $type])
             ->andWhere(['IS NOT', 'tn_tournament.id', null])
             ->andWhere('tn_event.id = (SELECT MAX(id) FROM tn_event event_id WHERE (tn_player.id = event_id.home or tn_player.id = event_id.away))')
-            ->andWhere('(tn_event.sofa_id is null or (event_winner.winner = player_id and event_winner.round != 3))')
+            ->andWhere('(tn_event.sofa_id is null or (event_winner.winner = tn_player_total.player_id and event_winner.round != 3))')
             ->orderBy(['tn_tournament.name' => SORT_ASC])
+            //->groupBy('tn_player_total.player_id')
             ->all()
         ;
 
+        /** prepare data */
         foreach ($players as $k => $player) {
-            $players[$k]['link'] = [
+
+            /** get event data */
+            $player['event_start'] = (is_null($player['event_sofa_id'])) ? date('d.m H:i', strtotime($player['event_start'])) : 'none';
+            $player['round'] = (is_null($player['event_sofa_id'])) ? $player['round'] : 'none';
+            $player['event'] = (is_null($player['event_sofa_id'])) ? "{$player['player_home']} - {$player['player_away']}" : 'none';
+
+            /** get moneyline */
+            $player['moneyline_home_odd'] = isset($player['moneyline_home_odd']) ? $player['moneyline_home_odd']/100 : 0;
+            $player['moneyline_away_odd'] = isset($player['moneyline_away_odd']) ? $player['moneyline_away_odd']/100 : 0;
+            $player['moneyline'] = (is_null($player['event_sofa_id'])) ? "{$player['moneyline_home_odd']} - {$player['moneyline_away_odd']}" : 'none';
+
+            /** get links */
+            $player['link'] = [
                 '/statistic/total/events',
                 'model' => 'EventTotalSearch',
                 'EventTotalSearch[player]' => $player['player']
             ];
-            $players[$k]['tournament_link'] = [
+            $player['tournament_link'] = [
                 '/event/index',
                 'model' => 'EventSearch',
                 'EventSearch[tournament_name]' => $player['tournament']
             ];
+            $player['event_link'] = [
+                'event/view',
+                'id' => $player['event_id']
+            ];
+
+            $players[$k] = $player;
         }
 
         return $players;

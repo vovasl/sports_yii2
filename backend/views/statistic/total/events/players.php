@@ -10,12 +10,19 @@ use yii\web\View;
 
 ?>
 
-<table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-4 w-25">
+<table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-4 w-75">
     <thead>
+    <tr>
+        <td colspan="7" class="text-center"><h3>Players</h3></td>
+    </tr>
     <tr>
         <td class="text-center"><strong>#</strong></td>
         <td class="text-center"><strong>Player</strong></td>
         <td class="text-center"><strong>Tournament</strong></td>
+        <td class="text-center"><strong>Start</strong></td>
+        <td class="text-center"><strong>Round</strong></td>
+        <td class="text-center"><strong>Event</strong></td>
+        <td class="text-center"><strong>Moneyline</strong></td>
     </tr>
     <tbody>
     <?php foreach ($players as $k => $player): ?>
@@ -23,6 +30,10 @@ use yii\web\View;
             <td class="text-center"><?= ++$k; ?></td>
             <td class="text-center"><?= Html::a($player['player'], $player['link'], ['target'=>'_blank']) ?></td>
             <td class="text-center"><?= Html::a($player['tournament'], $player['tournament_link'], ['target'=>'_blank']); ?></td>
+            <td class="text-center"><?= $player['event_start']; ?></td>
+            <td class="text-center"><?= $player['round'] ?></td>
+            <td class="text-center"><?= (is_null($player['event_sofa_id'])) ? Html::a($player['event'], $player['event_link'], ['target'=>'_blank']) : $player['event']; ?></td>
+            <td class="text-center"><?= $player['moneyline']; ?></td>
         </tr>
     <?php endforeach; ?>
     </thead>
