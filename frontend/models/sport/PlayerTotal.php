@@ -29,6 +29,10 @@ class PlayerTotal extends ActiveRecord
         'remove' => 'remove'
     ];
 
+    CONST TYPE = [
+        'over-favorite' => 'over-favorite'
+    ];
+
     /**
      * {@inheritdoc}
      */

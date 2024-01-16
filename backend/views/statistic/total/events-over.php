@@ -2,6 +2,7 @@
 
 use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Odd;
+use frontend\models\sport\PlayerTotal;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
 use backend\models\statistic\total\EventTotalSearch;
@@ -26,18 +27,6 @@ $reset = '/statistic/total/events-over';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('events/future-events', [
-        'events' => PlayerHelper::getFutureEvents($eventIds),
-    ]); ?>
-
-    <?= $this->render('events/players', [
-        'players' => PlayerHelper::getPlayers(Odd::ADD_TYPE['over']),
-    ]); ?>
-
-    <?= $this->render('events/stats', [
-        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
-    ]); ?>
-
     <p>
         <?= Html::a('Clear', [$reset], ['class' => 'btn btn-primary']) ?>
     </p>
@@ -45,6 +34,14 @@ $reset = '/statistic/total/events-over';
     <?= $this->render('events/grid', [
         'searchModel' => $searchModel,
         'dataProvider' => $dataProvider,
+    ]); ?>
+
+    <?= $this->render('events/players', [
+        'players' => PlayerHelper::getPlayers([Odd::ADD_TYPE['over'], PlayerTotal::TYPE['over-favorite']]),
+    ]); ?>
+
+    <?= $this->render('events/stats', [
+        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
     ]); ?>
 
 </div>

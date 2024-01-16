@@ -13,11 +13,12 @@ use yii\web\View;
 <table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-4">
     <thead>
     <tr>
-        <td colspan="7" class="text-center"><h3>Players</h3></td>
+        <td colspan="10" class="text-center"><h3>Players</h3></td>
     </tr>
     <tr>
         <td class="text-center"><strong>#</strong></td>
         <td class="text-center"><strong>Player</strong></td>
+        <td class="text-center"><strong>Favorite</strong></td>
         <td class="text-center"><strong>Tour</strong></td>
         <td class="text-center"><strong>Surface</strong></td>
         <td class="text-center"><strong>Tournament</strong></td>
@@ -32,6 +33,7 @@ use yii\web\View;
         <tr>
             <td class="text-center"><?= ++$k; ?></td>
             <td class="text-center"><?= Html::a($player['player'], $player['link'], ['target'=>'_blank']) ?></td>
+            <td class="text-center"><?= $player['favorite']; ?></td>
             <td class="text-center"><?= $player['tour']; ?></td>
             <td class="text-center"><?= $player['surface']; ?></td>
             <td class="text-center"><?= Html::a($player['tournament'], $player['tournament_link'], ['target'=>'_blank']); ?></td>

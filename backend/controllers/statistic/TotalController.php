@@ -81,7 +81,15 @@ class TotalController extends Controller
     public function actionEventsOver(): string
     {
         $params = $this->request->queryParams;
-        $params['EventTotalSearch']['ids'] = PlayerHelper::getEvents();
+
+        /** empty search params */
+        if(empty($params)) {
+            $params['EventTotalSearch']['result'] = 2;
+        }
+
+        /** get events ids */
+        $params['EventTotalSearch']['ids'] = array_merge(PlayerHelper::getEvents(), PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']));
+
         $searchModel = new EventTotalSearch();
         $dataProvider = $searchModel->search($params);
 
