@@ -312,7 +312,7 @@ class Event extends ActiveRecord
             ->orderBy([
                 'total_over.value' => SORT_ASC
             ])
-            ;
+        ;
     }
 
     /**

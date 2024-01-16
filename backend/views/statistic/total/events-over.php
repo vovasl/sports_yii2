@@ -11,6 +11,7 @@ use yii\helpers\Html;
  * @var View $this
  * @var EventTotalSearch $searchModel
  * @var ActiveDataProvider $dataProvider
+ * @var array $eventIds
  */
 
 $this->title = 'Events - Total Over';
@@ -25,8 +26,16 @@ $reset = '/statistic/total/events-over';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <?= $this->render('events/future-events', [
+        'events' => PlayerHelper::getFutureEvents($eventIds),
+    ]); ?>
+
     <?= $this->render('events/players', [
         'players' => PlayerHelper::getPlayers(Odd::ADD_TYPE['over']),
+    ]); ?>
+
+    <?= $this->render('events/stats', [
+        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
     ]); ?>
 
     <p>
@@ -36,10 +45,6 @@ $reset = '/statistic/total/events-over';
     <?= $this->render('events/grid', [
         'searchModel' => $searchModel,
         'dataProvider' => $dataProvider,
-    ]); ?>
-
-    <?= $this->render('events/stats', [
-        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
     ]); ?>
 
 </div>

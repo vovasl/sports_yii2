@@ -6,6 +6,7 @@ namespace common\helpers\total;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use frontend\models\sport\Player;
 use frontend\models\sport\PlayerTotal;
 use frontend\models\sport\query\EventQuery;
 use frontend\models\sport\Round;
@@ -191,7 +192,6 @@ class PlayerHelper
             ->select([
                 'tn_player.id player_id',
                 'tn_player.name player',
-                'tn_tournament.name tournament',
                 'tn_event.id event_id',
                 'tn_event.start_at event_start',
                 'tn_event.sofa_id event_sofa_id',
@@ -200,23 +200,34 @@ class PlayerHelper
                 'player_away.name player_away',
                 'moneyline_home.odd moneyline_home_odd',
                 'moneyline_away.odd moneyline_away_odd',
+                'avg(total_over.value) total_avg_value',
+                'tn_tournament.name tournament',
+                'tn_tour.name tour',
+                'tn_surface.name surface',
             ])
             ->from('tn_player_total')
             ->leftJoin('tn_player', 'tn_player_total.player_id = tn_player.id')
             ->leftJoin('tn_event', 'tn_player.id = tn_event.home or tn_player.id = tn_event.away')
             ->leftJoin('tn_event event_winner', 'tn_player.id = event_winner.winner and tn_event.id = event_winner.id')
-            ->leftJoin('tn_tournament', 'tn_event.tournament = tn_tournament.id and tn_player_total.tour_id = tn_tournament.tour and tn_player_total.surface_id = tn_tournament.surface')
             ->leftJoin('tn_round', 'tn_round.id = tn_event.round')
+            ->leftJoin('tn_tournament', 'tn_event.tournament = tn_tournament.id and tn_player_total.tour_id = tn_tournament.tour and tn_player_total.surface_id = tn_tournament.surface')
+            ->leftJoin('tn_tour', 'tn_tournament.tour = tn_tour.id')
+            ->leftJoin('tn_surface', 'tn_tournament.surface = tn_surface.id')
             ->leftJoin('tn_player player_home', 'tn_event.home = player_home.id')
             ->leftJoin('tn_player player_away', 'tn_event.away = player_away.id')
             ->leftJoin('sp_odd moneyline_home', 'tn_event.id = moneyline_home.event and tn_event.home = moneyline_home.player_id and moneyline_home.type = ' .  Odd::TYPE['moneyline'])
             ->leftJoin('sp_odd moneyline_away', 'tn_event.id = moneyline_away.event and tn_event.away = moneyline_away.player_id and moneyline_away.type = ' .  Odd::TYPE['moneyline'])
+            ->leftJoin('sp_odd total_over', 'tn_event.id = total_over.event and total_over.type = ' . Odd::TYPE['totals'] . ' and total_over.add_type = \'' . Odd::ADD_TYPE['over'] . '\'')
             ->where(['tn_player_total.type' => $type])
             ->andWhere(['IS NOT', 'tn_tournament.id', null])
             ->andWhere('tn_event.id = (SELECT MAX(id) FROM tn_event event_id WHERE (tn_player.id = event_id.home or tn_player.id = event_id.away))')
             ->andWhere('(tn_event.sofa_id is null or (event_winner.winner = tn_player_total.player_id and event_winner.round != 3))')
-            ->orderBy(['tn_tournament.name' => SORT_ASC])
-            //->groupBy('tn_player_total.player_id')
+            ->orderBy([
+                'tn_tournament.name' => SORT_ASC,
+                'event_start' => SORT_ASC,
+                'event_id' => SORT_ASC,
+            ])
+            ->groupBy('tn_player_total.player_id')
             ->all()
         ;
 
@@ -253,6 +264,42 @@ class PlayerHelper
         }
 
         return $players;
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public static function getFutureEvents(array $ids): array
+    {
+        $events = Event::find()
+            ->select([
+                'tn_event.*',
+                'avg(total_over.value) total_avg_value',
+                'home_moneyline.odd home_moneyline_odd',
+                'away_moneyline.odd away_moneyline_odd'
+            ])
+            ->joinWith([
+                'homeMoneyline',
+                'awayMoneyline',
+                'totalsOver',
+                'tournamentRound',
+                'eventTournament',
+                'eventTournament.tournamentTour',
+                'eventTournament.tournamentSurface',
+                'homePlayer' => function($q) {
+                    $q->from(Player::tableName() . ' home');
+                },
+                'awayPlayer' => function($q) {
+                    $q->from(Player::tableName() . ' away');
+                }
+            ])
+            ->where(['IN', 'tn_event.id', $ids])
+            ->andWhere(['IS', 'tn_event.sofa_id', null])
+            ->orderBy(['tn_event.start_at' => SORT_ASC,])
+            ->all()
+        ;
+        return $events;
     }
 
 }

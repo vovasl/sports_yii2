@@ -88,6 +88,7 @@ class TotalController extends Controller
         return $this->render('events-over', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'eventIds' => $params['EventTotalSearch']['ids']
         ]);
     }
 
