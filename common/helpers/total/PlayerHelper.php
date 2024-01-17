@@ -245,7 +245,7 @@ class PlayerHelper
         /** prepare data */
         foreach ($players as $k => $player) {
 
-            /** get player data */
+            /** get player total data */
             $player['favorite'] = ($player['favorite']) ? 'Yes' : '';
 
             /** get event data */
@@ -257,6 +257,9 @@ class PlayerHelper
             $player['moneyline_home_odd'] = isset($player['moneyline_home_odd']) ? $player['moneyline_home_odd']/100 : 0;
             $player['moneyline_away_odd'] = isset($player['moneyline_away_odd']) ? $player['moneyline_away_odd']/100 : 0;
             $player['moneyline'] = (is_null($player['event_sofa_id'])) ? "{$player['moneyline_home_odd']} - {$player['moneyline_away_odd']}" : 'none';
+
+            /** get total */
+            $player['total_avg_value'] = (is_null($player['event_sofa_id'])) ? $player['total_avg_value'] : 'none';
 
             /** get links */
             $player['link'] = [
