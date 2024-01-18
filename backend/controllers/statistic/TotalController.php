@@ -89,6 +89,7 @@ class TotalController extends Controller
 
         /** get events ids */
         $params['EventTotalSearch']['ids'] = array_merge(PlayerHelper::getEvents(), PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']));
+        //$params['EventTotalSearch']['ids'] = PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']);
 
         $searchModel = new EventTotalSearch();
         $dataProvider = $searchModel->search($params);
