@@ -57,7 +57,9 @@ YiiAsset::register($this);
         ],
     ]) ?>
 
-    <?= $this->render('/statistic/total/statistic', [
+    <h1>Total Statistic</h1>
+
+    <?= $this->render('/statistic/total/statistic/grid', [
         'dataProvider' => $totalDataProvider,
         'searchModel' => $totalSearchModel,
     ]); ?>
