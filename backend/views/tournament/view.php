@@ -1,7 +1,9 @@
 <?php
 
 
+use backend\models\statistic\total\StatisticSearch;
 use common\helpers\EventHelper;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
@@ -11,6 +13,8 @@ use yii\web\View;
 /**
  * @var View $this
  * @var Tournament $model
+ * @var StatisticSearch $totalSearchModel
+ * @var ActiveDataProvider $totalDataProvider
  */
 
 
@@ -26,7 +30,7 @@ YiiAsset::register($this);
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Events', ['/event', 'EventSearch[tournament_name]' => $model->name], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Events', ['/event', 'EventSearch[tournament_id]' => $model->id], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -37,7 +41,6 @@ YiiAsset::register($this);
             'tournamentTour.name',
             'name',
             'tournamentSurface.name',
-            'comment:ntext',
             [
                 'label' => 'Events',
                 'value' => count($model->events)
@@ -49,8 +52,14 @@ YiiAsset::register($this);
             [
                 'label' => 'Qualifiers',
                 'value' => EventHelper::getCount($model->events, 1)
-            ]
+            ],
+            'comment:ntext',
         ],
     ]) ?>
+
+    <?= $this->render('/statistic/total/statistic', [
+        'dataProvider' => $totalDataProvider,
+        'searchModel' => $totalSearchModel,
+    ]); ?>
 
 </div>

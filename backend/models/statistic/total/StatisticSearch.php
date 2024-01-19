@@ -21,6 +21,10 @@ class StatisticSearch extends Statistic
 
     public $surface;
 
+    public $tournament;
+
+    public $tournament_id;
+
     public $round;
 
     public $five_sets;
@@ -33,8 +37,8 @@ class StatisticSearch extends Statistic
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'tour', 'surface', 'round', 'five_sets', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
-            [['add_type', 'min_moneyline', 'value0'], 'string', 'max' => 255],
+            [['player_id', 'event_id', 'tour', 'surface', 'round', 'tournament_id', 'five_sets', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
+            [['tournament', 'add_type', 'min_moneyline', 'value0'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
@@ -95,6 +99,7 @@ class StatisticSearch extends Statistic
             $this->add_type = Odd::ADD_TYPE['over'];
             $this->min_moneyline = '1.5>=';
             $this->round = 100;
+            $this->five_sets = 0;
         }
 
         /** tour filter */
@@ -107,9 +112,19 @@ class StatisticSearch extends Statistic
             $query->andFilterWhere(['IN', 'tn_surface.id', Surface::filterValue($this->surface)]);
         }
 
+        /** tournament filter */
+        if(!is_null($this->tournament)) {
+            $query->andFilterWhere(['LIKE', 'tn_tournament.name', trim($this->tournament)]);
+        }
+
+        /** tournament id filter */
+        if(!is_null($this->tournament_id)) {
+            $query->andFilterWhere(['tn_event.tournament' => $this->tournament_id]);
+        }
+
         /** round filter */
         if(!is_null($this->round)) {
-            if($this->round == Round::QUALIFIER_FILTER) {
+            if($this->round == Round::MAIN) {
                 $query->andFilterWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
             }
             else {

@@ -22,9 +22,11 @@ class EventSearch extends Event
 
     public $tour_id;
 
-    public $round_id;
-
     public $surface_id;
+
+    public $tournament_id;
+
+    public $round_id;
 
     public $player;
 
@@ -41,7 +43,7 @@ class EventSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['tour_id', 'surface_id', 'round_id', 'result', 'count_odds'], 'integer'],
+            [['tour_id', 'surface_id', 'round_id', 'result', 'count_odds', 'tournament_id'], 'integer'],
             [['tournament_name', 'player', 'moneyline'], 'string'],
         ];
     }
@@ -141,12 +143,17 @@ class EventSearch extends Event
 
         /** tournament name filter */
         if(!is_null($this->tournament_name)) {
-            $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->tournament_name]);
+            $query->andFilterWhere(['like', Tournament::tableName() . '.name', trim($this->tournament_name)]);
+        }
+
+        /** tournament id filter */
+        if(!is_null($this->tournament_id)) {
+            $query->andFilterWhere(['event.tournament' => $this->tournament_id]);
         }
 
         /** round filter */
         if(!is_null($this->round_id)) {
-            if($this->round_id == Round::QUALIFIER_FILTER) {
+            if($this->round_id == Round::MAIN) {
                 $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
             }
             else {
@@ -157,8 +164,8 @@ class EventSearch extends Event
         /** event filter */
         if(!is_null($this->player)) {
             $query->andFilterWhere(['or',
-                ['like', 'home.name', $this->player],
-                ['like', 'away.name', $this->player]
+                ['like', 'home.name', trim($this->player)],
+                ['like', 'away.name', trim($this->player)]
             ]);
         }
 

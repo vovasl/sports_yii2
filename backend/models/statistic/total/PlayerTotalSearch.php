@@ -108,6 +108,7 @@ class PlayerTotalSearch extends Statistic
             $this->min_moneyline = '1.5>=';
             $this->count_events = 15;
             $this->round = 100;
+            $this->five_sets = 0;
         }
 
         /** player filter */
@@ -128,7 +129,7 @@ class PlayerTotalSearch extends Statistic
 
         /** round filter */
         if(!is_null($this->round)) {
-            if($this->round == Round::QUALIFIER_FILTER) {
+            if($this->round == Round::MAIN) {
                 $query->andFilterWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
             }
             else {

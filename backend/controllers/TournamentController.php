@@ -3,6 +3,9 @@
 namespace backend\controllers;
 
 
+use backend\models\statistic\total\StatisticSearch;
+use frontend\models\sport\Odd;
+use frontend\models\sport\Round;
 use frontend\models\sport\Tournament;
 use backend\models\TournamentSearch;
 use yii\filters\AccessControl;
@@ -63,12 +66,11 @@ class TournamentController extends Controller
      * Displays a single Tournament model.
      * @param int $id ID
      * @return string
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView(int $id): string
     {
-        $this->findModel($id);
 
+        /** get tournament */
         $model = Tournament::find()
             ->with([
                 'events', 'events.totalsOver', 'events.totalsUnder'
@@ -76,8 +78,22 @@ class TournamentController extends Controller
             ->where(['id' => $id])
             ->one()
         ;
+
+        /** total statistic */
+        $totalParams = $this->request->queryParams;
+        /** default search params */
+        $totalParams['StatisticSearch']['tournament_id'] = $model->id;
+        $totalParams['StatisticSearch']['tournament'] = $model->name;
+        $totalParams['StatisticSearch']['add_type'] = ($totalParams['StatisticSearch']['add_type']) ?? Odd::ADD_TYPE['over'];
+        $totalParams['StatisticSearch']['min_moneyline'] = ($totalParams['StatisticSearch']['min_moneyline']) ?? '1.5>=';
+        $totalParams['StatisticSearch']['round'] = ($totalParams['StatisticSearch']['round']) ?? Round::MAIN;
+        $totalSearchModel = new StatisticSearch();
+        $totalDataProvider = $totalSearchModel->search($totalParams);
+
         return $this->render('view', [
             'model' => $model,
+            'totalSearchModel' => $totalSearchModel,
+            'totalDataProvider' => $totalDataProvider,
         ]);
     }
 

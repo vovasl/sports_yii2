@@ -5,12 +5,12 @@ use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
-use frontend\models\sport\Statistic;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
 use frontend\models\sport\Tour;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /**
  * @var View $this
@@ -18,9 +18,7 @@ use yii\grid\GridView;
  * @var ActiveDataProvider $dataProvider
  */
 
-$this->title = 'Statistic';
-
-$reset = "/statistic/total/statistic";
+$this->title = 'Total';
 
 ?>
 
@@ -29,7 +27,7 @@ $reset = "/statistic/total/statistic";
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Clear', [$reset], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Clear', Url::canonical(), ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= GridView::widget([
@@ -48,6 +46,11 @@ $reset = "/statistic/total/statistic";
                 'attribute' => 'surface',
                 'value' => '',
                 'filter' => Surface::dropdown()
+            ],
+            [
+                'label' => 'Tournament',
+                'attribute' => 'tournament',
+                'value' => '',
             ],
             [
                 'label' => 'Round',

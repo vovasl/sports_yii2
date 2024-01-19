@@ -165,7 +165,7 @@ class EventTotalSearch extends Event
 
         /** round filter */
         if(!is_null($this->round_id)) {
-            if($this->round_id == Round::QUALIFIER_FILTER) {
+            if($this->round_id == Round::MAIN) {
                 $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
             }
             else {

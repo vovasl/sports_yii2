@@ -20,7 +20,7 @@ class Round extends ActiveRecord
 {
 
     const QUALIFIER = 5;
-    const QUALIFIER_FILTER = 100;
+    CONST MAIN = 100;
 
     /**
      * {@inheritdoc}
@@ -79,7 +79,7 @@ class Round extends ActiveRecord
     public static function dropdownFilter(): array
     {
         $rounds = self::dropdown();
-        $rounds[self::QUALIFIER_FILTER] = 'Main';
+        $rounds[self::MAIN] = 'Main';
         return $rounds;
     }
 
