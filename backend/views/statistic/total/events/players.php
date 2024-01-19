@@ -13,7 +13,7 @@ use yii\web\View;
 <table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-4">
     <thead>
     <tr>
-        <td colspan="10" class="text-center"><h3>Players</h3></td>
+        <td colspan="11" class="text-center"><h3>Players</h3></td>
     </tr>
     <tr>
         <td class="text-center"><strong>#</strong></td>
