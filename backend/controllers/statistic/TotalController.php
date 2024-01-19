@@ -133,6 +133,7 @@ class TotalController extends Controller
                     $model->tour_id = $data['tour_id'];
                     $model->surface_id = $data['surface_id'];
                     $model->type = $data['type'];
+                    $model->favorite = (strpos($data['moneyline'], '<') !== false);
                     $model->save(0);
                     break;
                 case PlayerTotal::ACTION['remove']:

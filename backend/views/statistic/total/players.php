@@ -167,7 +167,8 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                                 "player_id" => $model->player_id,
                                 "tour_id" => $searchModel->tour,
                                 "surface_id" => $searchModel->surface,
-                                "type" => $searchModel->add_type
+                                "type" => (strpos($searchModel->min_moneyline, '<') === false) ? $searchModel->add_type : PlayerTotal::TYPE['over-favorite'],
+                                "moneyline" => $searchModel->min_moneyline,
                             ]),
 
                         ];
