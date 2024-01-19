@@ -165,6 +165,11 @@ class TotalHelper
         $query->select([
             'tn_statistic.*',
             'count(event_id) count_events',
+            'count(profit_0) count_profit_0',
+            'count(profit_1) count_profit_1',
+            'count(profit_2) count_profit_2',
+            'count(profit_3) count_profit_3',
+            'count(profit_4) count_profit_4',
             'round(sum(profit_0)/count(profit_0)) percent_profit_0',
             'round(sum(profit_1)/count(profit_1)) percent_profit_1',
             'round(sum(profit_2)/count(profit_2)) percent_profit_2',

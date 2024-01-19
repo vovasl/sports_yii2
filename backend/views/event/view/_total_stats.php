@@ -32,9 +32,10 @@ $avg = [];
             <td class="text-center"><?= $stat->player->name; ?></td>
             <td class="text-center"><?= $stat->count_events; ?></td>
             <?php for($i = 0; $i < 5; $i++): ?>
-                <?php $attr = "percentProfit{$i}"; ?>
+                <?php $attr = "percent_profit_{$i}"; ?>
+                <?php $attrOutput = "percentProfit{$i}"; ?>
                 <?php $avg[$i] = isset($avg[$i]) ? $avg[$i] + $stat->{$attr} : $stat->{$attr}; ?>
-                <td class="text-center"><?= TotalHelper::getPercent($stat->{$attr}); ?></td>
+                <td class="text-center"><?= $stat->{$attrOutput}; ?></td>
             <?php endfor; ?>
         </tr>
     <?php endforeach; ?>

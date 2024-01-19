@@ -119,41 +119,31 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
                 'attribute' => 'percent_profit_0',
-                'value' => function(Statistic $model) {
-                    return TotalHelper::getPercent($model->percentProfit0);
-                },
+                'value' => 'percentProfit0',
                 'filter' => '',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 1),
                 'attribute' => 'percent_profit_1',
-                'value' => function(Statistic $model) {
-                    return TotalHelper::getPercent($model->percentProfit1);
-                },
+                'value' => 'percentProfit1',
                 'filter' => '',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 2),
                 'attribute' => 'percent_profit_2',
-                'value' => function(Statistic $model) {
-                    return TotalHelper::getPercent($model->percentProfit2);
-                },
+                'value' => 'percentProfit2',
                 'filter' => '',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 3),
                 'attribute' => 'percent_profit_3',
-                'value' => function(Statistic $model) {
-                    return TotalHelper::getPercent($model->percentProfit3);
-                },
+                'value' => 'percentProfit3',
                 'filter' => '',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 4),
                 'attribute' => 'percent_profit_4',
-                'value' => function(Statistic $model) {
-                    return TotalHelper::getPercent($model->percentProfit4);
-                },
+                'value' => 'percentProfit4',
                 'filter' => '',
             ],
             [

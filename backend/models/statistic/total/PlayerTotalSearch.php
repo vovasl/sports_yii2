@@ -29,7 +29,7 @@ class PlayerTotalSearch extends Statistic
     public function rules(): array
     {
         return [
-            [['player_id', 'event_id', 'tour', 'surface', 'round', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
+            [['player_id', 'event_id', 'tour', 'surface', 'round', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['add_type', 'player_name', 'min_moneyline'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -51,6 +51,11 @@ class PlayerTotalSearch extends Statistic
             ->select([
                 'tn_statistic.*',
                 'count(event_id) count_events',
+                'count(profit_0) count_profit_0',
+                'count(profit_1) count_profit_1',
+                'count(profit_2) count_profit_2',
+                'count(profit_3) count_profit_3',
+                'count(profit_4) count_profit_4',
                 'round(sum(profit_0)/count(profit_0)) percent_profit_0',
                 'round(sum(profit_1)/count(profit_1)) percent_profit_1',
                 'round(sum(profit_2)/count(profit_2)) percent_profit_2',
@@ -62,8 +67,8 @@ class PlayerTotalSearch extends Statistic
                 'event.eventTournament.tournamentTour',
                 'event.eventTournament.tournamentSurface',
                 'player',
-                'playerTotal',
             ])
+            ->with('playerTotal')
             ->groupBy('player_id')
         ;
 
