@@ -83,45 +83,31 @@ $reset = "/statistic/total/statistic";
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
                 'attribute' => 'percent_profit_0',
                 'filter' => '',
-                'value' => function(Statistic $model) {
-                    return TotalHelper::getPercent($model->percentProfit0) . "({$model->count_profit_0})";
-                },
+                'value' => 'percentProfit0',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 1),
                 'attribute' => 'percent_profit_1',
                 'filter' => '',
-                'value' => function(Statistic $model) use($searchModel) {
-                    if(!empty($searchModel->value0)) return '';
-                    return TotalHelper::getPercent($model->percentProfit1) . "({$model->count_profit_1})";
-                },
+                'value' => 'percentProfit1',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 2),
                 'attribute' => 'percent_profit_2',
                 'filter' => '',
-                'value' => function(Statistic $model) use($searchModel) {
-                    if(!empty($searchModel->value0)) return '';
-                    return TotalHelper::getPercent($model->percentProfit2) . "({$model->count_profit_2})";
-                },
+                'value' => 'percentProfit2',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 3),
                 'attribute' => 'percent_profit_3',
                 'filter' => '',
-                'value' => function(Statistic $model) use($searchModel) {
-                    if(!empty($searchModel->value0)) return '';
-                    return TotalHelper::getPercent($model->percentProfit3) . "({$model->count_profit_3})";
-                },
+                'value' => 'percentProfit3',
             ],
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 4),
                 'attribute' => 'percent_profit_4',
                 'filter' => '',
-                'value' => function(Statistic $model) use($searchModel) {
-                    if(!empty($searchModel->value0)) return '';
-                    return TotalHelper::getPercent($model->percentProfit4) . "({$model->count_profit_4})";
-                },
+                'value' => 'percentProfit4',
             ],
         ],
     ]); ?>

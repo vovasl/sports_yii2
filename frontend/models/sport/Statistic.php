@@ -194,7 +194,7 @@ class Statistic extends ActiveRecord
      */
     public function getPercentProfit0(): string
     {
-        return "{$this->percent_profit_0}%($this->count_profit_0)";
+        return ($this->count_profit_0 > 0) ? "{$this->percent_profit_0}%($this->count_profit_0)" : ' - ';
     }
 
     /**
@@ -202,7 +202,7 @@ class Statistic extends ActiveRecord
      */
     public function getPercentProfit1(): string
     {
-        return "{$this->percent_profit_1}%($this->count_profit_1)";
+        return ($this->count_profit_1 > 0) ? "{$this->percent_profit_1}%($this->count_profit_1)" : ' - ';
     }
 
     /**
@@ -210,7 +210,7 @@ class Statistic extends ActiveRecord
      */
     public function getPercentProfit2(): string
     {
-        return "{$this->percent_profit_2}%($this->count_profit_2)";
+        return ($this->count_profit_2 > 0) ? "{$this->percent_profit_2}%($this->count_profit_2)" : ' - ';
     }
 
     /**
@@ -218,7 +218,7 @@ class Statistic extends ActiveRecord
      */
     public function getPercentProfit3(): string
     {
-        return "{$this->percent_profit_3}%($this->count_profit_3)";
+        return ($this->count_profit_3 > 0) ? "{$this->percent_profit_3}%($this->count_profit_3)" : ' - ';
     }
 
     /**
@@ -226,7 +226,7 @@ class Statistic extends ActiveRecord
      */
     public function getPercentProfit4(): string
     {
-        return "{$this->percent_profit_4}%($this->count_profit_4)";
+        return ($this->count_profit_4 > 0) ? "{$this->percent_profit_4}%($this->count_profit_4)" : ' - ';
     }
 
     /**
