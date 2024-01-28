@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'plays',
             //'comment:ntext',
             'count_events',
-            [
+/*            [
                 'label' => 'ATP',
                 'value' => function(Player $model) {
                     return count($model->getTourEvents(Tour::ATP));
@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function(Player $model) {
                     return count($model->getTourEvents(Tour::CHALLENGER));
                 }
-            ],
+            ],*/
             [
                 'label' => 'Sofa ID',
                 'attribute' => 'sofa_id',
