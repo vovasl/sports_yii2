@@ -4,8 +4,10 @@ namespace backend\controllers;
 
 
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\OddMove;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 
 class TestController extends Controller
@@ -50,6 +52,40 @@ class TestController extends Controller
         return $this->render('event-move-line', [
             'events' => $events
         ]);
+    }
+
+    public function actionEventMoneyline()
+    {
+        $events = Event::find()
+            ->select(['id'])
+            ->where(['favorite' => null])
+            //->limit(100)
+            ->all()
+        ;
+
+        foreach ($events as $event) {
+            $moneyline = ArrayHelper::map(Odd::find()
+                ->select(['player_id', 'odd'])
+                ->where([
+                    'event' => $event->id,
+                    'type' => Odd::TYPE['moneyline']
+                ])
+                ->all(), 'player_id', 'odd')
+            ;
+
+            /** event without moneyline */
+            if(count($moneyline) != 2) continue;
+
+            /** get favorite */
+            foreach ($moneyline as $player_id => $odd) {
+                if(is_null($event->favorite) || $odd < reset($moneyline)) {
+                    $event->favorite = $player_id;
+                }
+            }
+
+            //$event->save(0);
+        }
+
     }
 
 }

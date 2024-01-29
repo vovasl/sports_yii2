@@ -13,6 +13,7 @@ use frontend\models\sport\Player;
 use frontend\models\sport\Round;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
 class EventTennisSave
@@ -123,17 +124,20 @@ class EventTennisSave
         /** exit for an existing event with odds(number of odds must be more than MIN value) */
         if($updateEvent && count($fixture->odds) > self::MIN_ODDS) return true;
 
-        /** save logs */
-        $log = new EventLog();
-        $log->event_id = $event['id'];
-        $log->message = Json::encode($event);
-        $log->save();
-
         /** remove all odds */
         $this->removeOdds($event);
 
         /** odds */
         $this->addOdds($event);
+
+        /** favorite */
+        $this->addFavorite($fixture);
+
+        /** save logs */
+        $log = new EventLog();
+        $log->event_id = $event['id'];
+        $log->message = Json::encode($event);
+        $log->save();
 
         return true;
     }
@@ -343,6 +347,35 @@ class EventTennisSave
         /** add odds */
         $this->addOdds($event, self::CONFIG_HISTORY);
 
+    }
+
+    /**
+     * @param Event $event
+     * @return bool
+     */
+    private function addFavorite(Event $event): bool
+    {
+        $moneyline = ArrayHelper::map(Odd::find()
+            ->select(['player_id', 'odd'])
+            ->where([
+                'event' => $event->id,
+                'type' => Odd::TYPE['moneyline']
+            ])
+            ->all(), 'player_id', 'odd')
+        ;
+
+        /** event without moneyline */
+        if(count($moneyline) != 2) return true;
+
+        /** get favorite */
+        foreach ($moneyline as $player_id => $odd) {
+            if(is_null($event->favorite) || $odd < reset($moneyline)) {
+                $event->favorite = $player_id;
+            }
+        }
+
+        $event->save(0);
+        return true;
     }
 
 }

@@ -18,6 +18,7 @@ use yii\db\Expression;
  * @property int|null $round
  * @property int|null $home
  * @property int|null $away
+ * @property int|null $favorite
  * @property int|null $home_result
  * @property int|null $away_result
  * @property int|null $winner
@@ -36,6 +37,7 @@ use yii\db\Expression;
  *
  * @property Player $homePlayer
  * @property Player $awayPlayer
+ * @property Player $favoritePlayer
  * @property Player $playerWinner
  * @property Round $tournamentRound
  * @property ResultSet[] $setsResult
@@ -110,7 +112,7 @@ class Event extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['tournament', 'round', 'home', 'away', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit', 'home_moneyline_odd', 'away_moneyline_odd', 'total_over_min_profit'], 'integer'],
+            [['tournament', 'round', 'home', 'away', 'favorite', 'home_result', 'away_result', 'winner', 'total', 'status', 'total_games', 'five_sets', 'pin_id', 'sofa_id', 'o_id', 'o_odd', 'o_profit', 'home_moneyline_odd', 'away_moneyline_odd', 'total_over_min_profit'], 'integer'],
             [['o_add_type', 'o_value', 'count_odds', 'total_avg_value'], 'string'],
             [['start_at', 'created'], 'safe'],
             [['away'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['away' => 'id']],
@@ -133,6 +135,7 @@ class Event extends ActiveRecord
             'round' => 'Round',
             'home' => 'Home',
             'away' => 'Away',
+            'favorite' => 'Favorite',
             'home_result' => 'Home Result',
             'away_result' => 'Away Result',
             'winner' => 'Winner',
@@ -173,6 +176,14 @@ class Event extends ActiveRecord
     public function getAwayPlayer(): ActiveQuery
     {
         return $this->hasOne(Player::class, ['id' => 'away']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getFaforitePlayer(): ActiveQuery
+    {
+        return $this->hasOne(Player::class, ['id' => 'favorite']);
     }
 
     /**
