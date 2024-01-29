@@ -51,8 +51,8 @@ class PlayerSearch extends Player
             ->with([
                 'homeEvents',
                 'awayEvents',
-/*                'homeEvents.eventTournament',
-                'awayEvents.eventTournament'*/
+                'homeEvents.eventTournament',
+                'awayEvents.eventTournament'
             ])
             ->join('JOIN',Event::tableName() . " events", "events.home = players.id OR events.away = players.id")
             ->groupBy('players.id')
