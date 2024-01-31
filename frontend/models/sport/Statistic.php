@@ -42,6 +42,13 @@ use yii\db\ActiveRecord;
 class Statistic extends ActiveRecord
 {
 
+    CONST TOTAL_FILTER = [
+        'moneyline' => [
+            'favorite' => '1.4<',
+            'equal' => '1.5>='
+        ]
+    ];
+
     public $count_events;
     public $count_profit_0;
     public $count_profit_1;

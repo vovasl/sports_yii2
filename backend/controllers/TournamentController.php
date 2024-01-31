@@ -6,6 +6,7 @@ namespace backend\controllers;
 use backend\models\statistic\total\StatisticSearch;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
+use frontend\models\sport\Statistic;
 use frontend\models\sport\Tournament;
 use backend\models\TournamentSearch;
 use yii\filters\AccessControl;
@@ -85,7 +86,7 @@ class TournamentController extends Controller
         $totalParams['StatisticSearch']['tournament_id'] = $model->id;
         $totalParams['StatisticSearch']['tournament'] = $model->name;
         $totalParams['StatisticSearch']['add_type'] = ($totalParams['StatisticSearch']['add_type']) ?? Odd::ADD_TYPE['over'];
-        $totalParams['StatisticSearch']['min_moneyline'] = ($totalParams['StatisticSearch']['min_moneyline']) ?? '1.5>=';
+        $totalParams['StatisticSearch']['min_moneyline'] = ($totalParams['StatisticSearch']['min_moneyline']) ?? Statistic::TOTAL_FILTER['moneyline']['equal'];
         $totalParams['StatisticSearch']['round'] = ($totalParams['StatisticSearch']['round']) ?? Round::MAIN;
         $totalSearchModel = new StatisticSearch();
         $totalDataProvider = $totalSearchModel->search($totalParams);

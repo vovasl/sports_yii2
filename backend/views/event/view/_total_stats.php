@@ -2,12 +2,14 @@
 
 /**
  * @var View $this
- * @var Statistic[] $stats
  * @var string $title
+ * @var Statistic[] $stats
+ * @var array $playerUrlParams
  */
 
 use common\helpers\TotalHelper;
 use frontend\models\sport\Statistic;
+use yii\helpers\Html;
 use yii\web\View;
 
 $avg = [];
@@ -28,8 +30,9 @@ $avg = [];
     </thead>
     <tbody>
     <?php foreach ($stats as $stat): ?>
+        <?php $playerUrlParams['PlayerTotalSearch[player_name]'] = $stat->player->name; ?>
         <tr>
-            <td class="text-center"><?= $stat->player->name; ?></td>
+            <td class="text-center"><?= Html::a($stat->player->name, $playerUrlParams, ['target'=>'_blank']); ?></td>
             <td class="text-center"><?= $stat->count_events; ?></td>
             <?php for($i = 0; $i < 5; $i++): ?>
                 <?php $attr = "percent_profit_{$i}"; ?>

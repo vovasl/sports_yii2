@@ -5,6 +5,7 @@ namespace backend\models\statistic\total;
 
 use common\helpers\EventHelper;
 use frontend\models\sport\Odd;
+use frontend\models\sport\Statistic;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
 use frontend\models\sport\Tournament;
@@ -144,8 +145,8 @@ class EventTotalSearch extends Event
         /** default search params */
         if(empty($params)) {
             $this->tour_id = -1;
-            $this->round_id = 100;
-            $this->moneyline = '1.5>=';
+            $this->round_id = Round::MAIN;
+            $this->moneyline = Statistic::TOTAL_FILTER['moneyline']['equal'];
             $this->result = 2;
             $this->count_odds = 1;
         }

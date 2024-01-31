@@ -18,6 +18,7 @@ class TotalHelper
     CONST ODDS = [209, 197, 186, 176, 0];
 
     CONST OVER_MIN_MONEYLINE = 150;
+    CONST OVER_FAVORITE_MAX_MONEYLINE = 140;
     CONST UNDER_MIN_MONEYLINE = 100;
     CONST MIN_EVENTS = 15;
     CONST MIN_PERCENT = [
@@ -153,7 +154,7 @@ class TotalHelper
      * @param string $type
      * @return array
      */
-    public static function getEventPlayersStat(Event $event, string $type): array
+    public static function getEventPlayersStat(Event $event, string $type, int $favorite = 0): array
     {
 
         /** empty surface value */
@@ -186,9 +187,16 @@ class TotalHelper
         $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($event->eventTournament->surface))]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
-        $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         $query->andWhere(['tn_statistic.add_type' => $type]);
         $query->andWhere(['IN', 'tn_statistic.player_id', [$event->home, $event->away]]);
+
+        if($favorite == 1) {
+            $query->andWhere(['<', 'min_moneyline', self::OVER_FAVORITE_MAX_MONEYLINE]);
+            $query->andWhere(['OR', ['tn_event.favorite' => $event->home],  ['tn_event.favorite' => $event->away]]);
+        } else {
+            $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
+        }
+
         $query->groupBy('player_id');
         $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
 

@@ -112,9 +112,9 @@ class PlayerTotalSearch extends Statistic
         /** default search params */
         if(empty($params)) {
             $this->add_type = Odd::ADD_TYPE['over'];
-            $this->min_moneyline = '1.5>=';
+            $this->min_moneyline = Statistic::TOTAL_FILTER['moneyline']['equal'];
             $this->count_events = 15;
-            $this->round = 100;
+            $this->round = Round::MAIN;
             $this->five_sets = 0;
         }
 

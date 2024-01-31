@@ -76,7 +76,7 @@ use yii\grid\ActionColumn;
             'search_data' => [
                 'PlayerTotalSearch[tour]' => $searchModel->tour_id,
                 'PlayerTotalSearch[surface]' => $searchModel->surface_id,
-                'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : 100,
+                'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : Round::MAIN,
                 'PlayerTotalSearch[min_moneyline]' => $searchModel->moneyline,
                 'PlayerTotalSearch[five_sets]' => $searchModel->five_sets,
                 'PlayerTotalSearch[add_type]' => 'over',
@@ -89,7 +89,7 @@ use yii\grid\ActionColumn;
             'search_data' => [
                 'PlayerTotalSearch[tour]' => $searchModel->tour_id,
                 'PlayerTotalSearch[surface]' => $searchModel->surface_id,
-                'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : 100,
+                'PlayerTotalSearch[round]' => !empty($searchModel->round_id) ? $searchModel->round_id : Round::MAIN,
                 'PlayerTotalSearch[min_moneyline]' => $searchModel->moneyline,
                 'PlayerTotalSearch[five_sets]' => $searchModel->five_sets,
                 'PlayerTotalSearch[add_type]' => 'over',
