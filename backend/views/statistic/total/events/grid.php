@@ -98,6 +98,17 @@ use yii\grid\ActionColumn;
         EventHelper::gridHomeMoneyline(),
         EventHelper::gridAwayMoneyline(),
         [
+            'label' => 'Favorite',
+            'attribute' => 'favorite',
+            'value' => function(Event $model) use($searchModel) {
+                return $searchModel->favorite;
+            },
+            'filter' => [
+                'Yes' => 'Yes',
+                'No' => 'No'
+            ],
+        ],
+        [
             'attribute' => 'result',
             'label' => 'Result',
             'value' => 'result',

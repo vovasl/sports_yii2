@@ -18,10 +18,16 @@ class PlayerTotalSearch extends Statistic
 {
 
     public $player_name;
+
     public $tour;
+
     public $surface;
+
     public $round;
+
     public $five_sets;
+
+    public $favorite;
 
     /**
      * {@inheritdoc}
@@ -30,7 +36,7 @@ class PlayerTotalSearch extends Statistic
     {
         return [
             [['player_id', 'event_id', 'tour', 'surface', 'round', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
-            [['add_type', 'player_name', 'min_moneyline'], 'string', 'max' => 255],
+            [['add_type', 'player_name', 'min_moneyline', 'favorite'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
@@ -49,7 +55,8 @@ class PlayerTotalSearch extends Statistic
     {
         $query = Statistic::find()
             ->select([
-                'tn_statistic.*',
+                'tn_statistic.player_id',
+                'tn_statistic.add_type',
                 'count(event_id) count_events',
                 'count(profit_0) count_profit_0',
                 'count(profit_1) count_profit_1',
@@ -157,6 +164,16 @@ class PlayerTotalSearch extends Statistic
         /** events filter */
         if(!is_null($this->count_events)) {
             $query->having(['>=', 'count_events', $this->count_events]);
+        }
+
+        /** favorite filter */
+        if(!empty($this->favorite)) {
+            if($this->favorite == 'Yes') {
+                $query->andWhere('tn_event.favorite = tn_statistic.player_id');
+            }
+            else if($this->favorite == 'No') {
+                $query->andWhere('tn_event.favorite != tn_statistic.player_id');
+            }
         }
 
         /** five sets filter */

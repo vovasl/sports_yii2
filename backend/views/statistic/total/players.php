@@ -71,6 +71,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                         'EventTotalSearch[tour_id]' => $searchModel->tour,
                         'EventTotalSearch[surface_id]' => $searchModel->surface,
                         'EventTotalSearch[round_id]' => $searchModel->round,
+                        'EventTotalSearch[favorite]' => $searchModel->favorite,
                         'EventTotalSearch[five_sets]' => $searchModel->five_sets,
                     ], [
                         'target'=>'_blank',
@@ -100,6 +101,17 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                 'label' => 'Moneyline',
                 'attribute' => 'min_moneyline',
                 'value' => '',
+            ],
+            [
+                'label' => 'Favorite',
+                'attribute' => 'favorite',
+                'value' => function(Statistic $model) use($searchModel) {
+                    return $searchModel->favorite;
+                },
+                'filter' => [
+                    'Yes' => 'Yes',
+                    'No' => 'No'
+                ],
             ],
             [
                 'label' => '5 Sets',

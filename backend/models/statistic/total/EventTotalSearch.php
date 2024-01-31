@@ -32,6 +32,8 @@ class EventTotalSearch extends Event
 
     public $moneyline;
 
+    public $favorite;
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +42,7 @@ class EventTotalSearch extends Event
         return [
             [['start_at'], 'safe'],
             [['total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets', 'total_over_min_profit'], 'integer'],
-            [['player', 'tournament_name', 'total_avg_value', 'moneyline'], 'string'],
+            [['player', 'tournament_name', 'total_avg_value', 'moneyline', 'favorite'], 'string'],
         ];
     }
 
@@ -205,6 +207,17 @@ class EventTotalSearch extends Event
                     ['=', 'home_moneyline_odd', $moneylineOdd],
                     ['=', 'away_moneyline_odd', $moneylineOdd]
                 ]);
+            }
+        }
+
+        /** favorite filter */
+        if(!empty($this->favorite)) {
+            if($player = Player::find()->where(['name' => $this->player])->one()) {
+                if ($this->favorite == 'Yes') {
+                    $query->andFilterWhere(['event.favorite' => $player->id]);
+                } else if ($this->favorite == 'No') {
+                    $query->andFilterWhere(['!=', 'event.favorite', $player->id]);
+                }
             }
         }
 
