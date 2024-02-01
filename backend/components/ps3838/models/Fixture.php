@@ -163,7 +163,9 @@ class Fixture
     {
         $pattern = "#^{$tour}(.+)*-\s*{$round}$#i";
         if(!preg_match($pattern, $name, $matches)) return $name;
-        return trim($matches[1]);
+
+        $tournament = trim($matches[1]);
+        return empty($tournament) ? $tour : $tournament;
     }
 
 }
