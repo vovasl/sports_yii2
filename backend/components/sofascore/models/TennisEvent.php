@@ -10,10 +10,10 @@ class TennisEvent
 
     /** allowed tournament categories */
     CONST TOUR = [
-        3,
-        6,
-        72,
-        871,
+        3,    // ATP
+        6,    // WTA
+        72,   // ATP Challanger
+        871,  // FED Cup
         //76, // Davis Cup
         //1705  // United Cup
     ];
