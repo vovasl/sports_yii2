@@ -32,7 +32,7 @@ use yii\db\ActiveRecord;
  * @property Player $player
  * @property Event $event
  * @property OddType $oddType
- * @property PlayerTotal $playerTotal
+ * @property PlayerTotal[] $playerTotal
  * @property Odd $odd0
  * @property Odd $odd1
  * @property Odd $odd2
@@ -145,7 +145,7 @@ class Statistic extends ActiveRecord
      */
     public function getPlayerTotal(): ActiveQuery
     {
-        return $this->hasOne(PlayerTotal::class, ['player_id' => 'player_id']);
+        return $this->hasMany(PlayerTotal::class, ['player_id' => 'player_id']);
     }
 
     /**
@@ -250,17 +250,29 @@ class Statistic extends ActiveRecord
         if($search->tour < 0 || $search->surface < 0) return false;
 
         /** no player added */
-        if(is_null($this->playerTotal)) {
+        if(count($this->playerTotal) == 0) {
             if($type == PlayerTotal::ACTION['add']) return true;
             else if($type == PlayerTotal::ACTION['remove']) return false;
+        }
+
+        /** get player total model */
+        $playerTotalModel = new PlayerTotal();
+        foreach ($this->playerTotal as $k => $playerTotal) {
+            if(($playerTotal->tour_id == $search->tour
+                && $playerTotal->surface_id == $search->surface
+                && $playerTotal->type == $search->add_type
+            )) {
+                $playerTotalModel = $this->playerTotal[$k];
+                break;
+            }
         }
 
         /** get button status */
         switch ($type) {
             case PlayerTotal::ACTION['add']:
-                return $this->playerTotal->addButton($search);
+                return $playerTotalModel->addButton($search);
             case PlayerTotal::ACTION['remove']:
-                return $this->playerTotal->removeButton($search);
+                return $playerTotalModel->removeButton($search);
             default:
                 return false;
         }
