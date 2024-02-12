@@ -57,6 +57,7 @@ Icon::map($this);
         ['label' => 'Players', 'url' => ['players/player/index']],
         ['label' => 'Total', 'items' => [
             ['label' => 'Stats', 'url' => ['statistic/total/statistic']],
+            ['label' => 'Stats Line', 'url' => ['statistic/total/statistic-line']],
             ['label' => 'Players', 'url' => ['statistic/total/players']],
             ['label' => 'Events', 'url' => ['statistic/total/events']],
             ['label' => 'Events Over', 'url' => ['statistic/total/events-over']],

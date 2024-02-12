@@ -50,6 +50,14 @@ class TotalController extends Controller
     /**
      * @return string
      */
+    public function actionStatisticLine(): string
+    {
+        return $this->render('statistic-line');
+    }
+
+    /**
+     * @return string
+     */
     public function actionPlayers(): string
     {
         $searchModel = new PlayerTotalSearch();

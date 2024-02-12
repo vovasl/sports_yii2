@@ -18,6 +18,7 @@ class Surface extends ActiveRecord
 {
 
     CONST SURFACES = [
+        'clay' => 1,
         'hard' => 2,
         'indoor' => 4,
     ];
