@@ -36,8 +36,8 @@ $this->title = 'Statistic Line';
             <?php foreach ($item['data'] as $baseTotal => $data) { ?>
                 <tr>
                     <td class="text-center"><?= $baseTotal; ?></td>
-                    <?php foreach ($data as $val) { ?>
-                        <td class="text-center"><?= $val; ?></td>
+                    <?php foreach ($data as $k => $val) { ?>
+                        <td class="text-center"><?= $val . ' ' . $k; ?></td>
                     <?php } ?>
                 </tr>
             <?php } ?>
