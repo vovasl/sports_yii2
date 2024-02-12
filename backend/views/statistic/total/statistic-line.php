@@ -1,6 +1,6 @@
 <?php
 
-use common\helpers\total\statistic\line\OverHelper;
+use common\helpers\statistic\TotalLineHelper;
 use common\helpers\TotalHelper;
 use yii\helpers\Html;
 use yii\web\View;
@@ -28,7 +28,7 @@ $this->title = 'Statistic Line';
         </thead>
         <tbody>
 
-        <?php foreach (OverHelper::getItems() as $item) { ?>
+        <?php foreach (TotalLineHelper::getItems() as $item) { ?>
 
             <tr>
                 <td colspan="6" class="text-center"><h3><?= $item['title']; ?></h3></td>
