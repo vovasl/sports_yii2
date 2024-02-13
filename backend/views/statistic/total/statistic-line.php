@@ -1,12 +1,12 @@
 <?php
 
-use common\helpers\statistic\TotalLineHelper;
-use common\helpers\TotalHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 
 /**
  * @var View $this
+ * @var array $items
  */
 
 $this->title = 'Statistic Line';
@@ -17,34 +17,12 @@ $this->title = 'Statistic Line';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-5">
-        <thead>
-        <tr>
-            <td class="text-center"><strong>Base Total</strong></td>
-            <?php foreach (TotalHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
-                <td class="text-center"><strong><?= $title ?></strong></td>
-            <?php endforeach; ?>
-        </tr>
-        </thead>
-        <tbody>
+    <div class="mt-3">
 
-        <?php foreach (TotalLineHelper::getItems() as $item) { ?>
+        <h3><?= Html::a('Over', Url::to(['/statistic/total/statistic-line-over']), ['target'=>'_blank']); ?></h3>
 
-            <tr>
-                <td colspan="6" class="text-center"><h3><?= $item['title']; ?></h3></td>
-            </tr>
-            <?php foreach ($item['data'] as $baseTotal => $data) { ?>
-                <tr>
-                    <td class="text-center"><?= $baseTotal; ?></td>
-                    <?php foreach ($data as $k => $val) { ?>
-                        <td class="text-center"><?= $val . ' ' . $k; ?></td>
-                    <?php } ?>
-                </tr>
-            <?php } ?>
+        <h3><?= Html::a('Over Favorite', Url::to(['/statistic/total/statistic-line-over', 'favorite' => 1]), ['target'=>'_blank']); ?></h3>
 
-        <?php } ?>
-
-        </tbody>
-    </table>
+    </div>
 
 </div>
