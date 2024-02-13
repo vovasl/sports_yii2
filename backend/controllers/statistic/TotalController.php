@@ -6,6 +6,7 @@ namespace backend\controllers\statistic;
 use backend\models\statistic\total\EventTotalSearch;
 use backend\models\statistic\total\PlayerTotalSearch;
 use backend\models\statistic\total\StatisticSearch;
+use common\helpers\statistic\TotalLineOverHelper;
 use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;
@@ -52,7 +53,29 @@ class TotalController extends Controller
      */
     public function actionStatisticLine(): string
     {
-        return $this->render('statistic-line');
+        return $this->render('statistic-line', [
+            'items' => TotalLineOverHelper::getItems()
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionStatisticLineOver(int $favorite = 0): string
+    {
+
+        if ($favorite) {
+            $title = 'Over Favorite';
+        } else {
+            $title = 'Over';
+
+        }
+        $items = TotalLineOverHelper::getItems($favorite);
+
+        return $this->render('statistic/line', [
+            'title' => $title,
+            'items' => $items
+        ]);
     }
 
     /**

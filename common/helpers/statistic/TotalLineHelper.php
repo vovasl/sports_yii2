@@ -3,178 +3,100 @@
 namespace common\helpers\statistic;
 
 use common\helpers\TotalHelper;
-use frontend\models\sport\Odd;
-use frontend\models\sport\Round;
 use frontend\models\sport\Statistic;
-use frontend\models\sport\Surface;
-use frontend\models\sport\Tour;
+use yii\db\ActiveRecord;
 
 class TotalLineHelper
 {
-
-    CONST TOTALS = [
-        'atp' => [
-            'hard' => [22, 22.5, 23, 23.5]
-        ],
-        'challenger' => [
-            'clay' => [21, 21.5, 22, 22.5],
-            'hard' => [21.5, 22, 22.5, 23],
-            'indoor' => [21.5, 22, 22.5, 23]
-        ],
-    ];
-
-    /**
-     * @param int $fiveSets
-     * @return array[]
-     */
-    public static function getItems(int $fiveSets = 0): array
-    {
-        return [
-            [
-                'title' => 'ATP Hard + Indoor - Main - OVER',
-                'data' => self::ATPHardMain(Odd::ADD_TYPE['over'], $fiveSets)
-            ],
-            [
-                'title' => 'Challenger Clay - Main - OVER',
-                'data' => self::ChallengerClayMain(Odd::ADD_TYPE['over'], $fiveSets)
-            ],
-            [
-                'title' => 'Challenger Indoor - Main - OVER',
-                'data' => self::ChallengerIndoorMain(Odd::ADD_TYPE['over'], $fiveSets)
-            ],
-            [
-                'title' => 'Challenger Hard - Main - OVER',
-                'data' => self::ChallengerHardMain(Odd::ADD_TYPE['over'], $fiveSets)
-            ],
-        ];
-    }
-
-    /**
-     * @param string $type
-     * @param int $fiveSets
-     * @return array
-     */
-    public static function ATPHardMain(string $type, int $fiveSets): array
-    {
-        return self::getData(
-            Tour::ATP_ALL,
-            [Surface::SURFACES['hard'], Surface::SURFACES['indoor']],
-            $type,
-            Round::QUALIFIER,
-            TotalHelper::OVER_MIN_MONEYLINE,
-            self::TOTALS['atp']['hard'],
-            $fiveSets
-        );
-    }
-
-    /**
-     * @param string $type
-     * @param int $fiveSets
-     * @return array
-     */
-    public static function ChallengerClayMain(string $type, int $fiveSets): array
-    {
-        return self::getData(
-            [Tour::CHALLENGER],
-            [Surface::SURFACES['clay']],
-            $type,
-            Round::QUALIFIER,
-            TotalHelper::OVER_MIN_MONEYLINE,
-            self::TOTALS['challenger']['clay'],
-            $fiveSets
-        );
-    }
-
-    /**
-     * @param string $type
-     * @param int $fiveSets
-     * @return array
-     */
-    public static function ChallengerHardMain(string $type, int $fiveSets): array
-    {
-        return self::getData(
-            [Tour::CHALLENGER],
-            [Surface::SURFACES['hard']],
-            $type,
-            Round::QUALIFIER,
-            TotalHelper::OVER_MIN_MONEYLINE,
-            self::TOTALS['challenger']['hard'],
-            $fiveSets
-        );
-    }
-
-    /**
-     * @param string $type
-     * @param int $fiveSets
-     * @return array
-     */
-    public static function ChallengerIndoorMain(string $type, int $fiveSets): array
-    {
-        return self::getData(
-            [Tour::CHALLENGER],
-            [Surface::SURFACES['indoor']],
-            $type,
-            Round::QUALIFIER,
-            TotalHelper::OVER_MIN_MONEYLINE,
-            self::TOTALS['challenger']['indoor'],
-            $fiveSets
-        );
-    }
-
 
     /**
      * @param array $tour
      * @param array $surface
      * @param string $type
      * @param int $round
-     * @param int $moneyline
      * @param array $totals
      * @param int $fiveSets
+     * @param int $favorite
      * @return array
      */
-    public static function getData(array $tour, array $surface, string $type, int $round, int $moneyline, array $totals, int $fiveSets): array
+    public static function getLines(array $tour, array $surface, string $type, int $round, int $favorite, int $fiveSets, array $totals): array
     {
         $data = [];
         foreach ($totals as $total) {
+            $data["{$total}"] = self::getLine($tour, $surface, $round, $type, $favorite, $fiveSets, $total);
+        }
+        return $data;
+    }
 
-            $baseTotal = $total;
+    /**
+     * @param array $tour
+     * @param array $surface
+     * @param string $type
+     * @param int $round
+     * @param int $fiveSets
+     * @param $total
+     * @param int $favorite
+     * @return array
+     */
+    public static function getLine(array $tour, array $surface, int $round, string $type, int $favorite, int $fiveSets, $total): array
+    {
 
-            /** get start total */
-            $total--;
+        /** get start total */
+        $total--;
 
-            $line = [];
-            for ($i = 0; $i < 5; $i++) {
+        $data = [];
+        for ($i = 0; $i < 5; $i++) {
 
-                $stat = Statistic::find()
-                    ->select([
-                        "round(count(profit_{$i})/2) count_events",
-                        "round(sum(profit_{$i})/count(profit_{$i}), 1) percent_profit"
-                    ])
-                    ->joinWith([
-                        "player",
-                        "event",
-                        "event.eventTournament",
-                        "event.eventTournament.tournamentTour",
-                        "event.eventTournament.tournamentSurface",
-                        "odd{$i}"
-                    ])
-                    ->where(['tn_statistic.add_type' => $type])
-                    ->andWhere(['!=', 'tn_event.round', $round])
-                    ->andWhere(['>=', 'min_moneyline', $moneyline])
-                    ->andWhere(['tn_event.five_sets' => $fiveSets])
-                    ->andWhere(['IN', 'tn_tour.id', $tour])
-                    ->andWhere(['IN', 'tn_surface.id', $surface])
-                    ->andWhere(['sp_odd.value' => $total])
-                    ->one()
-                ;
+            /** get stats */
+            $stat = self::getStatistic($tour, $surface, $round, $type, $favorite, $fiveSets, $total, $i);
 
-                $line["{$total}"] = "{$stat->percentProfitOutput}";
-                $total = $total + 0.5;
-            }
-
-            $data["{$baseTotal}"] = $line;
+            $data["{$total}"] = "{$stat->percentProfitOutput}";
+            $total += 0.5;
         }
 
         return $data;
+    }
+
+    /**
+     * @param array $tour
+     * @param array $surface
+     * @param string $type
+     * @param int $round
+     * @param int $fiveSets
+     * @param $total
+     * @param int $oddNumber
+     * @param int $favorite
+     * @return array|ActiveRecord|null
+     */
+    public static function getStatistic(array $tour, array $surface, int $round, string $type, int $favorite, int $fiveSets, $total, int $oddNumber)
+    {
+        $model = Statistic::find()
+            ->select([
+                "round(count(profit_{$oddNumber})/2) count_events",
+                "round(sum(profit_{$oddNumber})/count(profit_{$oddNumber}), 1) percent_profit"
+            ])
+            ->joinWith([
+                "player",
+                "event",
+                "event.eventTournament",
+                "event.eventTournament.tournamentTour",
+                "event.eventTournament.tournamentSurface",
+                "odd{$oddNumber}"
+            ])
+            ->where(['tn_statistic.add_type' => $type])
+            ->andWhere(['!=', 'tn_event.round', $round])
+            ->andWhere(['tn_event.five_sets' => $fiveSets])
+            ->andWhere(['IN', 'tn_tour.id', $tour])
+            ->andWhere(['IN', 'tn_surface.id', $surface])
+            ->andWhere(['sp_odd.value' => $total])
+        ;
+
+        if ($favorite) {
+            $model->andWhere(['<', 'min_moneyline', TotalHelper::OVER_FAVORITE_MAX_MONEYLINE]);
+        } else {
+            $model->andWhere(['>=', 'min_moneyline', TotalHelper::OVER_MIN_MONEYLINE]);
+        }
+
+        return $model->one();
     }
 }
