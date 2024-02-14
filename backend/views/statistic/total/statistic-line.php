@@ -6,7 +6,6 @@ use yii\web\View;
 
 /**
  * @var View $this
- * @var array $items
  */
 
 $this->title = 'Statistic Line';

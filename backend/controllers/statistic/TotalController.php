@@ -53,12 +53,11 @@ class TotalController extends Controller
      */
     public function actionStatisticLine(): string
     {
-        return $this->render('statistic-line', [
-            'items' => TotalLineOverHelper::getItems()
-        ]);
+        return $this->render('statistic-line');
     }
 
     /**
+     * @param int $favorite
      * @return string
      */
     public function actionStatisticLineOver(int $favorite = 0): string
