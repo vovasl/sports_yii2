@@ -106,3 +106,15 @@ a.desc:after {
 .winner {
     text-decoration: underline;
 }
+
+.success-line {
+    color: green;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.fail-line {
+    color: red;
+    font-weight: 700;
+    font-size: 20px;
+}

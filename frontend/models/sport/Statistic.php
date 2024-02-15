@@ -201,7 +201,26 @@ class Statistic extends ActiveRecord
      */
     public function getPercentProfitOutput(): string
     {
-        return ($this->count_events > 0) ? "{$this->percent_profit}%($this->count_events)" : ' - ';
+        return ($this->count_events > 0) ? "{$this->getPercentProfitValOutput()}($this->count_events)" : " - ";
+    }
+
+    /**
+     * @return string
+     */
+    public function getPercentProfitValOutput(): string
+    {
+        if($this->count_events == 0) return '';
+
+        $minEvents = 100;
+        if ($this->count_events >= $minEvents) {
+            $class = ($this->percent_profit >= 0) ? 'success-line' : 'fail-line';
+            $percentProfit = "<span class='" . $class . "'>{$this->percent_profit}%</span>";
+        }
+        else {
+            $percentProfit = "{$this->percent_profit}%";
+        }
+
+        return $percentProfit;
     }
 
     /**

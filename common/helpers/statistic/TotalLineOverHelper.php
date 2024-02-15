@@ -51,8 +51,12 @@ class TotalLineOverHelper
 
         return [
             [
-                'title' => 'ATP Hard + Indoor - Main',
+                'title' => 'ATP Hard - Main',
                 'data' => self::ATPHard(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+            ],
+            [
+                'title' => 'ATP Indoor - Main',
+                'data' => self::ATPIndoor(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
             ],
             [
                 'title' => 'ATP Clay - Main',
@@ -84,11 +88,31 @@ class TotalLineOverHelper
      * @param array $totals
      * @return array
      */
+    public static function ATPClay(string $type, int $favorite, int $fiveSets, array $totals): array
+    {
+        return TotalLineHelper::getLines(
+            Tour::ATP_ALL,
+            [Surface::SURFACES['clay']],
+            $type,
+            Round::QUALIFIER,
+            $favorite,
+            $fiveSets,
+            $totals['atp']['clay']
+        );
+    }
+
+    /**
+     * @param string $type
+     * @param int $favorite
+     * @param int $fiveSets
+     * @param array $totals
+     * @return array
+     */
     public static function ATPHard(string $type, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             Tour::ATP_ALL,
-            [Surface::SURFACES['hard'], Surface::SURFACES['indoor']],
+            [Surface::SURFACES['hard']],
             $type,
             Round::QUALIFIER,
             $favorite,
@@ -104,16 +128,16 @@ class TotalLineOverHelper
      * @param array $totals
      * @return array
      */
-    public static function ATPClay(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function ATPIndoor(string $type, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             Tour::ATP_ALL,
-            [Surface::SURFACES['clay']],
+            [Surface::SURFACES['indoor']],
             $type,
             Round::QUALIFIER,
             $favorite,
             $fiveSets,
-            $totals['atp']['clay']
+            $totals['atp']['hard']
         );
     }
 
