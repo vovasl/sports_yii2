@@ -283,4 +283,34 @@ class PlayerHelper
         return $players;
     }
 
+    /**
+     * @param Event $event
+     * @param string $player
+     * @param $tour
+     * @param $surface
+     * @return array
+     */
+    public static function getEventsPlayerNotOver(Event $event, string $player, $tour, $surface): array
+    {
+        return (new Query())
+            ->select([
+                'tn_event.id'
+            ])
+            ->from('tn_player_total')
+            ->leftJoin('tn_event', 'tn_player_total.player_id = tn_event.home or tn_player_total.player_id = tn_event.away')
+            ->leftJoin('tn_tournament', 'tn_event.tournament = tn_tournament.id')
+            ->leftJoin('sp_odd home_moneyline', 'tn_event.id = home_moneyline.event AND tn_event.home = home_moneyline.player_id AND home_moneyline.type = ' . Odd::TYPE['moneyline'])
+            ->leftJoin('sp_odd away_moneyline', 'tn_event.id = away_moneyline.event AND tn_event.away = away_moneyline.player_id AND away_moneyline.type = ' . Odd::TYPE['moneyline'])
+            ->where(['IN', 'tn_player_total.tour_id', $tour])
+            ->andWhere(['IN', 'tn_player_total.surface_id', $surface])
+            ->andWhere(['tn_player_total.type' => Odd::ADD_TYPE['over']])
+            ->andWhere(['OR',
+                ['tn_event.home' => $event->{$player}],
+                ['tn_event.away' => $event->{$player}]
+            ])
+            ->groupBy('tn_event.id')
+            ->column()
+            ;
+    }
+
 }

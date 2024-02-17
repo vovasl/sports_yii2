@@ -1,6 +1,5 @@
 <?php
 
-
 use backend\models\statistic\total\PlayerTotalSearch;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
@@ -58,7 +57,7 @@ $reset = "/statistic/total/players-over";
                 'format' => 'raw',
                 'value' => function(Statistic $model) use($searchModel) {
                     return Html::a($model->player->name, [
-                        '/statistic/total/events',
+                        '/statistic/total/events-over',
                         'EventTotalSearch[count_odds]' => 1,
                         'EventTotalSearch[result]' => 1,
                         'EventTotalSearch[moneyline]' => $searchModel->min_moneyline,

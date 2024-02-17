@@ -2,7 +2,6 @@
 
 namespace backend\controllers\statistic;
 
-
 use backend\models\statistic\total\EventTotalSearch;
 use backend\models\statistic\total\PlayerTotalSearch;
 use backend\models\statistic\total\StatisticSearch;
@@ -147,12 +146,15 @@ class TotalController extends Controller
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function actionPlayersOver(): string
     {
         $params = $this->request->queryParams;
 
         /** get events ids */
-        $params['PlayerTotalSearch']['event_ids'] = array_merge(PlayerHelper::getEvents(), []);
+        $params['PlayerTotalSearch']['event_ids'] = PlayerHelper::getEvents();
 
         $searchModel = new PlayerTotalSearch();
         $dataProvider = $searchModel->search($params);

@@ -2,15 +2,17 @@
 
 namespace common\helpers;
 
-
 use backend\models\statistic\total\EventTotalSearch;
+use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
+use frontend\models\sport\PlayerTotal;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Statistic;
 use frontend\models\sport\Tour;
 use yii\db\Expression;
+use yii\db\Query;
 
 class TotalHelper
 {
@@ -104,7 +106,7 @@ class TotalHelper
         ]);
         $query->where(['type' => Odd::ADD_TYPE['over']]);
         $query->andWhere(['IN', 'tn_tour.id', Tour::filterValue(self::getTour($event->eventTournament->tour))]);
-        $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($surface))]);
+        $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue($surface)]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         $query->andWhere(['IN', 'player_id', [$event->home, $event->away]]);
@@ -152,6 +154,7 @@ class TotalHelper
     /**
      * @param Event $event
      * @param string $type
+     * @param int $favorite
      * @return array
      */
     public static function getEventPlayersStat(Event $event, string $type, int $favorite = 0): array
@@ -184,7 +187,7 @@ class TotalHelper
         ]);
         $query->where(['<', 'tn_event.start_at', $event->start_at]);
         $query->andWhere(['IN', 'tn_tour.id', Tour::filterValue(self::getTour($event->eventTournament->tour))]);
-        $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue(self::getSurface($event->eventTournament->surface))]);
+        $query->andWhere(['IN', 'tn_surface.id', Surface::filterValue($event->eventTournament->surface)]);
         $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
         $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
         $query->andWhere(['tn_statistic.add_type' => $type]);
@@ -203,6 +206,77 @@ class TotalHelper
         return $query->all();
     }
 
+    /**
+     * @param Event $event
+     * @return array
+     */
+    public static function getEventPlayerStatAgainstOverPlayers(Event $event): array
+    {
+
+        /** empty surface value */
+        if(is_null($event->eventTournament->surface)) return [];
+
+        /** base values */
+        $tour = Tour::filterValue(self::getTour($event->eventTournament->tour));
+        $surface = Surface::filterValue(self::getSurface($event->eventTournament->surface));
+
+        $stats = [];
+        foreach (['away', 'home'] as $player) {
+
+            /** get events */
+            $events = (PlayerTotal::find()
+                ->where(['player_id' => $event->{$player}])
+                ->andWhere(['IN', 'tour_id', $tour])
+                ->andWhere(['IN', 'surface_id', $surface])
+                ->all()
+            )
+                ? PlayerHelper::getEvents()
+                : PlayerHelper::getEventsPlayerNotOver($event, $player, $tour, $surface)
+            ;
+
+            $query = Statistic::find();
+            $query->select([
+                'tn_statistic.*',
+                'count(event_id) count_events',
+                'count(profit_0) count_profit_0',
+                'count(profit_1) count_profit_1',
+                'count(profit_2) count_profit_2',
+                'count(profit_3) count_profit_3',
+                'count(profit_4) count_profit_4',
+                'round(sum(profit_0)/count(profit_0)) percent_profit_0',
+                'round(sum(profit_1)/count(profit_1)) percent_profit_1',
+                'round(sum(profit_2)/count(profit_2)) percent_profit_2',
+                'round(sum(profit_3)/count(profit_3)) percent_profit_3',
+                'round(sum(profit_4)/count(profit_4)) percent_profit_4',
+            ]);
+            $query->joinWith([
+                'event',
+                'event.eventTournament.tournamentTour',
+                'event.eventTournament.tournamentSurface',
+            ]);
+
+            $query->andWhere(['IN', 'tn_tournament.tour', $tour]);
+            $query->andWhere(['IN', 'tn_tournament.surface', $surface]);
+            $query->andWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
+            $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
+            $query->andWhere(['IS NOT', 'tn_event.sofa_id', null]);
+            $query->andWhere(['>=', 'min_moneyline', self::OVER_MIN_MONEYLINE]);
+            $query->andWhere(['tn_statistic.add_type' => Odd::ADD_TYPE['over']]);
+            $query->andWhere(['IN', 'tn_statistic.player_id', [$event->{$player}]]);
+            $query->andWhere(['IN', 'tn_event.id', $events]);
+
+            $query->groupBy('player_id');
+
+            $stats = array_merge_recursive($query->all(), $stats);
+        }
+
+        return $stats;
+    }
+
+    /**
+     * @param $tour
+     * @return int|mixed
+     */
     public static function getTour($tour)
     {
         if(in_array($tour, Tour::ATP_ALL)) return -1;
@@ -211,10 +285,13 @@ class TotalHelper
         return $tour;
     }
 
+    /**
+     * @param $surface
+     * @return mixed|string
+     */
     public static function getSurface($surface)
     {
-        return $surface;
-        //return (in_array($surface, [Surface::SURFACES['hard'], Surface::SURFACES['indoor']])) ? '-1' : $surface;
+        return (in_array($surface, [Surface::SURFACES['hard'], Surface::SURFACES['indoor']])) ? '-1' : $surface;
     }
 
     /**
