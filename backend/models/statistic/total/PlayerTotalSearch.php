@@ -127,6 +127,9 @@ class PlayerTotalSearch extends Statistic
             $this->min_moneyline = Statistic::TOTAL_FILTER['moneyline']['equal'];
             $this->round = Round::MAIN;
             $this->five_sets = 0;
+
+            if(is_null($this->tour)) $this->tour = -1;
+            if(is_null($this->surface)) $this->surface = -1;
         }
 
         /** player filter */
