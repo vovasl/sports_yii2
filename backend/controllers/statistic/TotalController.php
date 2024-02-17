@@ -147,6 +147,22 @@ class TotalController extends Controller
         ]);
     }
 
+    public function actionPlayersOver(): string
+    {
+        $params = $this->request->queryParams;
+
+        /** get events ids */
+        $params['PlayerTotalSearch']['event_ids'] = array_merge(PlayerHelper::getEvents(), []);
+
+        $searchModel = new PlayerTotalSearch();
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('players-over', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
      * @return bool
      */

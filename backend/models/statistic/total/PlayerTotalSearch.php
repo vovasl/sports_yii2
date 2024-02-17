@@ -29,6 +29,8 @@ class PlayerTotalSearch extends Statistic
 
     public $favorite;
 
+    public $event_ids;
+
     /**
      * {@inheritdoc}
      */
@@ -39,6 +41,7 @@ class PlayerTotalSearch extends Statistic
             [['add_type', 'player_name', 'min_moneyline', 'favorite'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            ['event_ids', 'each', 'rule' => ['integer']],
         ];
     }
 
@@ -118,6 +121,14 @@ class PlayerTotalSearch extends Statistic
             $this->five_sets = 0;
         }
 
+        /** default search params - event_ids */
+        if(!is_null($this->event_ids)) {
+            $this->add_type = Odd::ADD_TYPE['over'];
+            $this->min_moneyline = Statistic::TOTAL_FILTER['moneyline']['equal'];
+            $this->round = Round::MAIN;
+            $this->five_sets = 0;
+        }
+
         /** player filter */
         if(!empty(trim($this->player_name))) {
             $query->andFilterWhere(['LIKE', 'tn_player.name', trim($this->player_name)]);
@@ -179,6 +190,11 @@ class PlayerTotalSearch extends Statistic
         /** five sets filter */
         if(!is_null($this->five_sets)) {
             $query->andFilterWhere(['tn_event.five_sets' => $this->five_sets]);
+        }
+
+        /** event ids filter */
+        if(!is_null($this->event_ids)) {
+            $query->andWhere(['IN', 'tn_event.id', $this->event_ids]);
         }
 
         return $dataProvider;
