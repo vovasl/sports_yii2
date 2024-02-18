@@ -192,11 +192,11 @@ class TotalHelper
         $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
         $query->andWhere(['tn_statistic.add_type' => $type]);
         $query->andWhere(['IN', 'tn_statistic.player_id', [$event->home, $event->away]]);
-        $query->andWhere('tn_statistic.player_id = tn_event.favorite');
 
         if($favorite == 1) {
             $query->andWhere(['<', 'min_moneyline', self::OVER_FAVORITE_MAX_MONEYLINE]);
             $query->andWhere(['OR', ['tn_event.favorite' => $event->home],  ['tn_event.favorite' => $event->away]]);
+            $query->andWhere('tn_statistic.player_id = tn_event.favorite');
         } else {
             $query->andWhere(['>=', 'min_moneyline', $minMoneyline]);
         }

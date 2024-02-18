@@ -28,7 +28,7 @@ $this->render('_breadcrumbs', [
 <?php endif; ?>
 
 <?= $this->render('view/_total_stats', [
-    'title' => 'Total Over Equal vs Over Players',
+    'title' => 'vs Over Players',
     'stats' => TotalHelper::getEventPlayerStatAgainstOverPlayers($event),
     'playerUrlParams' => [
         '/statistic/total/players-over',
