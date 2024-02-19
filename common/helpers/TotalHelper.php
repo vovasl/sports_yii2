@@ -227,6 +227,7 @@ class TotalHelper
             /** get events */
             $events = (PlayerTotal::find()
                 ->where(['player_id' => $event->{$player}])
+                ->andWhere(['type' => Odd::ADD_TYPE['over']])
                 ->andWhere(['IN', 'tour_id', $tour])
                 ->andWhere(['IN', 'surface_id', $surface])
                 ->all()
