@@ -211,7 +211,7 @@ class TotalHelper
      * @param Event $event
      * @return array
      */
-    public static function getEventPlayerStatAgainstOverPlayers(Event $event): array
+    public static function getEventPlayerStatvsOverPlayers(Event $event): array
     {
 
         /** empty surface value */

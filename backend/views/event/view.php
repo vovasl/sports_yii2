@@ -3,6 +3,8 @@
 /**
  * @var yii\web\View $this
  * @var Event $event
+ * @var array $stat
+ * @var array $history
  */
 
 use common\helpers\TotalHelper;
@@ -27,47 +29,66 @@ $this->render('_breadcrumbs', [
     <?= $this->render('view/_sets', ['event' => $event]); ?>
 <?php endif; ?>
 
-<?= $this->render('view/_total_stats', [
-    'title' => 'vs Over Players',
-    'stats' => TotalHelper::getEventPlayerStatAgainstOverPlayers($event),
-    'playerUrlParams' => [
-        '/statistic/total/players-over',
-        'PlayerTotalSearch[tour]' => TotalHelper::getTour($event->eventTournament->tour),
-        'PlayerTotalSearch[surface]' => TotalHelper::getSurface($event->eventTournament->surface),
-        'PlayerTotalSearch[round]' => Round::MAIN,
-        'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['equal'],
-        'PlayerTotalSearch[five_sets]' => $event->five_sets,
-        'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
-    ],
-]); ?>
+<?php if(count($stat['total_over_vs_over_players']) > 0) { ?>
 
-<?= $this->render('view/_total_stats', [
-    'title' => 'Total Over Equal',
-    'stats' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['over']),
-    'playerUrlParams' => [
-        '/statistic/total/players',
-        'PlayerTotalSearch[tour]' => TotalHelper::getTour($event->eventTournament->tour),
-        'PlayerTotalSearch[surface]' => $event->eventTournament->surface,
-        'PlayerTotalSearch[round]' => Round::MAIN,
-        'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['equal'],
-        'PlayerTotalSearch[five_sets]' => $event->five_sets,
-        'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
-    ],
-]); ?>
+    <?= $this->render('view/_total_stats', [
+        'title' => 'vs Over Players',
+        'stats' => $stat['total_over_vs_over_players'],
+        'playerUrlParams' => [
+            '/statistic/total/players-over',
+            'PlayerTotalSearch[tour]' => TotalHelper::getTour($event->eventTournament->tour),
+            'PlayerTotalSearch[surface]' => TotalHelper::getSurface($event->eventTournament->surface),
+            'PlayerTotalSearch[round]' => Round::MAIN,
+            'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['equal'],
+            'PlayerTotalSearch[five_sets]' => $event->five_sets,
+            'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
+        ],
+    ]); ?>
 
-<?= $this->render('view/_total_stats', [
-    'title' => 'Total Over Favorite',
-    'stats' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['over'], 1),
-    'playerUrlParams' => [
-        '/statistic/total/players',
-        'PlayerTotalSearch[tour]' => TotalHelper::getTour($event->eventTournament->tour),
-        'PlayerTotalSearch[surface]' => $event->eventTournament->surface,
-        'PlayerTotalSearch[round]' => Round::MAIN,
-        'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['favorite'],
-        'PlayerTotalSearch[five_sets]' => $event->five_sets,
-        'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
-        'PlayerTotalSearch[favorite]' => 'Yes',
-    ],
-]); ?>
+<?php } ?>
 
-<?= $this->render('view/_odd_move', ['event' => $event]); ?>
+<?php if(count($stat['total_over']) > 0) { ?>
+
+    <?= $this->render('view/_total_stats', [
+        'title' => 'Total Over Equal',
+        'stats' => $stat['total_over'],
+        'playerUrlParams' => [
+            '/statistic/total/players',
+            'PlayerTotalSearch[tour]' => TotalHelper::getTour($event->eventTournament->tour),
+            'PlayerTotalSearch[surface]' => $event->eventTournament->surface,
+            'PlayerTotalSearch[round]' => Round::MAIN,
+            'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['equal'],
+            'PlayerTotalSearch[five_sets]' => $event->five_sets,
+            'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
+        ],
+    ]); ?>
+
+<?php } ?>
+
+<?php if(count($stat['total_over_favorite']) > 0) { ?>
+
+    <?= $this->render('view/_total_stats', [
+        'title' => 'Total Over Favorite',
+        'stats' => $stat['total_over_favorite'],
+        'playerUrlParams' => [
+            '/statistic/total/players',
+            'PlayerTotalSearch[tour]' => TotalHelper::getTour($event->eventTournament->tour),
+            'PlayerTotalSearch[surface]' => $event->eventTournament->surface,
+            'PlayerTotalSearch[round]' => Round::MAIN,
+            'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['favorite'],
+            'PlayerTotalSearch[five_sets]' => $event->five_sets,
+            'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
+            'PlayerTotalSearch[favorite]' => 'Yes',
+        ],
+    ]); ?>
+
+<?php } ?>
+
+<?php if(count($history) > 0) { ?>
+
+    <?= $this->render('view/_odd_move', [
+        'event' => $event,
+        'history' => $history,
+    ]); ?>
+
+<?php } ?>

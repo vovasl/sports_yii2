@@ -1,23 +1,13 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var View $this
  * @var Event $event
+ * @var array $history
  */
 
+use yii\web\View;
 use frontend\models\sport\Event;
-use frontend\models\sport\OddHistory;
-
-foreach (['home', 'away'] as $val) {
-
-    $history[$val] = OddHistory::find()
-        ->where([
-            'event' => $event->id,
-            'player_id' => $event->{$val}
-        ])
-        ->orderBy(['created_at' => SORT_ASC])
-        ->all();
-}
 
 ?>
 

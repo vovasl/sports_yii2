@@ -2,8 +2,6 @@
 
 namespace backend\controllers;
 
-
-use backend\components\pinnacle\helpers\BaseHelper;
 use backend\components\pinnacle\helpers\OddHelper;
 use backend\components\ps3838\PS3838;
 use backend\models\AddLineForm;
@@ -11,9 +9,11 @@ use backend\models\AddLineLogForm;
 use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use backend\models\event\EventOddMoveSearch;
+use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use frontend\models\sport\Odd;
+use frontend\models\sport\OddHistory;
 use frontend\models\sport\ResultSet;
 use Throwable;
 use Yii;
@@ -68,6 +68,7 @@ class EventController extends Controller
      */
     public function actionView(int $id): string
     {
+        /** @var Event $event */
         $event = Event::find()
             ->from(['event' => 'tn_event'])
             ->withData()
@@ -77,8 +78,21 @@ class EventController extends Controller
         if (!$event) {
             throw new NotFoundHttpException('This event does not exist');
         }
+
+        /** statistic */
+        $stat = [
+            'total_over_vs_over_players' => TotalHelper::getEventPlayerStatvsOverPlayers($event),
+            'total_over' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['over']),
+            'total_over_favorite' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['over'], 1)
+        ];
+
+        /** odd history */
+        $history = OddHistory::getEventData($event);
+
         return $this->render('view', [
-            'event' => $event
+            'event' => $event,
+            'stat' => $stat,
+            'history' => $history,
         ]);
     }
 

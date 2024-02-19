@@ -122,6 +122,15 @@ class OddHistory extends ActiveRecord
         return $this->odd/100;
     }
 
+    /**
+     * @param $eventId
+     * @param $type
+     * @param $oddVal
+     * @param null $playerId
+     * @param null $value
+     * @param null $addType
+     * @return bool
+     */
     public static function create($eventId, $type, $oddVal, $playerId = null, $value = null, $addType = null): bool
     {
         $odd = new static();
@@ -132,5 +141,26 @@ class OddHistory extends ActiveRecord
         $odd->value = $value === null ? null : (string)$value;
         $odd->odd = Odd::setOdd($oddVal);
         return $odd->save();
+    }
+
+    /**
+     * @param Event $event
+     * @return array
+     */
+    public static function getEventData(Event $event): array
+    {
+        $data = [];
+        foreach (['home', 'away'] as $val) {
+
+            $data[$val] = OddHistory::find()
+                ->where([
+                    'event' => $event->id,
+                    'player_id' => $event->{$val}
+                ])
+                ->orderBy(['created_at' => SORT_ASC])
+                ->all();
+        }
+
+        return (count($data['home']) == 0 || count($data['away']) == 0) ? [] : $data;
     }
 }
