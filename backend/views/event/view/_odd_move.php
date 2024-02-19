@@ -20,7 +20,7 @@ use frontend\models\sport\Event;
             <thead>
             <tr>
                 <th class="col-md-1">#</th>
-                <th class="col-md-2 text-center">Time</th>
+                <th class="col-md-3 text-center">Time</th>
                 <th class="col-md-1 text-right">Odd</th>
             </tr>
             </thead>
@@ -28,7 +28,7 @@ use frontend\models\sport\Event;
             <?php foreach ($history['home'] as $k => $model): ?>
                 <tr>
                     <td class="col-md-1"><?= $k; ?></td>
-                    <td class="col-md-2"><?= $model->created_at; ?></td>
+                    <td class="col-md-3"><?= $model->created_at; ?></td>
                     <td class="col-md-1 text-right"><?= $model->oddVal; ?></td>
                 </tr>
             <?php endforeach; ?>
@@ -44,7 +44,7 @@ use frontend\models\sport\Event;
             <thead>
             <tr>
                 <th class="col-md-1">Odd</th>
-                <th class="col-md-2 text-center">Time</th>
+                <th class="col-md-3 text-center">Time</th>
                 <th class="col-md-1">#</th>
             </tr>
             </thead>
@@ -52,7 +52,7 @@ use frontend\models\sport\Event;
             <?php foreach ($history['away'] as $k => $model): ?>
                 <tr>
                     <td class="col-md-1"><?= $model->oddVal; ?></td>
-                    <td class="col-md-2"><?= $model->created_at; ?></td>
+                    <td class="col-md-3"><?= $model->created_at; ?></td>
                     <td class="col-md-1"><?= $k; ?></td>
                 </tr>
             <?php endforeach; ?>
