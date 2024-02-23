@@ -118,3 +118,9 @@ a.desc:after {
     font-weight: 700;
     font-size: 20px;
 }
+
+.neutral-line {
+    color: yellow;
+    font-weight: 700;
+    font-size: 20px;
+}

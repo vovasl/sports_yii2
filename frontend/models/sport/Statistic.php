@@ -214,6 +214,17 @@ class Statistic extends ActiveRecord
         $minEvents = 100;
         if ($this->count_events >= $minEvents) {
             $class = ($this->percent_profit >= 0) ? 'success-line' : 'fail-line';
+            switch ($this->percent_profit) {
+                case ($this->percent_profit >= 2):
+                    $class = 'success-line';
+                    break;
+                case ($this->percent_profit < -2):
+                    $class = 'fail-line';
+                    break;
+                default:
+                    $class = 'neutral-line';
+                    break;
+            }
             $percentProfit = "<span class='" . $class . "'>{$this->percent_profit}%</span>";
         }
         else {
