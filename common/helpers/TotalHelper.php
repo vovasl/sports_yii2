@@ -17,7 +17,7 @@ use yii\db\Query;
 class TotalHelper
 {
 
-    CONST ODDS = [209, 197, 186, 176, 0];
+    CONST ODDS = [215, 201, 187, 171, 0];
 
     CONST OVER_MIN_MONEYLINE = 150;
     CONST OVER_FAVORITE_MAX_MONEYLINE = 140;

@@ -5,7 +5,7 @@ namespace common\helpers\statistic;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Round;
 use frontend\models\sport\Statistic;
-use yii\db\ActiveRecord;
+use yii\db\ActiveQuery;
 use yii\helpers\Url;
 
 class TotalLineHelper
@@ -60,9 +60,10 @@ class TotalLineHelper
 
             /** get stats */
             $stat = self::getStatistic($params);
+            $modelStat = $stat->one();
 
             $data["{$total}"] = [
-                'stat' => $stat->percentProfitOutput,
+                'stat' => $modelStat->percentProfitOutput,
                 'link' => Url::to([
                     'statistic/total/events',
                     'statistic-line' => json_encode($params),
@@ -77,16 +78,15 @@ class TotalLineHelper
 
     /**
      * @param array $params
-     * @return array|ActiveRecord|null
+     * @return ActiveQuery
      */
-    public static function getStatistic(array $params)
+    public static function getStatistic(array $params): ActiveQuery
     {
         $oddNumber = $params['odd_number'];
         $model = Statistic::find()
             ->select([
                 "round(count(profit_{$oddNumber})/2) count_events",
                 "round(sum(profit_{$oddNumber})/count(profit_{$oddNumber}), 1) percent_profit",
-                "group_concat(DISTINCT tn_event.id) event_ids"
             ])
             ->joinWith([
                 "player",
@@ -118,6 +118,6 @@ class TotalLineHelper
             $model->andWhere(['>=', 'min_moneyline', TotalHelper::OVER_MIN_MONEYLINE]);
         }
 
-        return $model->one();
+        return $model;
     }
 }
