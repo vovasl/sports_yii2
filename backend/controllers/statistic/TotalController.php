@@ -103,9 +103,7 @@ class TotalController extends Controller
         if(!empty($params['statistic-line'])) {
             $statLineParams = json_decode($params['statistic-line'], 1);
             $statLine = TotalLineHelper::getStatistic($statLineParams);
-            $params['EventTotalSearch'] = [
-                'event_ids' => explode(',', $statLine->event_ids)
-            ];
+            $params['EventTotalSearch']['event_ids'] = explode(',', $statLine->event_ids);
         }
 
         $searchModel = new EventTotalSearch();
