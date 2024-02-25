@@ -3,8 +3,10 @@
 namespace common\helpers\statistic;
 
 use common\helpers\TotalHelper;
+use frontend\models\sport\Round;
 use frontend\models\sport\Statistic;
 use yii\db\ActiveRecord;
+use yii\helpers\Url;
 
 class TotalLineHelper
 {
@@ -13,32 +15,38 @@ class TotalLineHelper
      * @param array $tour
      * @param array $surface
      * @param string $type
-     * @param int $round
-     * @param array $totals
-     * @param int $fiveSets
+     * @param array $round
      * @param int $favorite
+     * @param int $fiveSets
+     * @param array $totals
      * @return array
      */
-    public static function getLines(array $tour, array $surface, string $type, int $round, int $favorite, int $fiveSets, array $totals): array
+    public static function getLines(array $tour, array $surface, string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
+        /** search params */
+        $params = [
+            'tour' => $tour,
+            'surface' => $surface,
+            'round' => $round,
+            'type' => $type,
+            'favorite' => $favorite,
+            'five_sets' => $fiveSets,
+        ];
+
         $data = [];
         foreach ($totals as $total) {
-            $data["{$total}"] = self::getLine($tour, $surface, $round, $type, $favorite, $fiveSets, $total);
+            $data["{$total}"] = self::getLine($params, $total);
         }
+
         return $data;
     }
 
     /**
-     * @param array $tour
-     * @param array $surface
-     * @param string $type
-     * @param int $round
-     * @param int $fiveSets
      * @param $total
-     * @param int $favorite
+     * @param array $params
      * @return array
      */
-    public static function getLine(array $tour, array $surface, int $round, string $type, int $favorite, int $fiveSets, $total): array
+    public static function getLine(array $params, $total): array
     {
 
         /** get start total */
@@ -47,10 +55,20 @@ class TotalLineHelper
         $data = [];
         for ($i = 0; $i < 5; $i++) {
 
-            /** get stats */
-            $stat = self::getStatistic($tour, $surface, $round, $type, $favorite, $fiveSets, $total, $i);
+            $params['total'] = $total;
+            $params['odd_number'] = $i;
 
-            $data["{$total}"] = "{$stat->percentProfitOutput}";
+            /** get stats */
+            $stat = self::getStatistic($params);
+
+            $data["{$total}"] = [
+                'stat' => $stat->percentProfitOutput,
+                'link' => Url::to([
+                    'statistic/total/events',
+                    'statistic-line' => json_encode($params),
+                ])
+            ];
+
             $total += 0.5;
         }
 
@@ -58,22 +76,17 @@ class TotalLineHelper
     }
 
     /**
-     * @param array $tour
-     * @param array $surface
-     * @param string $type
-     * @param int $round
-     * @param int $fiveSets
-     * @param $total
-     * @param int $oddNumber
-     * @param int $favorite
+     * @param array $params
      * @return array|ActiveRecord|null
      */
-    public static function getStatistic(array $tour, array $surface, int $round, string $type, int $favorite, int $fiveSets, $total, int $oddNumber)
+    public static function getStatistic(array $params)
     {
+        $oddNumber = $params['odd_number'];
         $model = Statistic::find()
             ->select([
                 "round(count(profit_{$oddNumber})/2) count_events",
-                "round(sum(profit_{$oddNumber})/count(profit_{$oddNumber}), 1) percent_profit"
+                "round(sum(profit_{$oddNumber})/count(profit_{$oddNumber}), 1) percent_profit",
+                "group_concat(DISTINCT tn_event.id) event_ids"
             ])
             ->joinWith([
                 "player",
@@ -83,15 +96,23 @@ class TotalLineHelper
                 "event.eventTournament.tournamentSurface",
                 "odd{$oddNumber}"
             ])
-            ->where(['tn_statistic.add_type' => $type])
-            ->andWhere(['!=', 'tn_event.round', $round])
-            ->andWhere(['tn_event.five_sets' => $fiveSets])
-            ->andWhere(['IN', 'tn_tour.id', $tour])
-            ->andWhere(['IN', 'tn_surface.id', $surface])
-            ->andWhere(['sp_odd.value' => $total])
+            ->where(['tn_statistic.add_type' => $params['type']])
+            ->andWhere(['IN', 'tn_tour.id', $params['tour']])
+            ->andWhere(['IN', 'tn_surface.id', $params['surface']])
+            ->andWhere(['tn_event.five_sets' => $params['five_sets']])
+            ->andWhere(['sp_odd.value' => $params['total']])
         ;
 
-        if ($favorite) {
+        /** round filter */
+        if(in_array(Round::MAIN, $params['round'])) {
+            $model->andWhere(['!=', 'tn_event.round', Round::QUALIFIER]);
+        }
+        else {
+            $model->andWhere(['IN', 'tn_event.round', $params['round']]);
+        }
+
+        /** favorite filter */
+        if ($params['favorite']) {
             $model->andWhere(['<', 'min_moneyline', TotalHelper::OVER_FAVORITE_MAX_MONEYLINE]);
         } else {
             $model->andWhere(['>=', 'min_moneyline', TotalHelper::OVER_MIN_MONEYLINE]);

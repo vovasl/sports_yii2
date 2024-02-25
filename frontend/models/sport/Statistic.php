@@ -28,6 +28,7 @@ use yii\db\ActiveRecord;
  * @property int|null $percent_profit_2
  * @property int|null $percent_profit_3
  * @property int|null $percent_profit_4
+ * @property string $event_ids
  *
  * @property Player $player
  * @property Event $event
@@ -63,6 +64,8 @@ class Statistic extends ActiveRecord
     public $percent_profit_3;
     public $percent_profit_4;
 
+    public $event_ids;
+
     /**
      * {@inheritdoc}
      */
@@ -79,6 +82,7 @@ class Statistic extends ActiveRecord
         return [
             [['player_id', 'event_id', 'type', 'odd_id_0', 'odd_id_1', 'odd_id_2', 'odd_id_3', 'odd_id_4', 'count_events', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'percent_profit', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
             [['add_type', 'min_moneyline'], 'string', 'max' => 255],
+            [['event_ids'], 'text'],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];

@@ -40,8 +40,8 @@ $this->params['breadcrumbs'][] = $title;
             <?php foreach ($item['data'] as $baseTotal => $data) { ?>
                 <tr>
                     <td class="text-center"><?= $baseTotal; ?></td>
-                    <?php foreach ($data as $k => $val) { ?>
-                        <td class="text-center"><?= $val . ' ' . $k; ?></td>
+                    <?php foreach ($data as $total => $line) { ?>
+                        <td class="text-center line-row"><a href="<?= $line['link']; ?>" target="_blank"><?= $line['stat'] . ' ' . $total; ?></a></td>
                     <?php } ?>
                 </tr>
             <?php } ?>

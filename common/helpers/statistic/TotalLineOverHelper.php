@@ -52,49 +52,50 @@ class TotalLineOverHelper
         return [
             [
                 'title' => 'ATP Hard - Main',
-                'data' => self::ATPHard(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+                'data' => self::ATPHard(Odd::ADD_TYPE['over'], [Round::MAIN], $favorite, $fiveSets, $totals)
             ],
             [
                 'title' => 'ATP Indoor - Main',
-                'data' => self::ATPIndoor(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+                'data' => self::ATPIndoor(Odd::ADD_TYPE['over'], [Round::MAIN], $favorite, $fiveSets, $totals)
             ],
             [
                 'title' => 'ATP Clay - Main',
-                'data' => self::ATPClay(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+                'data' => self::ATPClay(Odd::ADD_TYPE['over'], [Round::MAIN], $favorite, $fiveSets, $totals)
             ],
             [
                 'title' => 'WTA Hard - Main',
-                'data' => self::WTAHard(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+                'data' => self::WTAHard(Odd::ADD_TYPE['over'], [Round::MAIN], $favorite, $fiveSets, $totals)
             ],
             [
                 'title' => 'Challenger Clay - Main',
-                'data' => self::ChallengerClay(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+                'data' => self::ChallengerClay(Odd::ADD_TYPE['over'], [Round::MAIN], $favorite, $fiveSets, $totals)
             ],
             [
                 'title' => 'Challenger Indoor - Main',
-                'data' => self::ChallengerIndoor(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+                'data' => self::ChallengerIndoor(Odd::ADD_TYPE['over'], [Round::MAIN], $favorite, $fiveSets, $totals)
             ],
             [
                 'title' => 'Challenger Hard - Main',
-                'data' => self::ChallengerHard(Odd::ADD_TYPE['over'], $favorite, $fiveSets, $totals)
+                'data' => self::ChallengerHard(Odd::ADD_TYPE['over'],[Round::MAIN], $favorite, $fiveSets, $totals)
             ],
         ];
     }
 
     /**
      * @param string $type
+     * @param array $round
      * @param int $favorite
      * @param int $fiveSets
      * @param array $totals
      * @return array
      */
-    public static function ATPClay(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function ATPClay(string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             Tour::ATP_ALL,
             [Surface::SURFACES['clay']],
             $type,
-            Round::QUALIFIER,
+            $round,
             $favorite,
             $fiveSets,
             $totals['atp']['clay']
@@ -103,18 +104,19 @@ class TotalLineOverHelper
 
     /**
      * @param string $type
+     * @param array $round
      * @param int $favorite
      * @param int $fiveSets
      * @param array $totals
      * @return array
      */
-    public static function ATPHard(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function ATPHard(string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             Tour::ATP_ALL,
             [Surface::SURFACES['hard']],
             $type,
-            Round::QUALIFIER,
+            $round,
             $favorite,
             $fiveSets,
             $totals['atp']['hard']
@@ -123,18 +125,19 @@ class TotalLineOverHelper
 
     /**
      * @param string $type
+     * @param array $round
      * @param int $favorite
      * @param int $fiveSets
      * @param array $totals
      * @return array
      */
-    public static function ATPIndoor(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function ATPIndoor(string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             Tour::ATP_ALL,
             [Surface::SURFACES['indoor']],
             $type,
-            Round::QUALIFIER,
+            $round,
             $favorite,
             $fiveSets,
             $totals['atp']['hard']
@@ -143,18 +146,19 @@ class TotalLineOverHelper
 
     /**
      * @param string $type
+     * @param array $round
      * @param int $favorite
      * @param int $fiveSets
      * @param array $totals
      * @return array
      */
-    public static function ChallengerClay(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function ChallengerClay(string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             [Tour::CHALLENGER],
             [Surface::SURFACES['clay']],
             $type,
-            Round::QUALIFIER,
+            $round,
             $favorite,
             $fiveSets,
             $totals['challenger']['clay']
@@ -163,18 +167,19 @@ class TotalLineOverHelper
 
     /**
      * @param string $type
+     * @param array $round
      * @param int $favorite
      * @param int $fiveSets
      * @param array $totals
      * @return array
      */
-    public static function ChallengerHard(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function ChallengerHard(string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             [Tour::CHALLENGER],
             [Surface::SURFACES['hard']],
             $type,
-            Round::QUALIFIER,
+            $round,
             $favorite,
             $fiveSets,
             $totals['challenger']['hard']
@@ -183,18 +188,19 @@ class TotalLineOverHelper
 
     /**
      * @param string $type
+     * @param array $round
      * @param int $favorite
      * @param int $fiveSets
      * @param array $totals
      * @return array
      */
-    public static function ChallengerIndoor(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function ChallengerIndoor(string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             [Tour::CHALLENGER],
             [Surface::SURFACES['indoor']],
             $type,
-            Round::QUALIFIER,
+            $round,
             $favorite,
             $fiveSets,
             $totals['challenger']['indoor']
@@ -203,18 +209,19 @@ class TotalLineOverHelper
 
     /**
      * @param string $type
+     * @param array $round
      * @param int $favorite
      * @param int $fiveSets
      * @param array $totals
      * @return array
      */
-    public static function WTAHard(string $type, int $favorite, int $fiveSets, array $totals): array
+    public static function WTAHard(string $type, array $round, int $favorite, int $fiveSets, array $totals): array
     {
         return TotalLineHelper::getLines(
             Tour::WTA_ALL,
             [Surface::SURFACES['hard']],
             $type,
-            Round::QUALIFIER,
+            $round,
             $favorite,
             $fiveSets,
             $totals['wta']['hard']

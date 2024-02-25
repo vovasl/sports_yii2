@@ -5,6 +5,7 @@ namespace backend\controllers\statistic;
 use backend\models\statistic\total\EventTotalSearch;
 use backend\models\statistic\total\PlayerTotalSearch;
 use backend\models\statistic\total\StatisticSearch;
+use common\helpers\statistic\TotalLineHelper;
 use common\helpers\statistic\TotalLineOverHelper;
 use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Odd;
@@ -95,8 +96,20 @@ class TotalController extends Controller
      */
     public function actionEvents(): string
     {
+
+        $params = $this->request->queryParams;
+
+        /** get statistic line params */
+        if(!empty($params['statistic-line'])) {
+            $statLineParams = json_decode($params['statistic-line'], 1);
+            $statLine = TotalLineHelper::getStatistic($statLineParams);
+            $params['EventTotalSearch'] = [
+                'event_ids' => explode(',', $statLine->event_ids)
+            ];
+        }
+
         $searchModel = new EventTotalSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = $searchModel->search($params);
 
         return $this->render('events', [
             'searchModel' => $searchModel,
@@ -117,8 +130,8 @@ class TotalController extends Controller
         }
 
         /** get events ids */
-        $params['EventTotalSearch']['ids'] = array_merge(PlayerHelper::getEvents(), PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']));
-        //$params['EventTotalSearch']['ids'] = PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']);
+        $params['EventTotalSearch']['event_ids'] = array_merge(PlayerHelper::getEvents(), PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']));
+        //$params['EventTotalSearch']['event_ids'] = PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']);
 
         $searchModel = new EventTotalSearch();
         $dataProvider = $searchModel->search($params);
@@ -126,7 +139,7 @@ class TotalController extends Controller
         return $this->render('events-over', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'eventIds' => $params['EventTotalSearch']['ids']
+            'eventIds' => $params['EventTotalSearch']['event_ids']
         ]);
     }
 
@@ -136,7 +149,7 @@ class TotalController extends Controller
     public function actionEventsUnder(): string
     {
         $params = $this->request->queryParams;
-        $params['EventTotalSearch']['ids'] = PlayerHelper::getEvents(Odd::ADD_TYPE['under']);
+        $params['EventTotalSearch']['event_ids'] = PlayerHelper::getEvents(Odd::ADD_TYPE['under']);
         $searchModel = new EventTotalSearch();
         $dataProvider = $searchModel->search($params);
 

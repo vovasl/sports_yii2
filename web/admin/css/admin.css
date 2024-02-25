@@ -107,6 +107,10 @@ a.desc:after {
     text-decoration: underline;
 }
 
+.line-row a {
+    color: #212529;
+}
+
 .success-line {
     color: green;
     font-weight: 700;

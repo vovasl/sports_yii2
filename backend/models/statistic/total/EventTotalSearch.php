@@ -35,6 +35,8 @@ class EventTotalSearch extends Event
 
     public $favorite;
 
+    public $event_ids;
+
     /**
      * {@inheritdoc}
      */
@@ -44,6 +46,7 @@ class EventTotalSearch extends Event
             [['start_at'], 'safe'],
             [['total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets', 'total_over_min_profit'], 'integer'],
             [['player', 'tournament_name', 'total_avg_value', 'moneyline', 'favorite'], 'string'],
+            ['event_ids', 'each', 'rule' => ['integer']],
         ];
     }
 
@@ -96,11 +99,6 @@ class EventTotalSearch extends Event
             ->having(['>', 'count_odds', 0])
             ->groupBy('event.id')
         ;
-
-        /** events total over/under */
-        if(isset($params['EventTotalSearch']['ids'])) {
-            $query->where(['IN', 'event.id', $params['EventTotalSearch']['ids']]);
-        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -290,6 +288,11 @@ class EventTotalSearch extends Event
             else if($this->count_odds == -1) {
                 $query->andHaving(['count_odds' => 0]);
             }
+        }
+
+        /** event ids filter */
+        if(!is_null($this->event_ids)) {
+            $query->andWhere(['IN', 'event.id', $this->event_ids]);
         }
 
         return $dataProvider;
