@@ -175,13 +175,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                             'title' => 'Add',
                             'class' => 'player-total-action',
                             'data-action' => PlayerTotal::ACTION['add'],
-                            'data-total' => json_encode([
-                                "player_id" => $model->player_id,
-                                "tour_id" => $searchModel->tour,
-                                "surface_id" => $searchModel->surface,
-                                "type" => (strpos($searchModel->min_moneyline, '<') === false) ? $searchModel->add_type : PlayerTotal::TYPE['over-favorite'],
-                                "moneyline" => $searchModel->min_moneyline,
-                            ]),
+                            'data-total' => PlayerTotal::getPlayersSearchData($model, $searchModel),
 
                         ];
                         return Html::a('<i class="fas fa-plus"></i>', '#', $options);
@@ -191,12 +185,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                             'title' => 'Remove',
                             'class' => 'player-total-action',
                             'data-action' => PlayerTotal::ACTION['remove'],
-                            'data-total' => json_encode([
-                                "player_id" => $model->player_id,
-                                "tour_id" => $searchModel->tour,
-                                "surface_id" => $searchModel->surface,
-                                "type" => Odd::ADD_TYPE['over']
-                            ]),
+                            'data-total' => PlayerTotal::getPlayersSearchData($model, $searchModel),
                         ];
                         return Html::a('<i class="fas fa-minus"></i>', '#', $options);
                     },

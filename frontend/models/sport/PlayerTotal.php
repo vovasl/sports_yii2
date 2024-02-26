@@ -124,4 +124,20 @@ class PlayerTotal extends ActiveRecord
             && $this->type == $search->add_type
         );
     }
+
+    /**
+     * @param Statistic $model
+     * @param PlayerTotalSearch $searchModel
+     * @return string
+     */
+    public static function getPlayersSearchData(Statistic $model, PlayerTotalSearch $searchModel): string
+    {
+        return json_encode([
+            "player_id" => $model->player_id,
+            "tour_id" => $searchModel->tour,
+            "surface_id" => $searchModel->surface,
+            "type" => (strpos($searchModel->min_moneyline, '<') === false) ? $searchModel->add_type : PlayerTotal::TYPE['over-favorite'],
+            "favorite" => strpos($searchModel->min_moneyline, '<') === false ? 0 : 1
+        ]);
+    }
 }

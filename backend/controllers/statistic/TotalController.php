@@ -191,23 +191,26 @@ class TotalController extends Controller
             $data = $request->post('total');
             switch ($request->post('action')) {
                 case PlayerTotal::ACTION['add']:
+
+                    /** model exist */
+                    if(PlayerTotal::findOne($data)) return true;
+
                     /** save model */
                     $model = new PlayerTotal();
                     $model->player_id = $data['player_id'];
                     $model->tour_id = $data['tour_id'];
                     $model->surface_id = $data['surface_id'];
                     $model->type = $data['type'];
-                    $model->favorite = (strpos($data['moneyline'], '<') !== false);
+                    $model->favorite = $data['favorite'];
                     $model->save(0);
-                    break;
+                    return true;
                 case PlayerTotal::ACTION['remove']:
                     /** remove model */
                     PlayerTotal::deleteAll($data);
-                    break;
+                    return true;
                 default:
                     return false;
             }
-            return true;
         }
         return false;
     }
