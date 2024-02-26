@@ -10,6 +10,7 @@ use common\helpers\statistic\TotalLineOverHelper;
 use common\helpers\total\PlayerHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -186,7 +187,7 @@ class TotalController extends Controller
      */
     public function actionPlayerTotalAction(): bool
     {
-        $request = \Yii::$app->request;
+        $request = Yii::$app->request;
         if($request->isAjax && !empty($request->post('total'))) {
             $data = $request->post('total');
             switch ($request->post('action')) {

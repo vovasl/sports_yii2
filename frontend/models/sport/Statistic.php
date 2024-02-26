@@ -277,9 +277,10 @@ class Statistic extends ActiveRecord
     /**
      * @param string $type
      * @param PlayerTotalSearch $search
+     * @param array $data
      * @return bool
      */
-    public function playerTotalButton(string $type, PlayerTotalSearch $search): bool
+    public function playerTotalButton(string $type, PlayerTotalSearch $search, array $data): bool
     {
         /** empty search params */
         if(empty($search->tour) || empty($search->surface) || empty($search->add_type)) return false;
@@ -294,23 +295,14 @@ class Statistic extends ActiveRecord
         }
 
         /** get player total model */
-        $playerTotalModel = new PlayerTotal();
-        foreach ($this->playerTotal as $k => $playerTotal) {
-            if(($playerTotal->tour_id == $search->tour
-                && $playerTotal->surface_id == $search->surface
-                && $playerTotal->type == $search->add_type
-            )) {
-                $playerTotalModel = $this->playerTotal[$k];
-                break;
-            }
-        }
+        $playerTotalModel = PlayerTotal::findOne($data);
 
         /** get button status */
         switch ($type) {
             case PlayerTotal::ACTION['add']:
-                return $playerTotalModel->addButton($search);
+                return (is_null($playerTotalModel));
             case PlayerTotal::ACTION['remove']:
-                return $playerTotalModel->removeButton($search);
+                return !(is_null($playerTotalModel));
             default:
                 return false;
         }

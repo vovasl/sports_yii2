@@ -163,10 +163,10 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                 'template' => '{add}{remove}',
                 'visibleButtons' => [
                     'add' => function (Statistic $model, $key, $index) use($searchModel) {
-                        return $model->playerTotalButton(PlayerTotal::ACTION['add'], $searchModel);
+                        return $model->playerTotalButton(PlayerTotal::ACTION['add'], $searchModel, PlayerTotal::getPlayersSearchData($model, $searchModel));
                     },
                     'remove' => function (Statistic $model, $key, $index) use($searchModel) {
-                        return $model->playerTotalButton(PlayerTotal::ACTION['remove'], $searchModel);
+                        return $model->playerTotalButton(PlayerTotal::ACTION['remove'], $searchModel, PlayerTotal::getPlayersSearchData($model, $searchModel));
                     }
                 ],
                 'buttons' => [
@@ -175,7 +175,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                             'title' => 'Add',
                             'class' => 'player-total-action',
                             'data-action' => PlayerTotal::ACTION['add'],
-                            'data-total' => PlayerTotal::getPlayersSearchData($model, $searchModel),
+                            'data-total' => json_encode(PlayerTotal::getPlayersSearchData($model, $searchModel)),
 
                         ];
                         return Html::a('<i class="fas fa-plus"></i>', '#', $options);
@@ -185,7 +185,7 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
                             'title' => 'Remove',
                             'class' => 'player-total-action',
                             'data-action' => PlayerTotal::ACTION['remove'],
-                            'data-total' => PlayerTotal::getPlayersSearchData($model, $searchModel),
+                            'data-total' => json_encode(PlayerTotal::getPlayersSearchData($model, $searchModel)),
                         ];
                         return Html::a('<i class="fas fa-minus"></i>', '#', $options);
                     },

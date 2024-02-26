@@ -102,42 +102,20 @@ class PlayerTotal extends ActiveRecord
     }
 
     /**
-     * @param PlayerTotalSearch $search
-     * @return bool
-     */
-    public function addButton(PlayerTotalSearch $search): bool
-    {
-        return !($this->tour_id == $search->tour
-            && $this->surface_id == $search->surface
-            && $this->type == $search->add_type
-        );
-    }
-
-    /**
-     * @param PlayerTotalSearch $search
-     * @return bool
-     */
-    public function removeButton(PlayerTotalSearch $search): bool
-    {
-        return ($this->tour_id == $search->tour
-            && $this->surface_id == $search->surface
-            && $this->type == $search->add_type
-        );
-    }
-
-    /**
      * @param Statistic $model
      * @param PlayerTotalSearch $searchModel
-     * @return string
+     * @return array
      */
-    public static function getPlayersSearchData(Statistic $model, PlayerTotalSearch $searchModel): string
+    public static function getPlayersSearchData(Statistic $model, PlayerTotalSearch $searchModel): array
     {
-        return json_encode([
-            "player_id" => $model->player_id,
-            "tour_id" => $searchModel->tour,
-            "surface_id" => $searchModel->surface,
-            "type" => (strpos($searchModel->min_moneyline, '<') === false) ? $searchModel->add_type : PlayerTotal::TYPE['over-favorite'],
-            "favorite" => strpos($searchModel->min_moneyline, '<') === false ? 0 : 1
-        ]);
+        return [
+            'player_id' => $model->player_id,
+            'tour_id' => $searchModel->tour,
+            'surface_id' => $searchModel->surface,
+            'type' => (strpos($searchModel->min_moneyline, '<') !== false && $searchModel->add_type == Odd::ADD_TYPE['over'])
+                ? PlayerTotal::TYPE['over-favorite']
+                : $searchModel->add_type,
+            'favorite' => strpos($searchModel->min_moneyline, '<') !== false ? 1 : 0
+        ];
     }
 }
