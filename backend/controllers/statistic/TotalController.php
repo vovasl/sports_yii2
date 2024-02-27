@@ -12,7 +12,9 @@ use frontend\models\sport\Odd;
 use frontend\models\sport\PlayerTotal;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class TotalController extends Controller
 {
@@ -122,11 +124,25 @@ class TotalController extends Controller
     }
 
     /**
+     * @param string $type
      * @return string
+     * @throws NotFoundHttpException
      */
-    public function actionEventsOver(): string
+    public function actionEventsTotal(string $type): string
     {
+
+        /** get total settings */
+        if ($type ==  Odd::ADD_TYPE['over']) {
+            $title = 'Events - Total Over';
+            $addType = PlayerTotal::TYPE['over-favorite'];
+        } elseif ($type ==  Odd::ADD_TYPE['under']) {
+            $title = 'Events - Total Under';
+            $addType = PlayerTotal::TYPE['under-favorite'];
+        }
+        else throw new NotFoundHttpException('The requested event does not exist.');
+
         $params = $this->request->queryParams;
+        unset($params['type']);
 
         /** empty search params */
         if(empty($params)) {
@@ -134,32 +150,18 @@ class TotalController extends Controller
         }
 
         /** get events ids */
-        $params['EventTotalSearch']['event_ids'] = array_merge(PlayerHelper::getEvents(), PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']));
-        //$params['EventTotalSearch']['event_ids'] = PlayerHelper::getEvents(PlayerTotal::TYPE['over-favorite']);
+        $params['EventTotalSearch']['event_ids'] = array_merge(PlayerHelper::getEvents($type), PlayerHelper::getEvents($addType));
 
         $searchModel = new EventTotalSearch();
         $dataProvider = $searchModel->search($params);
 
-        return $this->render('events-over', [
+        return $this->render('events-total', [
+            'title' => $title,
+            'url' => Url::to(['/statistic/total/events-total', 'type' => $type]),
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'eventIds' => $params['EventTotalSearch']['event_ids']
-        ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function actionEventsUnder(): string
-    {
-        $params = $this->request->queryParams;
-        $params['EventTotalSearch']['event_ids'] = PlayerHelper::getEvents(Odd::ADD_TYPE['under']);
-        $searchModel = new EventTotalSearch();
-        $dataProvider = $searchModel->search($params);
-
-        return $this->render('events-under', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'players' => PlayerHelper::getPlayers([$type, $addType]),
+            'statistic' => PlayerHelper::getEventsStat($dataProvider->getModels(), $type)
         ]);
     }
 

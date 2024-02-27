@@ -30,7 +30,8 @@ class PlayerTotal extends ActiveRecord
     ];
 
     CONST TYPE = [
-        'over-favorite' => 'over-favorite'
+        'over-favorite' => 'over-favorite',
+        'under-favorite' => 'under-favorite',
     ];
 
     /**
@@ -112,10 +113,25 @@ class PlayerTotal extends ActiveRecord
             'player_id' => $model->player_id,
             'tour_id' => $searchModel->tour,
             'surface_id' => $searchModel->surface,
-            'type' => (strpos($searchModel->min_moneyline, '<') !== false && $searchModel->add_type == Odd::ADD_TYPE['over'])
-                ? PlayerTotal::TYPE['over-favorite']
-                : $searchModel->add_type,
-            'favorite' => strpos($searchModel->min_moneyline, '<') !== false ? 1 : 0
+            'type' => self::getType($searchModel),
+            'favorite' => ($searchModel->favorite == 'Yes') ? 1 : 0
         ];
+    }
+
+    /**
+     * @param PlayerTotalSearch $model
+     * @return string
+     */
+    public static function getType(PlayerTotalSearch $model): string
+    {
+        /** get type for favorite */
+        if ($model->favorite == 'Yes') {
+            return ($model->add_type == Odd::ADD_TYPE['over'])
+                ? PlayerTotal::TYPE['over-favorite']
+                : PlayerTotal::TYPE['under-favorite']
+            ;
+        }
+
+        return $model->add_type;
     }
 }

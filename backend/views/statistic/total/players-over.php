@@ -57,7 +57,8 @@ $reset = "/statistic/total/players-over";
                 'format' => 'raw',
                 'value' => function(Statistic $model) use($searchModel) {
                     return Html::a($model->player->name, [
-                        '/statistic/total/events-over',
+                        '/statistic/total/events-total',
+                        'type' => Odd::ADD_TYPE['over'],
                         'EventTotalSearch[count_odds]' => 1,
                         'EventTotalSearch[result]' => 1,
                         'EventTotalSearch[moneyline]' => $searchModel->min_moneyline,

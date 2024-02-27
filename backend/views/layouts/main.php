@@ -7,6 +7,7 @@
 
 use backend\assets\AppAsset;
 use common\widgets\Alert;
+use frontend\models\sport\Odd;
 use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\Nav;
@@ -61,8 +62,8 @@ Icon::map($this);
             ['label' => 'Players', 'url' => ['statistic/total/players']],
             ['label' => 'Events', 'url' => ['statistic/total/events']],
             ['label' => 'Players Over', 'url' => ['statistic/total/players-over']],
-            ['label' => 'Events Over', 'url' => ['statistic/total/events-over']],
-            ['label' => 'Events Under', 'url' => ['statistic/total/events-under']]
+            ['label' => 'Events Over', 'url' => ['statistic/total/events-total', 'type' => Odd::ADD_TYPE['over']]],
+            ['label' => 'Events Under', 'url' => ['statistic/total/events-total', 'type' => Odd::ADD_TYPE['under']]]
         ]],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];

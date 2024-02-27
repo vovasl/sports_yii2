@@ -69,12 +69,6 @@ class PlayerHelper
                 ->andWhere(['tn_tournament.surface' => $searchModel->surface_id])
             ;
 
-            /** get where */
-            $query = ($type == Odd::ADD_TYPE['over'])
-                ? self::getWhereOver($query, ArrayHelper::getColumn($playersTotal, 'player_id'))
-                : self::getWhereUnder($query, ArrayHelper::getColumn($playersTotal, 'player_id'))
-            ;
-
             /** get events */
             switch ($type) {
                 case Odd::ADD_TYPE['over']:
@@ -82,9 +76,13 @@ class PlayerHelper
                     $events = ArrayHelper::getColumn($query->all(), 'id');
                     break;
                 case Odd::ADD_TYPE['under']:
-                case PlayerTotal::TYPE['over-favorite']:
                     $query = self::getWhereUnder($query, ArrayHelper::getColumn($playersTotal, 'player_id'));
-                    $events = self::getEventsUnder($query->all(), $playersTotal);
+                    $events = ArrayHelper::getColumn($query->all(), 'id');
+                    break;
+                case PlayerTotal::TYPE['over-favorite']:
+                case PlayerTotal::TYPE['under-favorite']:
+                    $query = self::getWhereFavorite($query, ArrayHelper::getColumn($playersTotal, 'player_id'));
+                    $events = self::getEventsFavorite($query->all(), $playersTotal);
                     break;
                 default:
                     $events = [];
@@ -119,6 +117,24 @@ class PlayerHelper
      */
     public static function getWhereUnder(ActiveQuery $model, array $players): ActiveQuery
     {
+
+        $model->andWhere(['OR',
+            ['IN', 'home', $players],
+            ['IN', 'away', $players]
+        ]);
+        $model->andWhere(['>=', 'home_moneyline.odd', self::MONEYLINE['over']['min']]);
+        $model->andWhere(['>=', 'away_moneyline.odd', self::MONEYLINE['over']['min']]);
+
+        return $model;
+    }
+
+    /**
+     * @param ActiveQuery $model
+     * @param array $players
+     * @return ActiveQuery
+     */
+    public static function getWhereFavorite(ActiveQuery $model, array $players): ActiveQuery
+    {
         $model->andWhere(['OR',
             ['IN', 'home', $players],
             ['IN', 'away', $players]
@@ -136,7 +152,7 @@ class PlayerHelper
      * @param array $playersTotal
      * @return array
      */
-    public static function getEventsUnder(array $models, array $playersTotal): array
+    public static function getEventsFavorite(array $models, array $playersTotal): array
     {
         $events = [];
         foreach ($playersTotal as $playerTotal) {

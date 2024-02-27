@@ -1,8 +1,6 @@
 <?php
 
-use common\helpers\total\PlayerHelper;
-use frontend\models\sport\Odd;
-use frontend\models\sport\PlayerTotal;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
 use backend\models\statistic\total\EventTotalSearch;
@@ -10,16 +8,17 @@ use yii\helpers\Html;
 
 /**
  * @var View $this
+ * @var string $title
+ * @var string $url
  * @var EventTotalSearch $searchModel
  * @var ActiveDataProvider $dataProvider
- * @var array $eventIds
+ * @var array $players
+ * @var array $statistic
  */
 
-$this->title = 'Events - Total Over';
+$this->title = $title;
 
 $this->params['breadcrumbs'][] = $this->title;
-
-$reset = '/statistic/total/events-over';
 
 ?>
 
@@ -28,7 +27,7 @@ $reset = '/statistic/total/events-over';
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Clear', [$reset], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Clear', [$url], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= $this->render('events/grid', [
@@ -37,11 +36,11 @@ $reset = '/statistic/total/events-over';
     ]); ?>
 
     <?= $this->render('events/players', [
-        'players' => PlayerHelper::getPlayers([Odd::ADD_TYPE['over'], PlayerTotal::TYPE['over-favorite']]),
+        'players' => $players,
     ]); ?>
 
     <?= $this->render('events/stats', [
-        'stats' => PlayerHelper::getEventsStat($dataProvider->getModels()),
+        'stats' => $statistic,
     ]); ?>
 
 </div>
