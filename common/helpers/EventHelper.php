@@ -2,7 +2,6 @@
 
 namespace common\helpers;
 
-
 use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 

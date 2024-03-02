@@ -1,6 +1,5 @@
 <?php
 
-
 use backend\models\EventSearch;
 use common\helpers\EventHelper;
 use frontend\models\sport\Event;

@@ -2,7 +2,6 @@
 
 namespace backend\models\event;
 
-
 use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;

@@ -2,7 +2,6 @@
 
 namespace backend\models\statistic\total;
 
-
 use common\helpers\EventHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Statistic;
