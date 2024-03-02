@@ -2,7 +2,6 @@
 
 namespace backend\models;
 
-
 use frontend\models\sport\Event;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -82,7 +81,9 @@ class TournamentSearch extends Tournament
             'surface' => $this->surface,
         ]);
 
-        $query->andFilterWhere(['like', Tournament::tableName() . '.name', $this->name]);
+        if(!empty($this->name)) {
+            $query->andFilterWhere(['like', Tournament::tableName() . '.name', trim($this->name)]);
+        }
 
         if(!is_null($this->count_events)) {
             $query->andHaving(['>=', 'count_events', $this->count_events]);
