@@ -2,7 +2,8 @@
 
 namespace backend\controllers;
 
-
+use backend\helpers\IndexHelper;
+use common\helpers\total\PlayerHelper;
 use common\models\LoginForm;
 use Yii;
 use yii\filters\VerbFilter;
@@ -18,11 +19,11 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'actions' => ['login', 'error'],
@@ -36,7 +37,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -47,7 +48,7 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => [
@@ -57,13 +58,31 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex(): string
     {
-        return $this->render('index');
+
+        $params = $this->request->queryParams;
+
+        /** get settings */
+        $settings = IndexHelper::getEventsSettings();
+
+        $dataProvider = [];
+        foreach ($settings as $k => $setting) {
+
+            /** search params */
+            $params[$setting['search_model_name']]['result'] = 2;
+            /** get events ids */
+            $params[$setting['search_model_name']]['event_ids'] = array_merge(PlayerHelper::getEvents($setting['type']), PlayerHelper::getEvents($setting['add_type']));
+
+            $dataProvider[$k] = $setting['search_model']->search($params);
+        }
+
+        return $this->render('index', [
+            'settings' => $settings,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
@@ -96,7 +115,7 @@ class SiteController extends Controller
      *
      * @return Response
      */
-    public function actionLogout()
+    public function actionLogout(): Response
     {
         Yii::$app->user->logout();
 

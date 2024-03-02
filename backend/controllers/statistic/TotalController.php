@@ -130,25 +130,26 @@ class TotalController extends Controller
      */
     public function actionEventsTotal(string $type): string
     {
+        /** 404 page */
+        if(!in_array($type, [Odd::ADD_TYPE['over'], Odd::ADD_TYPE['under']])) {
+            throw new NotFoundHttpException('The requested event does not exist.');
+        }
 
         /** get total settings */
-        if ($type ==  Odd::ADD_TYPE['over']) {
+        if ($type == Odd::ADD_TYPE['over']) {
             $title = 'Events - Total Over';
             $addType = PlayerTotal::TYPE['over-favorite'];
-        } elseif ($type ==  Odd::ADD_TYPE['under']) {
+        } else {
             $title = 'Events - Total Under';
             $addType = PlayerTotal::TYPE['under-favorite'];
         }
-        else throw new NotFoundHttpException('The requested event does not exist.');
 
         $params = $this->request->queryParams;
-        unset($params['type']);
 
         /** empty search params */
-        if(empty($params)) {
+        if(count($params) == 1) {
             $params['EventTotalSearch']['result'] = 2;
         }
-
         /** get events ids */
         $params['EventTotalSearch']['event_ids'] = array_merge(PlayerHelper::getEvents($type), PlayerHelper::getEvents($addType));
 

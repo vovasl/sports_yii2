@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Url;
 use yii\web\View;
 use yii\data\ActiveDataProvider;
 use backend\models\statistic\total\EventTotalSearch;
