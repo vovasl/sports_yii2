@@ -59,9 +59,15 @@ use yii\grid\ActionColumn;
             'filter' => Surface::dropdown(),
         ],
         [
+            'format' => 'raw',
             'label' => 'Tournament',
             'attribute' => 'tournament_name',
-            'value' => 'eventTournament.name'
+            'value' => function (Event $model) {
+                return Html::a($model->eventTournament->name, Url::to([
+                    'statistic/total/events',
+                    'EventTotalSearch[tournament_id]' => $model->tournament
+                ]));
+            },
         ],
         [
             'label' => 'Round',

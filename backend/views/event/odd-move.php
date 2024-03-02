@@ -74,9 +74,15 @@ $reset = "/event/odd-move";
                 'filter' => Surface::dropdown(),
             ],
             [
+                'format' => 'raw',
                 'label' => 'Tournament',
                 'attribute' => 'tournament_name',
-                'value' => 'eventTournament.name'
+                'value' => function (Event $model) {
+                    return Html::a($model->eventTournament->name, Url::to([
+                        'event/odd-move',
+                        'EventOddMoveSearch[tournament_id]' => $model->tournament
+                    ]));
+                },
             ],
             [
                 'label' => 'Round',

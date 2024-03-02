@@ -2,7 +2,6 @@
 
 namespace backend\models;
 
-
 use common\helpers\EventHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Surface;
@@ -141,14 +140,14 @@ class EventSearch extends Event
             $query->andFilterWhere(['IN', Surface::tableName() . '.id', Surface::filterValue($this->surface_id)]);
         }
 
-        /** tournament name filter */
-        if(!is_null($this->tournament_name)) {
-            $query->andFilterWhere(['like', Tournament::tableName() . '.name', trim($this->tournament_name)]);
-        }
-
         /** tournament id filter */
         if(!is_null($this->tournament_id)) {
             $query->andFilterWhere(['event.tournament' => $this->tournament_id]);
+        }
+
+        /** tournament name filter */
+        if(!is_null($this->tournament_name)) {
+            $query->andFilterWhere(['like', Tournament::tableName() . '.name', trim($this->tournament_name)]);
         }
 
         /** round filter */

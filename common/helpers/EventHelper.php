@@ -80,7 +80,7 @@ class EventHelper
             'label' => 'Event',
             'attribute' => 'player',
             'format' => 'raw',
-            'value' => function(Event $model) use($uri)  {
+            'value' => function (Event $model) use($uri)  {
                 return $model->outputPlayer('homePlayer', $uri);
             },
             'headerOptions' => [

@@ -21,6 +21,8 @@ class EventOddMoveSearch extends Event
 
     public $surface_id;
 
+    public $tournament_id;
+
     public $tournament_name;
 
     public $round_id;
@@ -36,7 +38,7 @@ class EventOddMoveSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['tour_id', 'surface_id', 'round_id', 'odd_move_value_type', 'odd_move_status'], 'integer'],
+            [['tour_id', 'surface_id', 'round_id', 'odd_move_value_type', 'odd_move_status', 'tournament_id'], 'integer'],
             [['player', 'tournament_name', 'o_type_name', 'odd_move_value', 'moneyline'], 'string'],
         ];
     }
@@ -146,6 +148,11 @@ class EventOddMoveSearch extends Event
             else {
                 $query->andFilterWhere([Round::tableName() . '.id' => $this->round_id]);
             }
+        }
+
+        /** tournament id filter */
+        if(!is_null($this->tournament_id)) {
+            $query->andFilterWhere(['tn_event.tournament' => $this->tournament_id]);
         }
 
         /** tournament name filter */

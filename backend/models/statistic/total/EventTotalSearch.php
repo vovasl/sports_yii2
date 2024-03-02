@@ -27,6 +27,8 @@ class EventTotalSearch extends Event
 
     public $surface_id;
 
+    public $tournament_id;
+
     public $player;
 
     public $result;
@@ -44,7 +46,7 @@ class EventTotalSearch extends Event
     {
         return [
             [['start_at'], 'safe'],
-            [['total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets', 'total_over_min_profit'], 'integer'],
+            [['total', 'total_games', 'round_id', 'result', 'home_result', 'away_result', 'count_odds', 'surface_id', 'tour_id', 'five_sets', 'total_over_min_profit', 'tournament_id'], 'integer'],
             [['player', 'tournament_name', 'total_avg_value', 'moneyline', 'favorite'], 'string'],
             ['event_ids', 'each', 'rule' => ['integer']],
         ];
@@ -157,6 +159,11 @@ class EventTotalSearch extends Event
         /** surface filter */
         if(!is_null($this->surface_id)) {
             $query->andFilterWhere(['IN', Surface::tableName() . '.id', Surface::filterValue($this->surface_id)]);
+        }
+
+        /** tournament id filter */
+        if(!is_null($this->tournament_id)) {
+            $query->andFilterWhere(['event.tournament' => $this->tournament_id]);
         }
 
         /** tournament name filter */
