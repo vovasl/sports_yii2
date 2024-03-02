@@ -2,7 +2,6 @@
 
 use backend\models\statistic\total\EventTotalSearch;
 use common\helpers\EventHelper;
-use frontend\models\sport\Event;
 use frontend\models\sport\Round;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
