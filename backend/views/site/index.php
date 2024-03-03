@@ -21,10 +21,14 @@ $this->title = 'Tennis Odds';
 
         <h3><?= Html::a(Html::encode($setting['title']), Url::to($setting['url'])); ?></h3>
 
-        <?= $this->render('events/grid', [
-            'searchModel' => $setting['search_model'],
-            'dataProvider' => $dataProvider[$k],
-        ]); ?>
+        <?php if($dataProvider[$k]->totalCount > 0) { ?>
+
+            <?= $this->render('events/grid', [
+                'searchModel' => $setting['search_model'],
+                'dataProvider' => $dataProvider[$k],
+            ]); ?>
+
+        <?php } ?>
 
     <?php } ?>
 
