@@ -218,7 +218,7 @@ class TotalHelper
 
         /** base values */
         $tour = Tour::filterValue(self::getTour($event->eventTournament->tour));
-        $surface = Surface::filterValue(self::getSurface($event->eventTournament->surface));
+        $surface = Surface::filterValue(self::getSurface($event->eventTournament->surface, $event->eventTournament->tour));
 
         $stats = [];
         foreach (['away', 'home'] as $player) {
@@ -292,6 +292,7 @@ class TotalHelper
      */
     public static function getSurface($surface)
     {
+        return $surface;
         return (in_array($surface, [Surface::SURFACES['hard'], Surface::SURFACES['indoor']])) ? '-1' : $surface;
     }
 
