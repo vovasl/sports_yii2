@@ -293,7 +293,7 @@ class TotalHelper
     public static function getSurface($surface)
     {
         return $surface;
-        return (in_array($surface, [Surface::SURFACES['hard'], Surface::SURFACES['indoor']])) ? '-1' : $surface;
+        //return (in_array($surface, [Surface::SURFACES['hard'], Surface::SURFACES['indoor']])) ? '-1' : $surface;
     }
 
     /**
