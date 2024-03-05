@@ -152,7 +152,7 @@ class EventTotalSearch extends Event
 
         /** tour filter */
         if(!is_null($this->tour_id)) {
-            $query->andFilterWhere(['IN', Tour::tableName() . '.id', Tour::filterValue($this->tour_id)]);
+            $query->andFilterWhere(['IN', Tour::tableName() . '.id', Tour::getValue($this->tour_id)]);
         }
 
         /** surface filter */

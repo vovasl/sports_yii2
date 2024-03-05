@@ -9,7 +9,9 @@ use backend\models\AddLineLogForm;
 use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use backend\models\event\EventOddMoveSearch;
-use common\helpers\TotalHelper;
+use common\helpers\statistic\total\event\player\EqualHelper;
+use common\helpers\statistic\total\event\player\FavoriteHelper;
+use common\helpers\statistic\total\event\player\OverPlayerHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use frontend\models\sport\Odd;
@@ -81,9 +83,9 @@ class EventController extends Controller
 
         /** statistic */
         $stat = [
-            'total_over_vs_over_players' => TotalHelper::getEventPlayerStatvsOverPlayers($event),
-            'total_over' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['over']),
-            'total_over_favorite' => TotalHelper::getEventPlayersStat($event, Odd::ADD_TYPE['over'], 1)
+            'total_over_vs_over_players' => OverPlayerHelper::getStatistic($event),
+            'total_over' => EqualHelper::getStatistic($event, Odd::ADD_TYPE['over']),
+            'total_over_favorite' => FavoriteHelper::getStatistic($event, Odd::ADD_TYPE['over'])
         ];
 
         /** odd history */

@@ -86,10 +86,10 @@ class Tour extends ActiveRecord
     }
 
     /**
-     * @param $tour
-     * @return int[]
+     * @param string|int $tour
+     * @return int[]|null|string
      */
-    public static function filterValue($tour)
+    public static function getValue($tour)
     {
         if(empty(self::ADD_FILTER[$tour])) return $tour;
         switch ($tour) {
@@ -100,6 +100,18 @@ class Tour extends ActiveRecord
             default:
                 return $tour;
         }
+    }
+
+    /**
+     * @param int|null $tour
+     * @return int|null
+     */
+    public static function getFilterValue(?int $tour): ?int
+    {
+        if(in_array($tour, Tour::ATP_ALL)) return -1;
+        if(in_array($tour, Tour::WTA_ALL)) return -2;
+
+        return $tour;
     }
 
 }

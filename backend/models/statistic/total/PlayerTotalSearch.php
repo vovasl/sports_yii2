@@ -140,7 +140,7 @@ class PlayerTotalSearch extends Statistic
 
         /** tour filter */
         if(!is_null($this->tour)) {
-            $query->andFilterWhere(['IN', 'tn_tour.id', Tour::filterValue($this->tour)]);
+            $query->andFilterWhere(['IN', 'tn_tour.id', Tour::getValue($this->tour)]);
         }
 
         /** surface filter */
