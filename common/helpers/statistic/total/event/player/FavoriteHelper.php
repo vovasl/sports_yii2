@@ -22,6 +22,9 @@ class FavoriteHelper
     public static function getStatistic(Event $event, string $type): array
     {
 
+        /** empty moneyline odds */
+        if(is_null($event->favorite)) return [];
+
         /** empty surface value */
         if(is_null($event->eventTournament->surface)) return [];
 
