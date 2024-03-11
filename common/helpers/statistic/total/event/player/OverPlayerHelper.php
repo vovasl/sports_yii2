@@ -68,7 +68,7 @@ class OverPlayerHelper
             $query->andWhere(['!=', 'tn_event.round', Round::QUALIFIER]);
             $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
             $query->andWhere(['IS NOT', 'tn_event.sofa_id', null]);
-            $query->andWhere(['>=', 'min_moneyline', TotalHelper::OVER_MIN_MONEYLINE]);
+            $query->andWhere(['>=', 'min_moneyline', TotalHelper::MONEYLINE['over']['min']]);
             $query->andWhere(['tn_statistic.add_type' => Odd::ADD_TYPE['over']]);
             $query->andWhere(['IN', 'tn_statistic.player_id', [$event->{$player}]]);
             $query->andWhere(['IN', 'tn_event.id', $events]);

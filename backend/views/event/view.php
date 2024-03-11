@@ -73,16 +73,8 @@ $this->render('_breadcrumbs', [
     <?= $this->render('view/_total_stats', [
         'title' => 'Total Over Favorite',
         'stats' => $stat['total_over_favorite'],
-        'playerUrlParams' => [
-            '/statistic/total/players',
-            'PlayerTotalSearch[tour]' => FavoriteHelper::getTourFilter($event),
-            'PlayerTotalSearch[surface]' => $event->eventTournament->surface,
-            'PlayerTotalSearch[round]' => FavoriteHelper::getRoundFilter($event),
-            'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['favorite'],
-            'PlayerTotalSearch[five_sets]' => $event->five_sets,
-            'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
-            'PlayerTotalSearch[favorite]' => 'Yes',
-        ],
+        'playerUrlParams' => FavoriteHelper::getPlayerUrlParams($event),
+        'favorite' => true,
     ]); ?>
 
 <?php } ?>

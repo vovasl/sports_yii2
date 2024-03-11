@@ -5,8 +5,10 @@
  * @var string $title
  * @var Statistic[] $stats
  * @var array $playerUrlParams
+ * @var bool $favorite
  */
 
+use common\helpers\statistic\total\event\player\FavoriteHelper;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Statistic;
 use yii\helpers\Html;
@@ -29,8 +31,14 @@ $avg = [];
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($stats as $stat): ?>
-        <?php $playerUrlParams['PlayerTotalSearch[player_name]'] = $stat->player->name; ?>
+    <?php foreach ($stats as $k => $stat): ?>
+        <?php
+            /** additional url filter params */
+            $playerUrlParams['PlayerTotalSearch[player_name]'] = $stat->player->name;
+            if($favorite) {
+                $playerUrlParams['PlayerTotalSearch[favorite]'] = FavoriteHelper::getFavoriteFilter($k);
+            }
+        ?>
         <tr>
             <td class="text-center"><?= Html::a($stat->player->name, $playerUrlParams, ['target'=>'_blank']); ?></td>
             <td class="text-center"><?= $stat->count_events; ?></td>

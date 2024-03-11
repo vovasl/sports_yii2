@@ -28,7 +28,7 @@ class EqualHelper
         $tour = self::getTour($event);
         $surface = Surface::filterValue($event->eventTournament->surface);
         $round = self::getRound($event);
-        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? TotalHelper::OVER_MIN_MONEYLINE : TotalHelper::UNDER_MIN_MONEYLINE;
+        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? TotalHelper::MONEYLINE['over']['min'] : TotalHelper::MONEYLINE['under']['min'];
 
         $query = Statistic::find();
         $query->select([

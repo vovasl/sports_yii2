@@ -16,9 +16,18 @@ class TotalHelper
 
     CONST ODDS = [215, 201, 187, 175, 0];
 
-    CONST OVER_MIN_MONEYLINE = 150;
-    CONST OVER_FAVORITE_MAX_MONEYLINE = 140;
-    CONST UNDER_MIN_MONEYLINE = 100;
+    CONST MONEYLINE = [
+        'over' => [
+            'min' => 150,
+            'favorite' => [
+                'max' => 140
+            ],
+        ],
+        'under' => [
+            'min' => 100
+        ],
+    ];
+
     CONST MIN_EVENTS = 15;
     CONST MIN_PERCENT = [
         'max' => 20,
@@ -87,7 +96,7 @@ class TotalHelper
         if(is_null($surface)) return '';
 
         /** get moneyline */
-        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::OVER_MIN_MONEYLINE : self::UNDER_MIN_MONEYLINE;
+        $minMoneyline = ($type == Odd::ADD_TYPE['over']) ? self::MONEYLINE['over']['min'] : self::MONEYLINE['under']['min'];
 
         $query = Statistic::find();
         $query->select([

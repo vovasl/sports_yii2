@@ -113,9 +113,9 @@ class TotalLineHelper
 
         /** favorite filter */
         if ($params['favorite']) {
-            $model->andWhere(['<', 'min_moneyline', TotalHelper::OVER_FAVORITE_MAX_MONEYLINE]);
+            $model->andWhere(['<', 'min_moneyline', TotalHelper::MONEYLINE['over']['favorite']['max']]);
         } else {
-            $model->andWhere(['>=', 'min_moneyline', TotalHelper::OVER_MIN_MONEYLINE]);
+            $model->andWhere(['>=', 'min_moneyline', TotalHelper::MONEYLINE['over']['min']]);
         }
 
         return $model;

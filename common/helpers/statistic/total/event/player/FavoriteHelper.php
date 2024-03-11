@@ -4,11 +4,13 @@ namespace common\helpers\statistic\total\event\player;
 
 use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
+use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
 use frontend\models\sport\Statistic;
 use frontend\models\sport\Surface;
 use frontend\models\sport\Tour;
-use yii\db\Expression;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 class FavoriteHelper
 {
@@ -23,11 +25,40 @@ class FavoriteHelper
         /** empty surface value */
         if(is_null($event->eventTournament->surface)) return [];
 
-        /** base values */
-        $tour = self::getTour($event);
-        $surface = Surface::filterValue($event->eventTournament->surface);
-        $round = self::getRound($event);
+        /** search params */
+        $params = [
+            'tour' => self::getTour($event),
+            'surface' => Surface::filterValue($event->eventTournament->surface),
+            'round' => self::getRound($event),
+            'type' => $type
+        ];
 
+        /** sort - favorite is first */
+        $players = ($event->favorite == $event->home)
+            ? ['home', 'away']
+            : ['away', 'home']
+        ;
+
+        /** get player statistic - favorite and underdog */
+        $data = [];
+        foreach ($players as $player) {
+            $params['player'] = $player;
+            $params['favorite'] = self::getFavorite($event, $event->{$player});
+            $data[] = self::getQuery($event, $params);
+        }
+
+        $data = self::prepare($data);
+
+        return $data;
+    }
+
+    /**
+     * @param Event $event
+     * @param array $params
+     * @return array|ActiveRecord|null
+     */
+    public static function getQuery(Event $event, array $params)
+    {
         $query = Statistic::find();
         $query->select([
             'tn_statistic.*',
@@ -48,37 +79,87 @@ class FavoriteHelper
             'event.eventTournament.tournamentTour',
             'event.eventTournament.tournamentSurface',
         ]);
-        $query->where(['<', 'tn_event.start_at', $event->start_at]);
+        $query = self::getWhere($query, $event, $params);
+
+        return $query->one();
+    }
+
+    /**
+     * @param ActiveQuery $query
+     * @param Event $event
+     * @param array $params
+     * @return ActiveQuery
+     */
+    public static function getWhere(ActiveQuery $query, Event $event, array $params): ActiveQuery
+    {
 
         /** tour */
-        if($tour) {
-            $query->andWhere(['IN', 'tn_tour.id', $tour]);
+        if($params['tour']) {
+            $query->andWhere(['IN', 'tn_tour.id', $params['tour']]);
         }
 
-        $query->andWhere(['IN', 'tn_surface.id', $surface]);
+        /** surface */
+        $query->andWhere(['IN', 'tn_surface.id', $params['surface']]);
 
         /** round */
-        if($round) {
-            if ($round == Round::MAIN) {
-                $query->andWhere(['!=', 'tn_event.round', Round::QUALIFIER]);
-            } else {
-                $query->andWhere(['tn_event.round' => $round]);
+        if($params['round']) {
+            ($params['round'] == Round::MAIN)
+                ? $query->andWhere(['!=', 'tn_event.round', Round::QUALIFIER])
+                : $query->andWhere(['tn_event.round' => $params['round']])
+            ;
+        }
+
+        /** event */
+        $query->andWhere(['<', 'tn_event.start_at', $event->start_at]);
+        $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
+
+        /** statistic */
+        $query->andWhere(['tn_statistic.player_id' => $event->{$params['player']}]);
+        $query->andWhere(['tn_statistic.add_type' => $params['type']]);
+        $query->andWhere(['<', 'tn_statistic.min_moneyline', TotalHelper::MONEYLINE['over']['favorite']['max']]);
+
+        /** favorite or underdog filter */
+        ($params['favorite'])
+            ? $query->andWhere('tn_statistic.player_id = tn_event.favorite')
+            : $query->andWhere('tn_statistic.player_id != tn_event.favorite')
+        ;
+
+        return $query;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public static function prepare(array $data)
+    {
+        foreach ($data as $k => $stat) {
+
+            /** unset empty statistic */
+            if($stat->count_events == 0) {
+                unset($data[$k]);
             }
         }
 
-        $query->andWhere(['tn_event.five_sets' => $event->five_sets]);
-        $query->andWhere(['tn_statistic.add_type' => $type]);
-        $query->andWhere(['IN', 'tn_statistic.player_id', [$event->home, $event->away]]);
+        return $data;
+    }
 
-        /** favorite */
-        $query->andWhere(['<', 'min_moneyline', TotalHelper::OVER_FAVORITE_MAX_MONEYLINE]);
-        $query->andWhere(['OR', ['tn_event.favorite' => $event->home],  ['tn_event.favorite' => $event->away]]);
-        $query->andWhere('tn_statistic.player_id = tn_event.favorite');
-
-        $query->groupBy('player_id');
-        $query->orderBy([new Expression("FIELD(player_id, $event->home, $event->away)")]);
-
-        return $query->all();
+    /**
+     * @param Event $event
+     * @return array
+     */
+    public static function getPlayerUrlParams(Event $event): array
+    {
+        return [
+            '/statistic/total/players',
+            'PlayerTotalSearch[tour]' => self::getTourFilter($event),
+            'PlayerTotalSearch[surface]' => $event->eventTournament->surface,
+            'PlayerTotalSearch[round]' => self::getRoundFilter($event),
+            'PlayerTotalSearch[min_moneyline]' => Statistic::TOTAL_FILTER['moneyline']['favorite'],
+            'PlayerTotalSearch[five_sets]' => $event->five_sets,
+            'PlayerTotalSearch[add_type]' => Odd::ADD_TYPE['over'],
+            'PlayerTotalSearch[favorite]' => 'Yes',
+        ];
     }
 
     /**
@@ -121,5 +202,24 @@ class FavoriteHelper
     {
         if($event->round == Round::QUALIFIER) return '';
         return Round::MAIN;
+    }
+
+    /**
+     * @param Event $event
+     * @param int $player
+     * @return bool
+     */
+    public static function getFavorite(Event $event, int $player): bool
+    {
+        return ($player == $event->favorite);
+    }
+
+    /**
+     * @param int $key
+     * @return string
+     */
+    public static function getFavoriteFilter(int $key): string
+    {
+        return ($key == 0 ) ? 'Yes' : 'No';
     }
 }
