@@ -247,7 +247,7 @@ class PlayerHelper
             ->leftJoin('sp_odd total_over', 'tn_event.id = total_over.event and total_over.type = ' . Odd::TYPE['totals'] . ' and total_over.add_type = \'' . Odd::ADD_TYPE['over'] . '\'')
             ->where(['IN', 'tn_player_total.type', $type])
             ->andWhere(['IS NOT', 'tn_tournament.id', null])
-            ->andWhere('tn_event.id = (SELECT MAX(id) FROM tn_event event_id WHERE (tn_player.id = event_id.home or tn_player.id = event_id.away))')
+            ->andWhere('tn_event.id = (SELECT id FROM tn_event event_id WHERE tn_player.id = event_id.home or tn_player.id = event_id.away order by event_id.start_at DESC limit 1)')
             ->andWhere('(tn_event.sofa_id is null or (event_winner.winner = tn_player_total.player_id and event_winner.round != 3))')
             ->orderBy([
                 'tn_tournament.name' => SORT_ASC,
