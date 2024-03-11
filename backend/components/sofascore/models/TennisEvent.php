@@ -12,7 +12,7 @@ class TennisEvent
     CONST TOUR = [
         3,    // ATP
         6,    // WTA
-        72,   // ATP Challanger
+        72,   // ATP Challenger
         871,  // FED Cup
         //76, // Davis Cup
         //1705  // United Cup
