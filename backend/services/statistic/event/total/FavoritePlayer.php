@@ -22,6 +22,10 @@ class FavoritePlayer extends Base
     public function getData(): array
     {
         $data = parent::getData();
+
+        /** empty data */
+        if(count($data) == 0) return $data;
+
         $data['favorite'] = self::FAVORITE;
 
         return $data;
