@@ -2,15 +2,11 @@
 
 /**
  * @var View $this
- * @var string $title
- * @var Statistic[] $stats
- * @var array $playerUrlParams
- * @var bool $favorite
+ * @var array $data
  */
 
-use common\helpers\statistic\total\event\player\FavoriteHelper;
+use backend\services\statistic\event\total\FavoritePlayer;
 use common\helpers\TotalHelper;
-use frontend\models\sport\Statistic;
 use yii\helpers\Html;
 use yii\web\View;
 
@@ -18,9 +14,9 @@ $avg = [];
 
 ?>
 
-<h2 class="mt-5 text-center"><?= $title; ?></h2>
+<h3 class="text-center"><?= $data['title']; ?></h3>
 
-<table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-5">
+<table class="table table-striped table-bordered detail-view mb-0 mt-4 mb-3">
     <thead>
     <tr>
         <td class="text-center"><strong>Player</strong></td>
@@ -31,16 +27,16 @@ $avg = [];
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($stats as $k => $stat): ?>
+    <?php foreach ($data['statistic'] as $k => $stat): ?>
         <?php
             /** additional url filter params */
-            $playerUrlParams['PlayerTotalSearch[player_name]'] = $stat->player->name;
-            if($favorite) {
-                $playerUrlParams['PlayerTotalSearch[favorite]'] = FavoriteHelper::getFavoriteFilter($k);
+            $data['url']['PlayerTotalSearch[player_name]'] = $stat->player->name;
+            if(!empty($data['favorite'])) {
+                $data['url']['PlayerTotalSearch[favorite]'] = FavoritePlayer::getFavoriteFilter($k);
             }
         ?>
         <tr>
-            <td class="text-center"><?= Html::a($stat->player->name, $playerUrlParams, ['target'=>'_blank']); ?></td>
+            <td class="text-center"><?= Html::a($stat->player->name, $data['url'], ['target'=>'_blank']); ?></td>
             <td class="text-center"><?= $stat->count_events; ?></td>
             <?php for($i = 0; $i < 5; $i++): ?>
                 <?php $attr = "percent_profit_{$i}"; ?>
@@ -54,7 +50,7 @@ $avg = [];
         <td class="text-center">AVG ROI</td>
         <td></td>
         <?php foreach ($avg as $stat): ?>
-            <?php $stat = round($stat / count($stats), 2); ?>
+            <?php $stat = round($stat / count($data['statistic']), 2); ?>
             <td class="text-center"><?= TotalHelper::getPercent($stat); ?></td>
         <?php endforeach; ?>
     </tr>

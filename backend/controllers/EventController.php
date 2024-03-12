@@ -9,9 +9,8 @@ use backend\models\AddLineLogForm;
 use backend\models\AddResultForm;
 use backend\models\EventSearch;
 use backend\models\event\EventOddMoveSearch;
-use common\helpers\statistic\total\event\player\EqualHelper;
-use common\helpers\statistic\total\event\player\FavoriteHelper;
-use common\helpers\statistic\total\event\player\OverPlayerHelper;
+use backend\services\statistic\event\Statistic;
+use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\EventLog;
 use frontend\models\sport\Odd;
@@ -19,6 +18,7 @@ use frontend\models\sport\OddHistory;
 use frontend\models\sport\ResultSet;
 use Throwable;
 use Yii;
+use yii\db\ActiveRecord;
 use yii\db\StaleObjectException;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -70,31 +70,16 @@ class EventController extends Controller
      */
     public function actionView(int $id): string
     {
-        /** @var Event $event */
-        $event = Event::find()
-            ->from(['event' => 'tn_event'])
-            ->withData()
-            ->where(['event.id' => $id])
-            ->one()
-        ;
-        if (!$event) {
-            throw new NotFoundHttpException('This event does not exist');
-        }
 
-        /** statistic */
-        $stat = [
-            'total_over_vs_over_players' => OverPlayerHelper::getStatistic($event),
-            'total_over' => EqualHelper::getStatistic($event, Odd::ADD_TYPE['over']),
-            'total_over_favorite' => FavoriteHelper::getStatistic($event, Odd::ADD_TYPE['over'])
-        ];
+        $model = $this->findModel($id);
 
-        /** odd history */
-        $history = OddHistory::getEventData($event);
+        /** event statistic */
+        $statistic = new Statistic($model);
 
         return $this->render('view', [
-            'event' => $event,
-            'stat' => $stat,
-            'history' => $history,
+            'event' => $model,
+            'statistic' => $statistic->getData(),
+            'history' => OddHistory::getEventData($model),
         ]);
     }
 
@@ -285,15 +270,30 @@ class EventController extends Controller
     }
 
     /**
+     * @param int $id
+     * @return Event
      * @throws NotFoundHttpException
      */
     protected function findModel(int $id): Event
     {
-        if (($model = Event::findOne(['id' => $id])) !== null) {
+
+        $model = Event::find()
+            ->from([
+                'event' => 'tn_event'
+            ])
+            ->withData()
+            ->where([
+                'event.id' => $id
+            ])
+            ->one()
+        ;
+
+        if ($model !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested event does not exist.');
+
     }
 
 }
