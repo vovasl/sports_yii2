@@ -27,7 +27,6 @@ class FavoritePlayer extends Base
         if(count($data) == 0) return $data;
 
         $data['favorite'] = self::FAVORITE;
-
         return $data;
 
     }
