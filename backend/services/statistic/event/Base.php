@@ -2,10 +2,10 @@
 
 namespace backend\services\statistic\event;
 
-use backend\services\statistic\event\BaseInterface;
+use backend\services\statistic\event\AbstractBase;
 use frontend\models\sport\Event;
 
-class Base implements BaseInterface
+class Base extends AbstractBase
 {
     const TITLE = '';
 
@@ -33,11 +33,6 @@ class Base implements BaseInterface
         ];
     }
 
-    public function getStatistic(): array
-    {
-        return [];
-    }
-
     /**
      * @return bool
      */
@@ -46,14 +41,6 @@ class Base implements BaseInterface
         if(is_null($this->event->eventTournament->surface)) return false;
 
         return true;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUrl(): array
-    {
-        return [];
     }
 
     /**
