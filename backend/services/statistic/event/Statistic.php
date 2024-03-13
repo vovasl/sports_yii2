@@ -12,7 +12,7 @@ class Statistic
 {
 
     private $settings;
-    private $data;
+    private $data = [];
 
     /**
      * Statistic constructor.
