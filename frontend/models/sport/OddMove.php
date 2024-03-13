@@ -121,6 +121,10 @@ class OddMove extends ActiveRecord
      */
     public function addEvent(Event $event, int $status = self::STATUSES['open']): bool
     {
+
+        /** validate */
+        if(empty($event->homeMoneyline[0]) || empty($event->awayMoneyline[0])) return false;
+
         /** get favorite - base odd model */
         $favorite = $event->homeMoneyline[0]->odd < $event->awayMoneyline[0]->odd
             ? 'homeMoneyline'

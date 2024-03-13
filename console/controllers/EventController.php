@@ -2,8 +2,8 @@
 
 namespace console\controllers;
 
-
 use backend\components\ps3838\PS3838;
+use backend\services\event\EventCheck;
 use frontend\models\sport\Event;
 use frontend\models\sport\OddMove;
 use Yii;
@@ -16,6 +16,7 @@ class EventController extends Controller
     {
         Yii::$app->runAction('event/add-odd');
         Yii::$app->runAction('event/add-odd-move');
+        Yii::$app->runAction('event/check');
     }
 
     public function actionAddOdd()
@@ -81,4 +82,11 @@ class EventController extends Controller
         }
 
     }
+
+    public function actionCheck()
+    {
+        $eventCheck = new EventCheck();
+        $eventCheck->process();
+    }
+
 }
