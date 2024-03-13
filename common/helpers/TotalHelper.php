@@ -18,7 +18,7 @@ class TotalHelper
 
     CONST MONEYLINE = [
         'over' => [
-            'min' => 150,
+            'min' => 155,
             'favorite' => [
                 'max' => 140
             ],

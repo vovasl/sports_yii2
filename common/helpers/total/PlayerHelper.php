@@ -19,7 +19,7 @@ class PlayerHelper
 
     CONST MONEYLINE =[
         'over' => [
-            'min' => 150
+            'min' => 155
         ],
         'under' => [
             'max' => 140
