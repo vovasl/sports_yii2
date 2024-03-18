@@ -153,7 +153,7 @@ class Player extends Base
      */
     public function getTourFilter()
     {
-        if($this->event->round == Round::QUALIFIER) return '';
+        //if($this->event->round == Round::QUALIFIER) return '';
         return Tour::getFilterValue($this->event->eventTournament->tour);
     }
 
