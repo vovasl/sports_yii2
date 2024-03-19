@@ -22,7 +22,7 @@ class PlayerHelper
             'min' => 155
         ],
         'under' => [
-            'max' => 140
+            'max' => 146
         ],
     ];
 

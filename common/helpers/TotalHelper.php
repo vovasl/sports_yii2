@@ -20,7 +20,7 @@ class TotalHelper
         'over' => [
             'min' => 155,
             'favorite' => [
-                'max' => 140
+                'max' => 146
             ],
         ],
         'under' => [

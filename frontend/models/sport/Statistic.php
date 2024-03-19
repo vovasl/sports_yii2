@@ -44,7 +44,7 @@ class Statistic extends ActiveRecord
 
     CONST TOTAL_FILTER = [
         'moneyline' => [
-            'favorite' => '1.4<',
+            'favorite' => '1.45<=',
             'equal' => '1.55>='
         ]
     ];

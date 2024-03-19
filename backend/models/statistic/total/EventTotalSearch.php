@@ -301,6 +301,18 @@ class EventTotalSearch extends Event
             $query->andWhere(['IN', 'event.id', $this->event_ids]);
         }
 
+
+        /** custom filters */
+/*        $disableFavoritePlayers = [239 ,323, 227, 228, 463, 442];
+        $favoritePlayers = [235, 225, 438, 233, 465, 240, 453, 237, 291, 433, 443, 448];
+
+        $favoritePlayers = $disableFavoritePlayers;
+
+        $query->andFilterWhere(['or',
+            ['IN', 'event.home', $favoritePlayers],
+            ['IN', 'event.away', $favoritePlayers]
+        ]);*/
+
         return $dataProvider;
     }
 
