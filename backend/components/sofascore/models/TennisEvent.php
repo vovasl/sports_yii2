@@ -13,6 +13,7 @@ class TennisEvent
         3,      // ATP
         6,      // WTA
         72,     // ATP Challenger
+        871,    // Challenger Women
         //74,     // Billie Jean King Cup
         //76,     // Davis Cup
         //1705    // United Cup
