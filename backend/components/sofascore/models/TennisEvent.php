@@ -14,8 +14,8 @@ class TennisEvent
         6,      // WTA
         72,     // ATP Challenger
         //74,     // Billie Jean King Cup
-        //76,   // Davis Cup
-        //1705  // United Cup
+        //76,     // Davis Cup
+        //1705    // United Cup
     ];
 
     /** allowed status codes */
