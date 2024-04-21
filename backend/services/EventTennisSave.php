@@ -43,8 +43,6 @@ class EventTennisSave
         'tour' => [
             1, // ATP
             5, // WTA
-            7, // United Cup Womens
-            8, // United Cup Men
         ],
         'disable_round' => [
             Round::QUALIFIER

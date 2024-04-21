@@ -22,18 +22,16 @@ class Tour extends ActiveRecord
     CONST CHALLENGER = 2;
     CONST DAVIS_CUP = 3;
     CONST WTA = 5;
-    CONST UNITED_CUP_WOMEN = 7;
-    CONST UNITED_CUP_MEN = 8;
     CONST BJK_CUP = 9;
 
     /** combine tours */
-    CONST ATP_ALL = [self::ATP, self::DAVIS_CUP, self::UNITED_CUP_MEN];
-    CONST WTA_ALL = [self::WTA, self::UNITED_CUP_WOMEN, self::BJK_CUP];
+    CONST ATP_ALL = [self::ATP, self::DAVIS_CUP];
+    CONST WTA_ALL = [self::WTA, self::BJK_CUP];
 
     /** additional filter */
     CONST ADD_FILTER = [
-        -1 => 'ATP + DAVIS CUP + United Cup',
-        -2 => 'WTA + BJK Cup + United Cup'
+        -1 => 'ATP + DAVIS CUP',
+        -2 => 'WTA + BJK Cup'
     ];
 
     CONST SOFA_CHALLENGER = 72;
