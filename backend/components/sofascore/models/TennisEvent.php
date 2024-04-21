@@ -2,9 +2,6 @@
 
 namespace backend\components\sofascore\models;
 
-
-use backend\components\pinnacle\helpers\BaseHelper;
-
 class TennisEvent
 {
 
