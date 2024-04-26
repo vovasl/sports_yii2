@@ -75,9 +75,7 @@ class EventResultSave extends Component
 
         }
 
-        /** add statistic */
-        $statistic = new EventStatisticSave();
-        $statistic->init();
+        $this->afterEvents();
 
         return ($output) ? $this->message : '';
     }
@@ -454,7 +452,17 @@ class EventResultSave extends Component
     {
         /** delete player add event */
         PlayerAddEvent::removeBySofa($event->sofa_id);
+    }
 
+    private function afterEvents()
+    {
+        /** add statistic */
+        $statistic = new EventStatisticSave();
+        $statistic->init();
+
+        /** set favorite */
+        $favorite = new EventFavoriteSave();
+        $favorite->init();
     }
 
 }

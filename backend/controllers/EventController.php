@@ -247,7 +247,6 @@ class EventController extends Controller
      */
     public function actionAddResults($data = null): string
     {
-        //$data = '2023-06-01';
         $events = Yii::$app->sofascore->getTennis($data);
 
         return $this->render('add-results', [
