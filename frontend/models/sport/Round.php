@@ -2,7 +2,6 @@
 
 namespace frontend\models\sport;
 
-
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -19,8 +18,22 @@ use yii\db\ActiveRecord;
 class Round extends ActiveRecord
 {
 
-    const QUALIFIER = 5;
+    CONST FINAL = 3;
+    CONST SF = 8;
+    CONST QF = 7;
+    CONST QUALIFIER = 5;
     CONST MAIN = 100;
+
+    /** additional filters */
+    CONST ADD_FILTER = [
+        self::MAIN => 'Main',
+        -1 => 'Final-QF'
+    ];
+
+    CONST FILTER_MAPPING = [
+        100 => 'getMainRounds',
+        -1 => [self::FINAL, self::SF, self::QF]
+    ];
 
     /**
      * {@inheritdoc}
@@ -68,6 +81,19 @@ class Round extends ActiveRecord
     /**
      * @return array
      */
+    public static function getMainRounds(): array
+    {
+        return self::find()
+            ->select(['id'])
+            ->where(['!=', 'id', self::QUALIFIER])
+            ->orderBy('rank')
+            ->column()
+        ;
+    }
+
+    /**
+     * @return array
+     */
     public static function dropdown(): array
     {
         return self::find()->select(['name', 'id'])->indexBy('id')->orderBy('rank')->column();
@@ -78,29 +104,19 @@ class Round extends ActiveRecord
      */
     public static function dropdownFilter(): array
     {
-        $rounds = self::dropdown();
-        $rounds[self::MAIN] = 'Main';
-        return $rounds;
+        return  array_replace(self::dropdown(), self::ADD_FILTER);
     }
 
     /**
-     * @return string[]
+     * @param string $val
+     * @return int|int[]
      */
-    public static function dropdownFilterWithAll(): array
+    public static function filterValue(string $val)
     {
-        $rounds = self::dropdownFilter();
-        $rounds[0] = 'ALL';
-        return $rounds;
-    }
+        if (empty(self::FILTER_MAPPING[$val])) return $val;
 
-    /**
-     * @param $val
-     * @return string
-     */
-    public static function getDropdownValue($val): string
-    {
-        $rounds = self::dropdownFilterWithAll();
-        return $rounds[$val];
+        $val = self::FILTER_MAPPING[$val];
+        return is_array($val) ? $val : self::$val();
     }
 
     /**

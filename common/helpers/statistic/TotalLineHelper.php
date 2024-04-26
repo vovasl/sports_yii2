@@ -104,7 +104,7 @@ class TotalLineHelper
         ;
 
         /** round filter */
-        if(in_array(Round::MAIN, $params['round'])) {
+        if (in_array(Round::MAIN, $params['round'])) {
             $model->andWhere(['!=', 'tn_event.round', Round::QUALIFIER]);
         }
         else {

@@ -139,10 +139,7 @@ class FavoritePlayer extends Base
 
         /** round */
         if($params['round']) {
-            ($params['round'] == Round::MAIN)
-                ? $query->andWhere(['!=', 'tn_event.round', Round::QUALIFIER])
-                : $query->andWhere(['tn_event.round' => $params['round']])
-            ;
+            $query->andWhere(['IN', 'tn_event.round', Round::filterValue($params['round'])]);
         }
 
         /** event */

@@ -141,12 +141,7 @@ class EventOddMoveSearch extends Event
 
         /** round filter */
         if(!is_null($this->round_id)) {
-            if($this->round_id == Round::MAIN) {
-                $query->andFilterWhere(['<>', Round::tableName() . '.id', Round::QUALIFIER]);
-            }
-            else {
-                $query->andFilterWhere([Round::tableName() . '.id' => $this->round_id]);
-            }
+            $query->andFilterWhere(['IN', Round::tableName() . '.id', Round::filterValue($this->round_id)]);
         }
 
         /** tournament id filter */

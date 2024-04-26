@@ -104,10 +104,7 @@ class Player extends Base
 
         /** round */
         if($params['round']) {
-            ($params['round'] == Round::MAIN)
-                ? $query->andWhere(['!=', 'tn_event.round', Round::QUALIFIER])
-                : $query->andWhere(['tn_event.round' => $params['round']])
-            ;
+            $query->andFilterWhere(['IN', 'tn_event.round', Round::filterValue($params['round'])]);
         }
 
         /** event */

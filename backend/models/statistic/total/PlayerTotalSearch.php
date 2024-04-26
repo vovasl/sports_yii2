@@ -150,13 +150,9 @@ class PlayerTotalSearch extends Statistic
 
         /** round filter */
         if(!is_null($this->round)) {
-            if($this->round == Round::MAIN) {
-                $query->andFilterWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
-            }
-            else {
-                $query->andFilterWhere(['tn_event.round' => $this->round]);
-            }
+            $query->andFilterWhere(['IN', 'tn_event.round', Round::filterValue($this->round)]);
         }
+
         /** type filter */
         if(!is_null($this->add_type)) {
             $query->andFilterWhere(['tn_statistic.add_type' => $this->add_type]);

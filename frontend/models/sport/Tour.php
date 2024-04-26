@@ -28,7 +28,7 @@ class Tour extends ActiveRecord
     CONST ATP_ALL = [self::ATP, self::DAVIS_CUP];
     CONST WTA_ALL = [self::WTA, self::BJK_CUP];
 
-    /** additional filter */
+    /** additional filters */
     CONST ADD_FILTER = [
         -1 => 'ATP + DAVIS CUP',
         -2 => 'WTA + BJK Cup'

@@ -2,7 +2,6 @@
 
 namespace backend\models\statistic\total;
 
-
 use common\helpers\EventHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
@@ -123,13 +122,8 @@ class StatisticSearch extends Statistic
         }
 
         /** round filter */
-        if(!is_null($this->round)) {
-            if($this->round == Round::MAIN) {
-                $query->andFilterWhere(['<>', 'tn_event.round', Round::QUALIFIER]);
-            }
-            else {
-                $query->andFilterWhere(['tn_event.round' => $this->round]);
-            }
+        if (!empty($this->round)) {
+            $query->andFilterWhere(['IN', 'tn_event.round', Round::filterValue($this->round)]);
         }
 
         /** type filter */
@@ -157,7 +151,7 @@ class StatisticSearch extends Statistic
 
         /** value0 filter */
         if(!empty($this->value0)) {
-            $value =EventHelper::parseValueFilter($this->value0);
+            $value = EventHelper::parseValueFilter($this->value0);
             if(!empty($value)) {
                 $query->andFilterWhere([$value[2], 'odd0.value', (int)$value[1]]);
             }
