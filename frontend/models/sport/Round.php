@@ -21,18 +21,25 @@ class Round extends ActiveRecord
     CONST FINAL = 3;
     CONST SF = 8;
     CONST QF = 7;
+    CONST R16 = 6;
+    CONST R3 = 1;
+    CONST R2 = 2;
+    CONST R1 = 4;
+
     CONST QUALIFIER = 5;
     CONST MAIN = 100;
 
     /** additional filters */
     CONST ADD_FILTER = [
         self::MAIN => 'Main',
-        -1 => 'Final-QF'
+        -1 => 'QF-Final',
+        -2 => 'R1-R16'
     ];
 
     CONST FILTER_MAPPING = [
         100 => 'getMainRounds',
-        -1 => [self::FINAL, self::SF, self::QF]
+        -1 => [self::QF, self::SF, self::FINAL],
+        -2 => [self::R1, self::R2, self::R3, self::R16],
     ];
 
     /**
