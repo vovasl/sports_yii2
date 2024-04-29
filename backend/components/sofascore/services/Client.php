@@ -3,6 +3,7 @@
 namespace backend\components\sofascore\services;
 
 
+use backend\helpers\ClientHelper;
 use InvalidArgumentException;
 use function sprintf;
 
@@ -108,8 +109,9 @@ class Client
      */
     private function getHTTPHeader(): array
     {
-        $header['Content-type'] = "application/json";
+        $header['Content-type'] = "application/json; charset=utf-8";
         $header['Cache-Control'] = "no-cache";
+        $header['User-Agent'] = ClientHelper::getUserAgent();
 
         /** Build the header */
         $headers = [];
