@@ -38,7 +38,7 @@ class PlayerTotalSearch extends Statistic
     {
         return [
             [['player_id', 'event_id', 'tour', 'surface', 'round', 'five_sets', 'count_events', 'profit_0', 'profit_1', 'profit_2', 'profit_3', 'profit_4', 'count_profit_0', 'count_profit_1', 'count_profit_2', 'count_profit_3', 'count_profit_4', 'percent_profit_0', 'percent_profit_1', 'percent_profit_2', 'percent_profit_3', 'percent_profit_4'], 'integer'],
-            [['add_type', 'player_name', 'min_moneyline', 'favorite'], 'string', 'max' => 255],
+            [['add_type', 'player_name', 'min_moneyline', 'favorite', 'date_from', 'date_to'], 'string', 'max' => 255],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
             ['event_ids', 'each', 'rule' => ['integer']],
@@ -130,6 +130,16 @@ class PlayerTotalSearch extends Statistic
 
             if(is_null($this->tour)) $this->tour = -1;
             if(is_null($this->surface)) $this->surface = -1;
+        }
+
+        /** date from filter */
+        if (!empty($this->date_from)) {
+            $query->andFilterWhere(['>', 'tn_event.start_at', $this->date_from]);
+        }
+
+        /** date to filter */
+        if (!empty($this->date_to)) {
+            $query->andFilterWhere(['<', 'tn_event.start_at', $this->date_to]);
         }
 
         /** player filter */

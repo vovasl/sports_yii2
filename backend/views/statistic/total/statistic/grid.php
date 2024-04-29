@@ -31,6 +31,8 @@ use yii\helpers\Url;
         'filterModel' => $searchModel,
         'summary' => 'Total: {totalCount}',
         'columns' => [
+            'date_from',
+            'date_to',
             [
                 'label' => 'Tour',
                 'attribute' => 'tour',
@@ -74,10 +76,10 @@ use yii\helpers\Url;
                 'value' => '',
                 'filter' => ['No', 'Yes'],
             ],
-            [
+/*            [
                 'label' => 'Value <1.76',
                 'attribute' => 'value0',
-            ],
+            ],*/
             [
                 'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
                 'attribute' => 'percent_profit_0',

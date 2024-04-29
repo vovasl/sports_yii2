@@ -57,6 +57,8 @@ $this->registerJsFile('/js/player-total.js?v=' . time(), ['depends' => [JqueryAs
             'class' => LinkPager::class
         ],
         'columns' => [
+            'date_from',
+            'date_to',
             [
                 'label' => 'Player',
                 'attribute' => 'player_name',
