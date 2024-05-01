@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\statistic\BaseHelper;
 use common\helpers\TotalHelper;
 use yii\helpers\Html;
 use yii\web\View;
@@ -25,7 +26,7 @@ $this->params['breadcrumbs'][] = $title;
         <thead>
         <tr>
             <td class="text-center"><strong>Base Total</strong></td>
-            <?php foreach (TotalHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
+            <?php foreach (BaseHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
                 <td class="text-center"><strong><?= $title ?></strong></td>
             <?php endforeach; ?>
         </tr>

@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\statistic\total\PlayerTotalSearch;
+use common\helpers\statistic\BaseHelper;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Odd;
 use frontend\models\sport\Round;
@@ -124,31 +125,31 @@ $reset = "/statistic/total/players-over";
                 ]
             ],
             [
-                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 0),
+                'label' => BaseHelper::getStatsTitle(TotalHelper::ODDS, 0),
                 'attribute' => 'percent_profit_0',
                 'value' => 'percentProfit0',
                 'filter' => '',
             ],
             [
-                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 1),
+                'label' => BaseHelper::getStatsTitle(TotalHelper::ODDS, 1),
                 'attribute' => 'percent_profit_1',
                 'value' => 'percentProfit1',
                 'filter' => '',
             ],
             [
-                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 2),
+                'label' => BaseHelper::getStatsTitle(TotalHelper::ODDS, 2),
                 'attribute' => 'percent_profit_2',
                 'value' => 'percentProfit2',
                 'filter' => '',
             ],
             [
-                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 3),
+                'label' => BaseHelper::getStatsTitle(TotalHelper::ODDS, 3),
                 'attribute' => 'percent_profit_3',
                 'value' => 'percentProfit3',
                 'filter' => '',
             ],
             [
-                'label' => TotalHelper::getStatsTitle(TotalHelper::ODDS, 4),
+                'label' => BaseHelper::getStatsTitle(TotalHelper::ODDS, 4),
                 'attribute' => 'percent_profit_4',
                 'value' => 'percentProfit4',
                 'filter' => '',

@@ -6,6 +6,7 @@
  */
 
 use backend\services\statistic\event\total\FavoritePlayer;
+use common\helpers\statistic\BaseHelper;
 use common\helpers\TotalHelper;
 use yii\helpers\Html;
 use yii\web\View;
@@ -21,7 +22,7 @@ $avg = [];
     <tr>
         <td class="text-center"><strong>Player</strong></td>
         <td class="text-center"><strong>Events</strong></td>
-        <?php foreach (TotalHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
+        <?php foreach (BaseHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
             <td class="text-center"><strong><?= $title ?></strong></td>
         <?php endforeach; ?>
     </tr>

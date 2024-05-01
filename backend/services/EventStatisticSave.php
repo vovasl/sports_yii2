@@ -2,11 +2,10 @@
 
 namespace backend\services;
 
-
+use common\helpers\statistic\MoneylineHelper;
 use common\helpers\TotalHelper;
 use frontend\models\sport\Event;
 use frontend\models\sport\Odd;
-use frontend\models\sport\OddType;
 use frontend\models\sport\Statistic;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
@@ -24,7 +23,7 @@ class EventStatisticSave
             'totalsOver',
             'totalsUnder'
         ],
-        //'moneyline' => [],
+        'moneyline' => [],
     ];
 
     private $event;
@@ -118,9 +117,57 @@ class EventStatisticSave
         return "add" . ucfirst($type);
     }
 
+    /**
+     * @param string $type
+     * @return bool
+     */
     private function addMoneyline(string $type): bool
     {
+        if(!isset($this->event->homeMoneyline[0]) || !isset($this->event->awayMoneyline[0])) return false;
+
+        /** players */
+        foreach (self::PLAYER_TYPE as $player) {
+
+            /** save model */
+            $model = new Statistic();
+            $model->player_id = $this->event->{$player};
+            $model->event_id = $this->event->id;
+            $model->type = (Odd::TYPE[$type]) ?? null;
+            $model = $this->getMoneylineProfit($model, $player);
+            $model->save(0);
+        }
+
         return true;
+    }
+
+    /**
+     * @param Statistic $model
+     * @param string $player
+     * @return Statistic
+     */
+    private function getMoneylineProfit(Statistic $model, string $player): Statistic
+    {
+        /** get odds settings */
+        $oddsSettings = MoneylineHelper::ODDS;
+        sort($oddsSettings);
+        $oddsSettingsLastKey = array_key_last($oddsSettings);
+
+        foreach ($oddsSettings as $k => $odd) {
+            /** get moneyline odd */
+            $playerMoneyline = "{$player}Moneyline";
+            $moneyline = $this->event->$playerMoneyline[0];
+
+            $profitField = "profit_{$k}";
+            $idField = "odd_id_{$k}";
+            if (($k == $oddsSettingsLastKey && $moneyline->odd >= $odd) || ($moneyline->odd >= $odd && $moneyline->odd < $oddsSettings[$k + 1])) {
+                $model->{$profitField} = $moneyline->profit;
+                $model->{$idField} = $moneyline->id;
+
+                return $model;
+            }
+        }
+
+        return $model;
     }
 
     /**

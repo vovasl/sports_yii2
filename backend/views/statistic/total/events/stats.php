@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\statistic\BaseHelper;
 use common\helpers\TotalHelper;
 use yii\web\View;
 
@@ -16,7 +17,7 @@ use yii\web\View;
     <thead>
     <tr>
         <td class="text-center"><strong></strong></td>
-        <?php foreach (TotalHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
+        <?php foreach (BaseHelper::getStatsTitle(TotalHelper::ODDS) as $title): ?>
             <td class="text-center"><strong><?= $title ?></strong></td>
         <?php endforeach; ?>
     </tr>

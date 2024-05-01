@@ -52,6 +52,8 @@ Icon::map($this);
         ]],
         ['label' => 'Tournaments', 'url' => ['/tournament/index']],
         ['label' => 'Events', 'url' => ['/event/index']],
+        ['label' => 'Odd Move', 'url' => ['/event/odd-move']],
+        ['label' => 'Players', 'url' => ['players/player/index']],
         ['label' => 'Total', 'items' => [
             ['label' => 'Stats', 'url' => ['statistic/total/statistic']],
             ['label' => 'Stats Line', 'url' => ['statistic/total/statistic-line']],
@@ -61,8 +63,9 @@ Icon::map($this);
             ['label' => 'Events Over', 'url' => ['statistic/total/events-total', 'type' => Odd::ADD_TYPE['over']]],
             ['label' => 'Events Under', 'url' => ['statistic/total/events-total', 'type' => Odd::ADD_TYPE['under']]]
         ]],
-        ['label' => 'Odd Move', 'url' => ['/event/odd-move']],
-        ['label' => 'Players', 'url' => ['players/player/index']],
+        ['label' => 'Moneyline', 'items' => [
+            ['label' => 'Stats', 'url' => ['statistic/moneyline/statistic']],
+        ]],
         ['label' => 'Frontend', 'url' => 'http://pin2.loc/'],
     ];
     if (Yii::$app->user->isGuest) {

@@ -2,10 +2,12 @@
 
 namespace backend\controllers\statistic;
 
+use backend\models\statistic\moneyline\StatisticSearch;
+use yii\web\Controller;
 
 use yii\filters\AccessControl;
 
-class MoneylineController
+class MoneylineController extends Controller
 {
 
     /**
@@ -31,7 +33,13 @@ class MoneylineController
      */
     public function actionStatistic(): string
     {
+        $searchModel = new StatisticSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
+        return $this->render('statistic', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
 }

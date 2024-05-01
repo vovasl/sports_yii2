@@ -101,6 +101,9 @@ class StatisticSearch extends Statistic
             $this->five_sets = 0;
         }
 
+        /** total filter */
+        $query->andFilterWhere(['tn_statistic.type' => Odd::TYPE['totals']]);
+
         /** date from filter */
         if (!empty($this->date_from)) {
             $query->andFilterWhere(['>', 'tn_event.start_at', $this->date_from]);
